@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<resources>
+
+<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+    <item name="android:forceDarkAllowed">false</item>
+</style>
+
+<!-- add this -->
+<style name="LightTheme" parent="AppTheme">
+    <item name="launchImage">@drawable/launch_screen_light</item>
+    <item name="colorTheme">#FFFFFF</item>
+</style>
+
+<!-- and add this -->
+<style name="DarkTheme" parent="AppTheme">
+    <item name="launchImage">@drawable/launch_screen_dark</item>
+    <item name="colorTheme">#1E1C1C</item>
+</style>
+</resources>
