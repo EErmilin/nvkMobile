@@ -80,6 +80,7 @@ import {VALIDATE_TOKEN} from '../../gql/mutation/auth/ValidateToken';
 import {logout} from '../../redux/thunks/auth/Logout';
 import {getUpdateClient} from '../../requests/updateHeaders';
 import {toastConfig} from '../../api/configToast';
+import {FilmsScreen} from "../../Screens/FilmsScreens/FilmsScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const events = [
@@ -625,6 +626,14 @@ const StackNavigation = () => {
             headerShown: false,
           }}
         />
+          <Stack.Screen
+              name="Films"
+              component={FilmsScreen}
+              options={{
+                  title: 'Фильмы',
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              }}
+          />
       </Stack.Navigator>
       {flag ? <MusicTrackView insets={insets.bottom} /> : <></>}
     </View>

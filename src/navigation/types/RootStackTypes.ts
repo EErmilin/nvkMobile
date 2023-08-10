@@ -77,6 +77,9 @@ export type RootStackParamList = {
   AboutScreen: undefined;
   Settings: undefined;
   TechSupport: undefined;
+  Films: undefined;
+  Filter: undefined;
+  Film: {id: number}
 };
 
 export type RootNavigationProps<T extends keyof RootStackParamList> =
