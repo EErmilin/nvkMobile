@@ -12,7 +12,7 @@ import {useTheme} from "../../Styles/Styles";
 import {useAppDispatch} from "../../redux/hooks";
 import {FC, useEffect, useState} from "react";
 import Toast from "react-native-toast-message";
-import {BoldText, Containter, SearchComponent, VideoItem} from "../../components";
+import {BoldText, Containter, SearchComponent} from "../../components";
 import {FilterIcon} from "../../components/SVGcomponents/FilterIcon";
 import {ArrowsIcon} from "../../components/SVGcomponents/ArrowsIcon";
 import {ArrowDownIcon} from "../../components/SVGcomponents/ArrowDownIcon";
@@ -22,12 +22,11 @@ import {LayoutVideoItem} from "../../components/LayoutVideoItem";
 
 interface Props {
     id: number
-    name: string
-    price: number | null
+    title: string
     rating: number
 }
 
-export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
+export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({navigation}) => {
     const screenWidth = useWindowDimensions().width;
     const {colors} = useTheme();
     const dispatch = useAppDispatch();
@@ -35,12 +34,12 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [search, setSearch] = useState('');
     //mock data
-    const films: Props[] = [
-        {id: 1, name: 'film1', price: 199, rating: 5.5},
-        {id: 2, name: 'film2', price: null, rating: 7.8},
+    const series: Props[] = [
+        {id: 1, title: 'series1', rating: 5.5},
+        {id: 2, title: 'series2', rating: 7.8},
     ]
 
-    const getFilms = () => {
+    const getSeries = () => {
         // dispatch()
     }
 
@@ -48,7 +47,7 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
         (async () => {
             try {
                 setIsLoading(true);
-                await getFilms();
+                await getSeries();
             } catch (e) {
                 Toast.show({type: 'error', text1: 'Что-то пошло не так'});
             } finally {
@@ -70,7 +69,7 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
                     onRefresh={async () => {
                         try {
                             setIsLoading(true);
-                            await getFilms();
+                            await getSeries();
                         } catch (e) {
                             console.log(e);
                         } finally {
@@ -100,59 +99,58 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
                         <ArrowDownIcon color={colors.colorMain}/>
                     </View>
                 </TouchableOpacity>
+                <ScrollView>
+                    {series.length &&
+                        <FlatList
+                            data={series}
+                            style={styles.items}
+                            contentContainerStyle={styles.itemContainer}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({item}) => (
+                                <TouchableOpacity onPress={() => navigation.navigate('AllSeries', {
+                                    id: item.id,
+                                    title: item.title
+                                })}>
+                                    <LayoutVideoItem item={item} height={162}/>
+                                </TouchableOpacity>
+                            )}
+                            ListEmptyComponent={
+                                isLoading
+                                    ? <ContentLoader
+                                        width={screenWidth.toString()}
+                                        height={'114'}
+                                        backgroundColor={colors.skeletonBg}
+                                        foregroundColor={colors.skeletonFg}>
+                                        {Array(Math.ceil(90 * length))
+                                            .fill(0)
+                                            .map((item, index) => (
+                                                <>
+                                                    <Rect
+                                                        key={index.toString() + 'image_artist'}
+                                                        width={'80'}
+                                                        height={'80'}
+                                                        x={(90 * index).toString()}
+                                                        y="0"
+                                                        rx={'40'}
+                                                        ry={'40'}
+                                                    />
+                                                    <Rect
+                                                        key={index.toString() + 'text_artist'}
+                                                        width={'80'}
+                                                        height={'24'}
+                                                        x={(90 * index).toString()}
+                                                        y="90"
+                                                        rx="8"
+                                                        ry="8"
+                                                    />
+                                                </>
+                                            ))}
+                                    </ContentLoader>
+                                    : <BoldText>Не найдено</BoldText>}
+                        />
+                    }
+                </ScrollView>
             </Containter>
-            <ScrollView>
-                {films.length &&
-                    <FlatList
-                        data={films}
-                        style={styles.items}
-                        contentContainerStyle={styles.itemContainer}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({item}) => (
-                            <TouchableOpacity onPress={() => navigation.navigate('Film', {
-                                id: item.id,
-                                name: item.name,
-                                rating: item.rating
-                            })}>
-                               <LayoutVideoItem item={item} height={280}/>
-                            </TouchableOpacity>
-                        )}
-                        ListEmptyComponent={
-                            isLoading
-                                ? <ContentLoader
-                                    width={screenWidth.toString()}
-                                    height={'114'}
-                                    backgroundColor={colors.skeletonBg}
-                                    foregroundColor={colors.skeletonFg}>
-                                    {Array(Math.ceil(90 * length))
-                                        .fill(0)
-                                        .map((item, index) => (
-                                            <>
-                                                <Rect
-                                                    key={index.toString() + 'image_artist'}
-                                                    width={'80'}
-                                                    height={'80'}
-                                                    x={(90 * index).toString()}
-                                                    y="0"
-                                                    rx={'40'}
-                                                    ry={'40'}
-                                                />
-                                                <Rect
-                                                    key={index.toString() + 'text_artist'}
-                                                    width={'80'}
-                                                    height={'24'}
-                                                    x={(90 * index).toString()}
-                                                    y="90"
-                                                    rx="8"
-                                                    ry="8"
-                                                />
-                                            </>
-                                        ))}
-                                </ContentLoader>
-                                : <BoldText>Не найдено</BoldText>}
-                    />
-                }
-            </ScrollView>
         </ScrollView>
     );
 };

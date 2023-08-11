@@ -83,6 +83,8 @@ import {toastConfig} from '../../api/configToast';
 import {FilmsScreen} from "../../Screens/FilmsScreens/FilmsScreen";
 import {FilmScreen} from "../../Screens/FilmsScreens/FilmScreen";
 import {Rating} from "../../components/Rating";
+import {SeriesScreen} from "../../Screens/SeriesScreen/SeriesScreen";
+import {AllSeriesScreen} from "../../Screens/SeriesScreen/AllSeriesScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const events = [
@@ -642,6 +644,31 @@ const StackNavigation = () => {
               options={({route}) => ({
                   title: route.params.name,
                   headerRight: () => <Rating rating={route.params.rating} isStar />,
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              })}
+          />
+          <Stack.Screen
+              name="Series"
+              component={SeriesScreen}
+              options={{
+                  title: 'Сериалы',
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              }}
+          />
+          <Stack.Screen
+              name="AllSeries"
+              component={AllSeriesScreen}
+              options={({route}) => ({
+                  title: route.params.title,
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              })}
+          />
+          <Stack.Screen
+              name="CurrentSeries"
+              component={CurrentSeriesScreen}
+              options={({route}) => ({
+                  title: route.params.title,
+                  headerRight: () => <Rating rating={route.params.rating} isStar/>,
                   headerStyle: {backgroundColor: colors.fillPrimary},
               })}
           />

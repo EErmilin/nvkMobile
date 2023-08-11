@@ -1,11 +1,16 @@
-import {Text, StyleSheet, View, ImageBackground} from "react-native";
+import {ImageBackground, StyleSheet, View} from "react-native";
 import {BoldText} from "./index";
 import {colors} from "../Styles/Styles";
 import {Rating} from "./Rating";
 
-export const FilmItem = ({item}: any) => {
+interface Props {
+    item: any
+    height: number
+}
 
-    return <View style={styles.container}>
+export const LayoutVideoItem = ({item, height}: Props) => {
+
+    return <View style={[styles.container, {height: height}]}>
         <ImageBackground source={{uri: item.image}} resizeMode={"cover"} style={styles.image}>
             <View style={styles.rating}>
                 <Rating rating={item.rating} isStar={false}/>
@@ -18,8 +23,7 @@ export const FilmItem = ({item}: any) => {
 
 const styles = StyleSheet.create({
     container: {
-        height: '40%',
-        width: 280
+        width: '40%'
     },
     image: {
         position: "relative",

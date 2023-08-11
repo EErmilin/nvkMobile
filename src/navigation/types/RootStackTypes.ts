@@ -83,6 +83,16 @@ export type RootStackParamList = {
     id: number,
     name: string,
     rating: number
+  },
+  Series: undefined
+  CurrentSeries: {
+    id: number
+    title: string
+    rating: number
+  }
+  AllSeries: {
+    id: number
+    title: string
   }
 };
 
