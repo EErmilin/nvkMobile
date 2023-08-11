@@ -81,6 +81,8 @@ import {logout} from '../../redux/thunks/auth/Logout';
 import {getUpdateClient} from '../../requests/updateHeaders';
 import {toastConfig} from '../../api/configToast';
 import {FilmsScreen} from "../../Screens/FilmsScreens/FilmsScreen";
+import {FilmScreen} from "../../Screens/FilmsScreens/FilmScreen";
+import {Rating} from "../../components/Rating";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const events = [
@@ -633,6 +635,15 @@ const StackNavigation = () => {
                   title: 'Фильмы',
                   headerStyle: {backgroundColor: colors.fillPrimary},
               }}
+          />
+          <Stack.Screen
+              name="Film"
+              component={FilmScreen}
+              options={({route}) => ({
+                  title: route.params.name,
+                  headerRight: () => <Rating rating={route.params.rating} isStar />,
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              })}
           />
       </Stack.Navigator>
       {flag ? <MusicTrackView insets={insets.bottom} /> : <></>}
