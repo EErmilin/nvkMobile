@@ -4,13 +4,13 @@ import {FC} from "react";
 import {RootNavigationProps} from "../../navigation/types/RootStackTypes";
 import {BoldText, Containter, RegularText, VideoPlayer} from "../../components";
 import {colors, useTheme} from "../../Styles/Styles";
-import {View} from "react-native-reanimated/lib/typescript/Animated";
 import {HeartIcon} from "../../components/SVGcomponents/HeartIcon";
 import {ClockIcon} from "../../components/SVGcomponents/ClockIcon";
 import {ViewedIcon} from "../../components/SVGcomponents/ViewedIcon";
 import WebView from "react-native-webview";
 import {ArrowLeft, ArrowRight} from "../../components/SVGcomponents";
 import {Review} from "../../components/Review";
+import Animated from "react-native-reanimated";
 
 //mock data
 const data = []
@@ -58,29 +58,29 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = () => {
                 : <ActivityIndicator color={colors.colorMain} size={'large'}/>
             }
             <Containter>
-                <View style={{justifyContent: 'space-between'}}>
-                    <View style={{gap: 5}}>
+                <Animated.View style={{justifyContent: 'space-between'}}>
+                    <Animated.View  style={{gap: 5}}>
                         <BoldText fontSize={18}>{item.name}</BoldText>
                         <RegularText>{item.age}</RegularText>
-                    </View>
+                    </Animated.View >
                     <TouchableOpacity>
-                        <View style={styles.circle}>
+                        <Animated.View  style={styles.circle}>
                             <HeartIcon color={colors.white}/>
-                        </View>
+                        </Animated.View >
                     </TouchableOpacity>
-                </View>
-                <View style={{gap: 5}}>
+                </Animated.View >
+                <Animated.View  style={{gap: 5}}>
                     <ClockIcon color={colors.colorMain}/>
                     <RegularText>{item.time}</RegularText>
                     <RegularText style={{color: colors.colorMain}}>/</RegularText>
                     <RegularText>{item.genre}</RegularText>
-                </View>
-                <View>
+                </Animated.View >
+                <Animated.View >
                     <RegularText style={{color: colors.textSecondary}}>
                         {item.year} / {item.country} / {item.views}
                     </RegularText>
-                </View>
-                <View>
+                </Animated.View >
+                <Animated.View >
                     <TouchableOpacity style={styles.btn}>
                         <RegularText style={styles.textColor}>Смотреть</RegularText>
                         <RegularText style={styles.textColor} fontSize={12}>
@@ -91,18 +91,18 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = () => {
                         <RegularText style={styles.textColorOutlined}>Просмотрен</RegularText>
                         <ViewedIcon color={colors.colorMain}/>
                     </TouchableOpacity>
-                </View>
-                <View
+                </Animated.View >
+                <Animated.View 
                     style={{
                         borderBottomColor: 'black',
                         borderBottomWidth: StyleSheet.hairlineWidth,
                     }}
                 />
-                <View>
+                <Animated.View >
                     <BoldText>О фильме</BoldText>
                     <RegularText>{item.description}</RegularText>
-                </View>
-                <View>
+                </Animated.View >
+                <Animated.View >
                     <BoldText>Трейлер</BoldText>
                     <WebView
                         style={{flex: 1}}
@@ -113,68 +113,68 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = () => {
                         // domStorageEnabled={true}
                         // source={{ uri: "https://www.youtube.com/embed/-ZZPOXn6_9w" }}
                     />
-                </View>
-                <View>
+                </Animated.View >
+                <Animated.View >
                     <BoldText>{item.name}</BoldText>
                     <RegularText>1 february 2021</RegularText>
-                </View>
-                <View>
+                </Animated.View >
+                <Animated.View >
                     <RegularText>Языки</RegularText>
                     <TouchableOpacity style={styles.smallBtn}>
                         <RegularText style={styles.textColor}>Якуцкий</RegularText>
                     </TouchableOpacity>
-                </View>
-                <View
+                </Animated.View >
+                <Animated.View 
                     style={{
                         borderBottomColor: 'black',
                         borderBottomWidth: StyleSheet.hairlineWidth,
                     }}
                 />
-                <View>
+                <Animated.View >
                     <RegularText>Субтитры</RegularText>
                     <TouchableOpacity style={styles.smallBtn}>
                         <RegularText style={styles.textColor}>Русские</RegularText>
                     </TouchableOpacity>
-                </View>
-                <View style={styles.box}>
-                    <View style={{gap: 15}}>
-                        <View style={styles.rating}>
+                </Animated.View >
+                <Animated.View  style={styles.box}>
+                    <Animated.View  style={{gap: 15}}>
+                        <Animated.View  style={styles.rating}>
                             <BoldText style={{color: colors.white}} fontSize={16}>
                                 {item.rating_kinopoisk.toString()}
                             </BoldText>
-                        </View>
-                        <View>
+                        </Animated.View >
+                        <Animated.View >
                             <BoldText>Рейтинг Кинопоиск</BoldText>
                             <RegularText fontSize={12}>{item.reviews_kinopoisk} отзывов</RegularText>
-                        </View>
-                    </View>
+                        </Animated.View >
+                    </Animated.View >
                     <ArrowLeft color={colors.colorMain}/>
-                </View>
-                <View style={styles.box}>
-                    <View style={{gap: 15}}>
-                        <View style={styles.rating}>
+                </Animated.View >
+                <Animated.View  style={styles.box}>
+                    <Animated.View  style={{gap: 15}}>
+                        <Animated.View  style={styles.rating}>
                             <BoldText style={{color: colors.white}} fontSize={16}>
                                 {item.rating_nbk.toString()}
                             </BoldText>
-                        </View>
-                        <View>
+                        </Animated.View >
+                        <Animated.View >
                             <BoldText>Рейтинг НБК</BoldText>
                             <RegularText fontSize={12}>{item.reviews_kinopoisk} отзывов</RegularText>
-                        </View>
-                    </View>
+                        </Animated.View >
+                    </Animated.View >
                     <TouchableOpacity style={[styles.smallBtn, styles.btnOutlined]}>
                         <RegularText>Оценить</RegularText>
                     </TouchableOpacity>
-                </View>
-                <View style={{justifyContent: 'space-between'}}>
+                </Animated.View >
+                <Animated.View  style={{justifyContent: 'space-between'}}>
                     <BoldText fontSize={16}>Отзывы</BoldText>
-                    <View style={{gap: 5}}>
+                    <Animated.View  style={{gap: 5}}>
                         <BoldText fontSize={16}>
                             {item.reviews_nbk.toString()}
                         </BoldText>
                         <ArrowRight/>
-                    </View>
-                </View>
+                    </Animated.View >
+                </Animated.View >
                 <ScrollView horizontal>
                     {item.reviews.length
                         ? item.reviews.map(item => <Review key={item.id} item={item}/>)

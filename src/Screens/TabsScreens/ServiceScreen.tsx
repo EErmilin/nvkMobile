@@ -1,21 +1,21 @@
 import * as React from 'react';
-import {useWindowDimensions, ScrollView, Platform} from 'react-native';
-import {SafeAreaView, View, Image, TouchableOpacity} from 'react-native';
+import { useWindowDimensions, ScrollView, Platform } from 'react-native';
+import { SafeAreaView, View, Image, TouchableOpacity } from 'react-native';
 import BoldText from '../../components/BoldText';
 import RegularText from '../../components/RegularText';
-import {Nativity} from '../../components/SVGcomponents/Nativity';
-import {TabNavigationProps} from '../../navigation/types/TabTypes';
+import { Nativity } from '../../components/SVGcomponents/Nativity';
+import { TabNavigationProps } from '../../navigation/types/TabTypes';
 // import Weather from '../../components/Weather';
 import Currentcies from '../../components/Currentcies';
-import {LogoType} from '../../components/SVGcomponents/Logotype';
-import {useTheme} from '../../Styles/Styles';
-import {useAppDispatch, useAppSelector} from '../../redux/hooks';
-import {fetchFavorite} from '../../redux/thunks/favorite/GetFavorites';
-import {LIVESTREAMS_IDS} from '../../gql/query/livestreams/LiveStreams';
-import {getUpdateClient} from '../../requests/updateHeaders';
+import { LogoType } from '../../components/SVGcomponents/Logotype';
+import { useTheme } from '../../Styles/Styles';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { fetchFavorite } from '../../redux/thunks/favorite/GetFavorites';
+import { LIVESTREAMS_IDS } from '../../gql/query/livestreams/LiveStreams';
+import { getUpdateClient } from '../../requests/updateHeaders';
 import remoteConfig from '@react-native-firebase/remote-config';
 
-function Header({backgroundColor}: {backgroundColor: string}) {
+function Header({ backgroundColor }: { backgroundColor: string }) {
   return (
     <SafeAreaView>
       <View
@@ -34,10 +34,10 @@ function Header({backgroundColor}: {backgroundColor: string}) {
 export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
   navigation,
 }) => {
-  const {colors} = useTheme();
+  const { colors } = useTheme();
   const dispatch = useAppDispatch();
   const token = useAppSelector(state => state.auth.token);
-  const [data, setData] = React.useState<{id: number; name: string}[]>([]);
+  const [data, setData] = React.useState<{ id: number; name: string }[]>([]);
 
   const update = React.useCallback(async () => {
     try {
@@ -63,10 +63,10 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
   }, [token, update, dispatch]);
 
   return (
-    <View style={{flex: 1, backgroundColor: colors.fillPrimary}}>
+    <View style={{ flex: 1, backgroundColor: colors.fillPrimary }}>
       <Header backgroundColor={colors.fillPrimary} />
       <ScrollView
-        style={{flex: 1, backgroundColor: colors.bgSecondary}}
+        style={{ flex: 1, backgroundColor: colors.bgSecondary }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps={'always'}
         contentContainerStyle={{
@@ -75,9 +75,9 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
         <ScrollView
           horizontal
           keyboardShouldPersistTaps={'always'}
-          contentContainerStyle={{padding: 15}}
+          contentContainerStyle={{ padding: 15 }}
           showsHorizontalScrollIndicator={false}
-          style={{flexGrow: 0}}>
+          style={{ flexGrow: 0 }}>
           <TouchableOpacity
             onPress={() => navigation.navigate('Horoscope')}
             style={{
@@ -90,8 +90,8 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
               flexDirection: 'row',
             }}>
             <Nativity />
-            <View style={{marginLeft: 10, justifyContent: 'space-between'}}>
-              <BoldText fontSize={14} style={{fontWeight: '700'}}>
+            <View style={{ marginLeft: 10, justifyContent: 'space-between' }}>
+              <BoldText fontSize={14} style={{ fontWeight: '700' }}>
                 Гороскоп
               </BoldText>
               <RegularText fontSize={12}>
@@ -109,9 +109,9 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
         <ScrollView
           horizontal
           keyboardShouldPersistTaps={'always'}
-          contentContainerStyle={{paddingLeft: 15, marginBottom: 15}}
+          contentContainerStyle={{ paddingLeft: 15, marginBottom: 15 }}
           showsHorizontalScrollIndicator={false}
-          style={{flexGrow: 0}}>
+          style={{ flexGrow: 0 }}>
           {Platform.OS === 'ios' ? (
             remoteConfig().getValue('broadcast_visible').asBoolean() ? (
               <ServiceItem
@@ -125,8 +125,8 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
               <></>
             )
           ) : remoteConfig()
-              .getValue('broadcast_android_visible')
-              .asBoolean() ? (
+            .getValue('broadcast_android_visible')
+            .asBoolean() ? (
             <ServiceItem
               size="small"
               navName="Broadcasts"
@@ -169,11 +169,26 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
           />
           <ServiceItem
             size="small"
+            navName="Series"
+            source={require('../../assets/images/series_logo.png')}
+            mr={2}
+            navigation={navigation}
+          />
+          <ServiceItem
+            size="small"
+            navName="Films"
+            source={require('../../assets/images/films_logo.png')}
+            mr={2}
+            navigation={navigation}
+          />
+          <ServiceItem
+            size="small"
             navName="ServicesScreen"
             source={require('../../assets/images/services_logo.png')}
             mr={2}
             navigation={navigation}
           />
+
         </ScrollView>
         <View
           style={{
@@ -323,12 +338,14 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
 interface IServiceItem {
   size: 'large' | 'small';
   navName:
-    | 'ServicesScreen'
-    | 'Music'
-    | 'Broadcasts'
-    | 'RadioScreen'
-    | 'ViewLive'
-    | 'Podcast';
+  | 'ServicesScreen'
+  | 'Music'
+  | 'Broadcasts'
+  | 'RadioScreen'
+  | 'ViewLive'
+  | 'Films'
+  | 'Series'
+  | 'Podcast';
   source: any;
   mr?: number;
   navigation: TabNavigationProps<'Services'>['navigation'];
@@ -344,8 +361,9 @@ interface IServiceItem {
 }
 
 const ServiceItem = (props: IServiceItem) => {
-  const {source, size, mr = 1, navigation, navName, navParams} = props;
+  const { source, size, mr = 1, navigation, navName, navParams } = props;
   const screenWidth = useWindowDimensions().width;
+
   return (
     <TouchableOpacity
       style={{
@@ -357,6 +375,8 @@ const ServiceItem = (props: IServiceItem) => {
           case 'Music':
           case 'Podcast':
           case 'ServicesScreen':
+          case 'Series':
+          case 'Films':
             navigation.navigate(navName);
             break;
           case 'RadioScreen':

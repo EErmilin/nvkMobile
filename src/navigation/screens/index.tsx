@@ -85,6 +85,7 @@ import {FilmScreen} from "../../Screens/FilmsScreens/FilmScreen";
 import {Rating} from "../../components/Rating";
 import {SeriesScreen} from "../../Screens/SeriesScreen/SeriesScreen";
 import {AllSeriesScreen} from "../../Screens/SeriesScreen/AllSeriesScreen";
+import { CurrentSeriesScreen } from '../../Screens/SeriesScreen/CurrentSeriesScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const events = [

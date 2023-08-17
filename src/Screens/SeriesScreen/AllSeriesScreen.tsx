@@ -3,9 +3,9 @@ import * as React from "react";
 import {FC} from "react";
 import {RootNavigationProps} from "../../navigation/types/RootStackTypes";
 import {colors} from "../../Styles/Styles";
-import {View} from "react-native-reanimated/lib/typescript/Animated";
 import {Containter, RegularText} from "../../components";
 import {PlayIcon} from "../../components/SVGcomponents/PlayIcon";
+import Animated from "react-native-reanimated";
 
 //mock data
 const data = [
@@ -17,12 +17,12 @@ export const AllSeriesScreen: FC<RootNavigationProps<'AllSeries'>> = ({navigatio
 
     return <SafeAreaView style={styles.container}>
         <Containter>
-            <View>
+            <Animated.View >
 
-            </View>
+            </Animated.View >
             <ScrollView>
                 {data.length
-                    ? data.map((item, index) => <View key={item.id}>
+                    ? data.map((item, index) => <Animated.View key={item.id}>
                         <TouchableOpacity onPress={() => navigation.navigate('CurrentSeries', {
                             id: item.id,
                             title: item.title,
@@ -32,17 +32,17 @@ export const AllSeriesScreen: FC<RootNavigationProps<'AllSeries'>> = ({navigatio
                                 <PlayIcon/>
                             </ImageBackground>
                         </TouchableOpacity>
-                        <View style={{flexDirection: 'column'}}>
-                            <View>
+                        <Animated.View style={{flexDirection: 'column'}}>
+                            <Animated.View>
                                 <RegularText>{`${index + 1}. ${item.title}`}</RegularText>
-                            </View>
-                            <View style={{flexDirection: 'row'}}>
+                            </Animated.View>
+                            <Animated.View style={{flexDirection: 'row'}}>
                                 <RegularText fontSize={12}>{item.date}</RegularText>
                                 <RegularText fontSize={12} style={{color: colors.orange}}>/</RegularText>
                                 <RegularText fontSize={12}>{item.title}</RegularText>
-                            </View>
-                        </View>
-                    </View>)
+                            </Animated.View>
+                        </Animated.View>
+                    </Animated.View>)
                     : <ActivityIndicator size={'large'} color={colors.orange}/>
                 }
             </ScrollView>

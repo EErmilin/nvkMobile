@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
     FlatList,
     RefreshControl,
@@ -7,18 +8,18 @@ import {
     useWindowDimensions,
     View,
 } from 'react-native';
-import {RootNavigationProps} from "../../navigation/types/RootStackTypes";
-import {useTheme} from "../../Styles/Styles";
-import {useAppDispatch} from "../../redux/hooks";
-import {FC, useEffect, useState} from "react";
+import { RootNavigationProps } from "../../navigation/types/RootStackTypes";
+import { useTheme } from "../../Styles/Styles";
+import { useAppDispatch } from "../../redux/hooks";
+import { FC, useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
-import {BoldText, Containter, SearchComponent, VideoItem} from "../../components";
-import {FilterIcon} from "../../components/SVGcomponents/FilterIcon";
-import {ArrowsIcon} from "../../components/SVGcomponents/ArrowsIcon";
-import {ArrowDownIcon} from "../../components/SVGcomponents/ArrowDownIcon";
+import { BoldText, Containter, SearchComponent, VideoItem } from "../../components";
+import { FilterIcon } from "../../components/SVGcomponents/FilterIcon";
+import { ArrowsIcon } from "../../components/SVGcomponents/ArrowsIcon";
+import { ArrowDownIcon } from "../../components/SVGcomponents/ArrowDownIcon";
 import ContentLoader from "react-content-loader";
-import {Rect} from "react-native-svg";
-import {LayoutVideoItem} from "../../components/LayoutVideoItem";
+import { Rect } from "react-native-svg";
+import { LayoutVideoItem } from "../../components/LayoutVideoItem";
 
 interface Props {
     id: number
@@ -27,22 +28,23 @@ interface Props {
     rating: number
 }
 
-export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
+export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({ navigation }) => {
     const screenWidth = useWindowDimensions().width;
-    const {colors} = useTheme();
+    const { colors } = useTheme();
     const dispatch = useAppDispatch();
     const length = Math.ceil((screenWidth - 30) / (140 + 10));
     const [isLoading, setIsLoading] = useState(false);
     const [search, setSearch] = useState('');
     //mock data
     const films: Props[] = [
-        {id: 1, name: 'film1', price: 199, rating: 5.5},
-        {id: 2, name: 'film2', price: null, rating: 7.8},
+        { id: 1, name: 'film1', price: 199, rating: 5.5 },
+        { id: 2, name: 'film2', price: null, rating: 7.8 },
     ]
 
     const getFilms = () => {
         // dispatch()
     }
+
 
     useEffect(() => {
         (async () => {
@@ -50,7 +52,7 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
                 setIsLoading(true);
                 await getFilms();
             } catch (e) {
-                Toast.show({type: 'error', text1: 'Что-то пошло не так'});
+                Toast.show({ type: 'error', text1: 'Что-то пошло не так' });
             } finally {
                 setIsLoading(false);
             }
@@ -60,7 +62,7 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
-            style={{backgroundColor: colors.bgSecondary}}
+            style={{ backgroundColor: colors.bgSecondary }}
             keyboardShouldPersistTaps={'always'}
             refreshControl={
                 <RefreshControl
@@ -82,22 +84,22 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
             <SearchComponent
                 style={styles.search}
                 value={search}
-                containerStyle={{backgroundColor: colors.fillPrimary}}
+                containerStyle={{ backgroundColor: colors.fillPrimary }}
                 onChangeText={setSearch}
                 placeholder={'Поиск по названию'}
             />
             <Containter style={styles.textContainer}>
                 <TouchableOpacity onPress={() => navigation.navigate('Filter')}>
                     <View style={styles.btn}>
-                        <FilterIcon color={colors.colorMain}/>
-                        <BoldText fontSize={16}>Фильтры</BoldText>
+                        <FilterIcon color={colors.colorMain} />
+                            <BoldText fontSize={16}>Фильтры</BoldText>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity>
                     <View style={styles.btn}>
-                        <ArrowsIcon color={colors.colorMain}/>
+                        <ArrowsIcon color={colors.colorMain} />
                         <BoldText fontSize={16}>По просмотру</BoldText>
-                        <ArrowDownIcon color={colors.colorMain}/>
+                        <ArrowDownIcon color={colors.colorMain} />
                     </View>
                 </TouchableOpacity>
             </Containter>
@@ -159,15 +161,17 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
 
 const styles = StyleSheet.create({
     textContainer: {
+        marginHorizontal: 15,
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
     btn: {
-        gap: 15
+        alignItems: 'center',
+        flexDirection: 'row',
+        gap: 10
     },
     search: {
         marginTop: 15,
-        marginBottom: 10,
         marginHorizontal: 15,
     },
     items: {

@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
     FlatList,
     RefreshControl,
@@ -7,59 +8,54 @@ import {
     useWindowDimensions,
     View,
 } from 'react-native';
-import {RootNavigationProps} from "../../navigation/types/RootStackTypes";
-import {useTheme} from "../../Styles/Styles";
-import {useAppDispatch} from "../../redux/hooks";
-import {FC, useEffect, useState} from "react";
+import { RootNavigationProps } from "../../navigation/types/RootStackTypes";
+import { useTheme } from "../../Styles/Styles";
+import { useAppDispatch } from "../../redux/hooks";
+import { FC, useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
-import {BoldText, Containter, SearchComponent} from "../../components";
-import {FilterIcon} from "../../components/SVGcomponents/FilterIcon";
-import {ArrowsIcon} from "../../components/SVGcomponents/ArrowsIcon";
-import {ArrowDownIcon} from "../../components/SVGcomponents/ArrowDownIcon";
+import { BoldText, Containter, SearchComponent } from "../../components";
+import { FilterIcon } from "../../components/SVGcomponents/FilterIcon";
+import { ArrowsIcon } from "../../components/SVGcomponents/ArrowsIcon";
+import { ArrowDownIcon } from "../../components/SVGcomponents/ArrowDownIcon";
 import ContentLoader from "react-content-loader";
-import {Rect} from "react-native-svg";
-import {LayoutVideoItem} from "../../components/LayoutVideoItem";
+import { Rect } from "react-native-svg";
+import { LayoutVideoItem } from "../../components/LayoutVideoItem";
+import { getSeries } from '../../redux/thunks/screens/getSeries/GetSeries';
 
 interface Props {
     id: number
-    title: string
+    name: string
     rating: number
 }
 
-export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({navigation}) => {
+export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({ navigation }) => {
     const screenWidth = useWindowDimensions().width;
-    const {colors} = useTheme();
+    const { colors } = useTheme();
     const dispatch = useAppDispatch();
     const length = Math.ceil((screenWidth - 30) / (140 + 10));
     const [isLoading, setIsLoading] = useState(false);
     const [search, setSearch] = useState('');
     //mock data
     const series: Props[] = [
-        {id: 1, title: 'series1', rating: 5.5},
-        {id: 2, title: 'series2', rating: 7.8},
+        { id: 1, name: 'series1', rating: 5.5 },
+        { id: 2, name: 'series2', rating: 7.8 },
     ]
-
-    const getSeries = () => {
-        // dispatch()
-    }
-
-    useEffect(() => {
+    const update = React.useCallback(async () => {
+        setIsLoading(true);
+        await dispatch(getSeries({search: search}));
+        setIsLoading(false);
+      }, [dispatch, search]);
+    
+      React.useEffect(() => {
         (async () => {
-            try {
-                setIsLoading(true);
-                await getSeries();
-            } catch (e) {
-                Toast.show({type: 'error', text1: 'Что-то пошло не так'});
-            } finally {
-                setIsLoading(false);
-            }
+          await update();
         })();
-    }, []);
+      }, [update]);
 
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
-            style={{backgroundColor: colors.bgSecondary}}
+            style={{ backgroundColor: colors.bgSecondary }}
             keyboardShouldPersistTaps={'always'}
             refreshControl={
                 <RefreshControl
@@ -69,7 +65,7 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({navigation}) =>
                     onRefresh={async () => {
                         try {
                             setIsLoading(true);
-                            await getSeries();
+                           // await getSeriesRequest();
                         } catch (e) {
                             console.log(e);
                         } finally {
@@ -81,24 +77,26 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({navigation}) =>
             <SearchComponent
                 style={styles.search}
                 value={search}
-                containerStyle={{backgroundColor: colors.fillPrimary}}
+                containerStyle={{ backgroundColor: colors.fillPrimary }}
                 onChangeText={setSearch}
                 placeholder={'Поиск по названию'}
             />
-            <Containter style={styles.textContainer}>
-                <TouchableOpacity onPress={() => navigation.navigate('Filter')}>
-                    <View style={styles.btn}>
-                        <FilterIcon color={colors.colorMain}/>
-                        <BoldText fontSize={16}>Фильтры</BoldText>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <View style={styles.btn}>
-                        <ArrowsIcon color={colors.colorMain}/>
-                        <BoldText fontSize={16}>По просмотру</BoldText>
-                        <ArrowDownIcon color={colors.colorMain}/>
-                    </View>
-                </TouchableOpacity>
+            <Containter style={styles.сontainer}>
+                <View style={styles.textContainer}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Filter')}>
+                        <View style={styles.btn}>
+                            <FilterIcon color={colors.colorMain} />
+                            <BoldText fontSize={16}>Фильтры</BoldText>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <View style={styles.btn}>
+                            <ArrowsIcon color={colors.colorMain} />
+                            <BoldText fontSize={16}>По просмотру</BoldText>
+                            <ArrowDownIcon color={colors.colorMain} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
                 <ScrollView>
                     {series.length &&
                         <FlatList
@@ -109,7 +107,7 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({navigation}) =>
                             renderItem={({item}) => (
                                 <TouchableOpacity onPress={() => navigation.navigate('AllSeries', {
                                     id: item.id,
-                                    title: item.title
+                                    title: item.name
                                 })}>
                                     <LayoutVideoItem item={item} height={162}/>
                                 </TouchableOpacity>
@@ -149,23 +147,26 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({navigation}) =>
                                     : <BoldText>Не найдено</BoldText>}
                         />
                     }
-                </ScrollView>
-            </Containter>
+                </ScrollView>            </Containter>
         </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
+    сontainer: {
+    },
     textContainer: {
+        marginHorizontal: 15,
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
     btn: {
-        gap: 15
+        alignItems: 'center',
+        flexDirection: 'row',
+        gap: 10
     },
     search: {
         marginTop: 15,
-        marginBottom: 10,
         marginHorizontal: 15,
     },
     items: {
