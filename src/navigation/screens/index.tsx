@@ -86,6 +86,8 @@ import {Rating} from "../../components/Rating";
 import {SeriesScreen} from "../../Screens/SeriesScreen/SeriesScreen";
 import {AllSeriesScreen} from "../../Screens/SeriesScreen/AllSeriesScreen";
 import { CurrentSeriesScreen } from '../../Screens/SeriesScreen/CurrentSeriesScreen';
+import {CartoonsScreen} from "../../Screens/CartoonsScreen/CartoonsScreen";
+import { CartoonScreen } from '../../Screens/CartoonsScreen/CartoonScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const events = [
@@ -673,6 +675,25 @@ const StackNavigation = () => {
                   headerStyle: {backgroundColor: colors.fillPrimary},
               })}
           />
+          <Stack.Screen
+              name="Cartoons"
+              component={CartoonsScreen}
+              options={{
+                  title: 'Мультсериалы',
+                  headerRight: () => <BoldText>мульт</BoldText>,
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              }}
+          />
+          <Stack.Screen
+              name="Cartoon"
+              component={CartoonScreen}
+              options={({route}) => ({
+                  title: route.params.title,
+                  headerRight: () => <BoldText>мульт</BoldText>,
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              })}
+          />
+
       </Stack.Navigator>
       {flag ? <MusicTrackView insets={insets.bottom} /> : <></>}
     </View>

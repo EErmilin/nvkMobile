@@ -45,7 +45,7 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({ navigation }) 
         await dispatch(getSeries({search: search}));
         setIsLoading(false);
       }, [dispatch, search]);
-    
+
       React.useEffect(() => {
         (async () => {
           await update();
@@ -109,7 +109,7 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({ navigation }) 
                                     id: item.id,
                                     title: item.name
                                 })}>
-                                    <LayoutVideoItem item={item} height={162}/>
+                                    <LayoutVideoItem item={item} height={162} heightImage={110}/>
                                 </TouchableOpacity>
                             )}
                             ListEmptyComponent={
@@ -147,7 +147,8 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({ navigation }) 
                                     : <BoldText>Не найдено</BoldText>}
                         />
                     }
-                </ScrollView>            </Containter>
+                </ScrollView>
+            </Containter>
         </ScrollView>
     );
 };

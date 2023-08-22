@@ -1,5 +1,3 @@
-import * as React from 'react';
-import {FC, useEffect, useState} from 'react';
 import {
     FlatList,
     RefreshControl,
@@ -12,8 +10,9 @@ import {
 import {RootNavigationProps} from "../../navigation/types/RootStackTypes";
 import {useTheme} from "../../Styles/Styles";
 import {useAppDispatch} from "../../redux/hooks";
+import {FC, useEffect, useState} from "react";
 import Toast from "react-native-toast-message";
-import {BoldText, Containter, SearchComponent} from "../../components";
+import {BoldText, Containter, SearchComponent, VideoItem} from "../../components";
 import {FilterIcon} from "../../components/SVGcomponents/FilterIcon";
 import {ArrowsIcon} from "../../components/SVGcomponents/ArrowsIcon";
 import {ArrowDownIcon} from "../../components/SVGcomponents/ArrowDownIcon";
@@ -28,7 +27,7 @@ interface Props {
     rating: number
 }
 
-export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
+export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({navigation}) => {
     const screenWidth = useWindowDimensions().width;
     const {colors} = useTheme();
     const dispatch = useAppDispatch();
@@ -36,21 +35,20 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [search, setSearch] = useState('');
     //mock data
-    const films: Props[] = [
-        {id: 1, name: 'film1', price: 199, rating: 5.5},
-        {id: 2, name: 'film2', price: null, rating: 7.8},
+    const cartoons: Props[] = [
+        {id: 1, name: 'cartoon1', price: 199, rating: 6.5},
+        {id: 2, name: 'cartoon2', price: null, rating: 1.8},
     ]
 
-    const getFilms = () => {
+    const getCartoons = () => {
         // dispatch()
     }
-
 
     useEffect(() => {
         (async () => {
             try {
                 setIsLoading(true);
-                await getFilms();
+                await getCartoons();
             } catch (e) {
                 Toast.show({type: 'error', text1: 'Что-то пошло не так'});
             } finally {
@@ -72,7 +70,7 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
                     onRefresh={async () => {
                         try {
                             setIsLoading(true);
-                            await getFilms();
+                            await getCartoons();
                         } catch (e) {
                             console.log(e);
                         } finally {
@@ -104,19 +102,15 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
                 </TouchableOpacity>
             </Containter>
             <ScrollView>
-                {films.length &&
+                {cartoons.length &&
                     <FlatList
-                        data={films}
+                        data={cartoons}
                         style={styles.items}
                         contentContainerStyle={styles.itemContainer}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({item}) => (
-                            <TouchableOpacity onPress={() => navigation.navigate('Film', {
-                                id: item.id,
-                                name: item.name,
-                                rating: item.rating
-                            })}>
-                                <LayoutVideoItem item={item} height={282} heightImage={230}/>
+                            <TouchableOpacity onPress={() => navigation.navigate('Cartoon')}>
+                                <LayoutVideoItem item={item} height={144} heightImage={110}/>
                             </TouchableOpacity>
                         )}
                         ListEmptyComponent={
@@ -161,17 +155,15 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
 
 const styles = StyleSheet.create({
     textContainer: {
-        marginHorizontal: 15,
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
     btn: {
-        alignItems: 'center',
-        flexDirection: 'row',
-        gap: 10
+        gap: 15
     },
     search: {
         marginTop: 15,
+        marginBottom: 10,
         marginHorizontal: 15,
     },
     items: {

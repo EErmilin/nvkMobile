@@ -94,6 +94,11 @@ export type RootStackParamList = {
     id: number
     title: string
   }
+  Cartoons: undefined
+  Cartoon: {
+    id: number
+    title: string
+  }
 };
 
 export type RootNavigationProps<T extends keyof RootStackParamList> =

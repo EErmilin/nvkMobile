@@ -16,7 +16,8 @@ export const Rating = ({rating, isStar}: Props) => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 10,
+        paddingVertical: 3,
+        paddingHorizontal: 8,
         borderRadius: 26,
         gap: 5,
         backgroundColor: colors.orange

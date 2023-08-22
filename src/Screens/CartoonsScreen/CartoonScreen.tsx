@@ -18,7 +18,7 @@ const item = {
     name: 'name',
     season: 1,
     series: 1,
-    age: '16+',
+    age: '6+',
     time: '40 min',
     genre: 'comedy',
     year: 2022,
@@ -50,7 +50,7 @@ const item = {
     ]
 }
 
-export const CurrentSeriesScreen: FC<RootNavigationProps<'CurrentSeries'>> = () => {
+export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
     const {colors} = useTheme();
 
     return <SafeAreaView style={styles.container}>
@@ -100,7 +100,7 @@ export const CurrentSeriesScreen: FC<RootNavigationProps<'CurrentSeries'>> = () 
                     }}
                 />
                 <Animated.View>
-                    <BoldText>О сериале</BoldText>
+                    <BoldText>О мультсериале</BoldText>
                     <RegularText>{item.description}</RegularText>
                 </Animated.View>
                 <Animated.View>
