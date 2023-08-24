@@ -80,6 +80,14 @@ import {VALIDATE_TOKEN} from '../../gql/mutation/auth/ValidateToken';
 import {logout} from '../../redux/thunks/auth/Logout';
 import {getUpdateClient} from '../../requests/updateHeaders';
 import {toastConfig} from '../../api/configToast';
+import {FilmsScreen} from "../../Screens/FilmsScreens/FilmsScreen";
+import {FilmScreen} from "../../Screens/FilmsScreens/FilmScreen";
+import {Rating} from "../../components/Rating";
+import {SeriesScreen} from "../../Screens/SeriesScreen/SeriesScreen";
+import {AllSeriesScreen} from "../../Screens/SeriesScreen/AllSeriesScreen";
+import { CurrentSeriesScreen } from '../../Screens/SeriesScreen/CurrentSeriesScreen';
+import {CartoonsScreen} from "../../Screens/CartoonsScreen/CartoonsScreen";
+import { CartoonScreen } from '../../Screens/CartoonsScreen/CartoonScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const events = [
@@ -625,6 +633,67 @@ const StackNavigation = () => {
             headerShown: false,
           }}
         />
+          <Stack.Screen
+              name="Films"
+              component={FilmsScreen}
+              options={{
+                  title: 'Фильмы',
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              }}
+          />
+          <Stack.Screen
+              name="Film"
+              component={FilmScreen}
+              options={({route}) => ({
+                  title: route.params.title,
+                  headerRight: () => <Rating rating={route.params.rating} isStar />,
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              })}
+          />
+          <Stack.Screen
+              name="Series"
+              component={SeriesScreen}
+              options={{
+                  title: 'Сериалы',
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              }}
+          />
+          <Stack.Screen
+              name="AllSeries"
+              component={AllSeriesScreen}
+              options={({route}) => ({
+                  title: route.params.title,
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              })}
+          />
+          <Stack.Screen
+              name="CurrentSeries"
+              component={CurrentSeriesScreen}
+              options={({route}) => ({
+                  title: route.params.title,
+                  headerRight: () => <Rating rating={route.params.rating} isStar/>,
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              })}
+          />
+          <Stack.Screen
+              name="Cartoons"
+              component={CartoonsScreen}
+              options={{
+                  title: 'Мультсериалы',
+                  headerRight: () => <Rating rating={'Детский'} lock/>,
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              }}
+          />
+          <Stack.Screen
+              name="Cartoon"
+              component={CartoonScreen}
+              options={({route}) => ({
+                  title: route.params.title,
+                  headerRight: () => <Rating rating={'Детский'} lock/>,
+                  headerStyle: {backgroundColor: colors.fillPrimary},
+              })}
+          />
+
       </Stack.Navigator>
       {flag ? <MusicTrackView insets={insets.bottom} /> : <></>}
     </View>

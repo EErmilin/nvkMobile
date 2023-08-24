@@ -249,8 +249,8 @@ export const Music: React.FC<RootNavigationProps<'Music'>> = ({navigation}) => {
               data={musicsRedux?.playlists}
               horizontal
               showsHorizontalScrollIndicator={false}
-              style={styles.albumStyle}
-              contentContainerStyle={styles.albumContainer}
+              style={styles.items}
+              contentContainerStyle={styles.itemContainer}
               keyExtractor={(item, index) => index.toString()}
               ListHeaderComponent={
                 user ? (
@@ -305,8 +305,8 @@ export const Music: React.FC<RootNavigationProps<'Music'>> = ({navigation}) => {
                 data={musicsRedux?.albums}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                style={styles.albumStyle}
-                contentContainerStyle={styles.albumContainer}
+                style={styles.items}
+                contentContainerStyle={styles.itemContainer}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({item}) => (
                   <AlbumItem
@@ -343,8 +343,8 @@ export const Music: React.FC<RootNavigationProps<'Music'>> = ({navigation}) => {
               data={musicsRedux?.artists}
               horizontal
               showsHorizontalScrollIndicator={false}
-              style={styles.albumStyle}
-              contentContainerStyle={styles.albumContainer}
+              style={styles.items}
+              contentContainerStyle={styles.itemContainer}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({item}) => (
                 <AlbumItem
@@ -527,11 +527,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 20,
   },
-  albumStyle: {
+  items: {
     flex: 1,
     marginBottom: 40,
   },
-  albumContainer: {
+  itemContainer: {
     paddingHorizontal: 15,
     gap: 15,
   },

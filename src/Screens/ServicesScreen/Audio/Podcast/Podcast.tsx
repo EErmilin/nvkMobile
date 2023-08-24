@@ -145,8 +145,8 @@ export const Podcast: React.FC<RootNavigationProps<'Podcast'>> = ({
             data={item.podcastAlbums}
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={styles.albumStyle}
-            contentContainerStyle={styles.albumContainer}
+            style={styles.items}
+            contentContainerStyle={styles.itemContainer}
             keyExtractor={(_item, _index) => _index.toString()}
             ListEmptyComponent={
               loading ? <HorizontalSkeleton type="first" /> : <></>
@@ -296,11 +296,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 20,
   },
-  albumStyle: {
+  items: {
     flex: 1,
     marginBottom: 40,
   },
-  albumContainer: {
+  itemContainer: {
     paddingHorizontal: 15,
     gap: 15,
   },
