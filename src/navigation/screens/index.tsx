@@ -645,7 +645,7 @@ const StackNavigation = () => {
               name="Film"
               component={FilmScreen}
               options={({route}) => ({
-                  title: route.params.name,
+                  title: route.params.title,
                   headerRight: () => <Rating rating={route.params.rating} isStar />,
                   headerStyle: {backgroundColor: colors.fillPrimary},
               })}
@@ -680,7 +680,7 @@ const StackNavigation = () => {
               component={CartoonsScreen}
               options={{
                   title: 'Мультсериалы',
-                  headerRight: () => <BoldText>мульт</BoldText>,
+                  headerRight: () => <Rating rating={'Детский'} lock/>,
                   headerStyle: {backgroundColor: colors.fillPrimary},
               }}
           />
@@ -689,7 +689,7 @@ const StackNavigation = () => {
               component={CartoonScreen}
               options={({route}) => ({
                   title: route.params.title,
-                  headerRight: () => <BoldText>мульт</BoldText>,
+                  headerRight: () => <Rating rating={'Детский'} lock/>,
                   headerStyle: {backgroundColor: colors.fillPrimary},
               })}
           />

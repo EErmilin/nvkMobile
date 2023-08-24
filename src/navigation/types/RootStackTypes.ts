@@ -80,10 +80,10 @@ export type RootStackParamList = {
   Films: undefined;
   Filter: undefined;
   Film: {
-    id: number,
-    name: string,
+    id: number
+    title: string
     rating: number
-  },
+  }
   Series: undefined
   CurrentSeries: {
     id: number

@@ -109,7 +109,10 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({navigation}
                         contentContainerStyle={styles.itemContainer}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({item}) => (
-                            <TouchableOpacity onPress={() => navigation.navigate('Cartoon')}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Cartoon', {
+                                id: item.id,
+                                title: item.name
+                            })}>
                                 <LayoutVideoItem item={item} height={144} heightImage={110}/>
                             </TouchableOpacity>
                         )}
@@ -159,6 +162,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     btn: {
+        flexDirection: 'row',
         gap: 15
     },
     search: {
@@ -171,6 +175,8 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     itemContainer: {
+        flexGrow: 1,
+        flexDirection: 'row',
         paddingHorizontal: 15,
         gap: 15,
     }

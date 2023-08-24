@@ -184,7 +184,7 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
                     <ServiceItem
                         size="small"
                         navName="Cartoons"
-                        source={require('../../assets/images/films_logo.png')}
+                        source={require('../../assets/images/cartoons_logo.png')}
                         mr={2}
                         navigation={navigation}
                     />
@@ -385,8 +385,6 @@ const ServiceItem = (props: IServiceItem) => {
                     case 'ServicesScreen':
                     case 'Series':
                     case 'Films':
-                        navigation.navigate(navName);
-                        break;
                     case 'Cartoons':
                         navigation.navigate(navName);
                         break;

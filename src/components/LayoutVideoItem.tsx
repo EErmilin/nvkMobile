@@ -30,7 +30,7 @@ export const LayoutVideoItem = ({item, height, heightImage}: Props) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: 165,
+        minWidth: 162,
         borderColor: 'red',
         borderStyle: 'solid',
         borderWidth: 1

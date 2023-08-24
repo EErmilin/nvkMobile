@@ -81,7 +81,7 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({ navigation }) 
                 onChangeText={setSearch}
                 placeholder={'Поиск по названию'}
             />
-            <Containter style={styles.сontainer}>
+            <Containter>
                 <View style={styles.textContainer}>
                     <TouchableOpacity onPress={() => navigation.navigate('Filter')}>
                         <View style={styles.btn}>
@@ -97,7 +97,8 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({ navigation }) 
                         </View>
                     </TouchableOpacity>
                 </View>
-                <ScrollView>
+            </Containter>
+            <ScrollView>
                     {series.length &&
                         <FlatList
                             data={series}
@@ -148,14 +149,11 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({ navigation }) 
                         />
                     }
                 </ScrollView>
-            </Containter>
         </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
-    сontainer: {
-    },
     textContainer: {
         marginHorizontal: 15,
         flexDirection: 'row',

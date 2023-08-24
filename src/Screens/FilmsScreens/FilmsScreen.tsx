@@ -113,7 +113,7 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
                         renderItem={({item}) => (
                             <TouchableOpacity onPress={() => navigation.navigate('Film', {
                                 id: item.id,
-                                name: item.name,
+                                title: item.name,
                                 rating: item.rating
                             })}>
                                 <LayoutVideoItem item={item} height={282} heightImage={230}/>
