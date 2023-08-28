@@ -1,18 +1,15 @@
 import * as React from 'react';
+import {useState} from 'react';
 import {
-  Appearance,
-  PermissionsAndroid,
-  Platform,
-  StatusBar,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
+    Appearance,
+    PermissionsAndroid,
+    Platform,
+    StatusBar,
+    TouchableOpacity,
+    useWindowDimensions,
+    View,
 } from 'react-native';
-import {
-  NavigationContainer,
-  useNavigation,
-  useNavigationState,
-} from '@react-navigation/native';
+import {NavigationContainer, useNavigation, useNavigationState,} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 
@@ -54,10 +51,7 @@ import {AlbumList} from '../../Screens/ServicesScreen/Audio/Music/AlbumList';
 
 import {Horoscope} from '../../Screens/ServicesScreen/Horoscope/Horoscope';
 import {MusicPlayer} from '../../Screens/ServicesScreen/Audio/MusicPlayer';
-import TrackPlayer, {
-  Event,
-  useTrackPlayerEvents,
-} from 'react-native-track-player';
+import TrackPlayer, {Event, useTrackPlayerEvents,} from 'react-native-track-player';
 import messaging from '@react-native-firebase/messaging';
 import {MusicPlayerContext} from '../../contexts/musicContext';
 import {Podcast} from '../../Screens/ServicesScreen/Audio/Podcast/Podcast';
@@ -69,10 +63,7 @@ import {MyFavoriteSongs} from '../../Screens/ServicesScreen/Audio/MyFavoriteSong
 import {RadioScreen} from '../../Screens/ServicesScreen/Radio/RadioScreen';
 import {MusicTrackView} from './TabBar/MusicTrackView';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
-import Orientation, {
-  OrientationLocker,
-  PORTRAIT,
-} from 'react-native-orientation-locker';
+import Orientation, {OrientationLocker, PORTRAIT,} from 'react-native-orientation-locker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {setTheme} from '../../redux/slices/themeSlice';
 import {AllAlbumPodcast} from '../../Screens/ServicesScreen/Audio/Podcast/AllAlbum';
@@ -85,617 +76,638 @@ import {FilmScreen} from "../../Screens/FilmsScreens/FilmScreen";
 import {Rating} from "../../components/Rating";
 import {SeriesScreen} from "../../Screens/SeriesScreen/SeriesScreen";
 import {AllSeriesScreen} from "../../Screens/SeriesScreen/AllSeriesScreen";
-import { CurrentSeriesScreen } from '../../Screens/SeriesScreen/CurrentSeriesScreen';
+import {CurrentSeriesScreen} from '../../Screens/SeriesScreen/CurrentSeriesScreen';
 import {CartoonsScreen} from "../../Screens/CartoonsScreen/CartoonsScreen";
-import { CartoonScreen } from '../../Screens/CartoonsScreen/CartoonScreen';
+import {CartoonScreen} from '../../Screens/CartoonsScreen/CartoonScreen';
+import {ChildrenModeModal} from "../../components/ChildrenModeModal";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const events = [
-  Event.PlaybackState,
-  Event.PlaybackError,
-  Event.PlaybackActiveTrackChanged,
+    Event.PlaybackState,
+    Event.PlaybackError,
+    Event.PlaybackActiveTrackChanged,
 ];
 
 export const AppNavigation = () => {
-  const logged = useAppSelector(state => state.auth.logged);
-  const [state, setState] = React.useState<boolean>(false);
-  const musicContext = React.useContext(MusicPlayerContext);
-  const videoContext = React.useContext(VideoPlayerContext);
-  const {theme, text, colors} = useTheme();
-  const dispatch = useAppDispatch();
+    const logged = useAppSelector(state => state.auth.logged);
+    const [state, setState] = React.useState<boolean>(false);
+    const musicContext = React.useContext(MusicPlayerContext);
+    const videoContext = React.useContext(VideoPlayerContext);
+    const {theme, text, colors} = useTheme();
+    const dispatch = useAppDispatch();
 
-  const setListenerTheme = React.useCallback(
-    (listener: Appearance.AppearancePreferences) => {
-      if (text === 'Системная') {
-        if (listener.colorScheme === 'dark') {
-          dispatch(setTheme('Темная'));
-          dispatch(setTheme('Системная'));
+    const setListenerTheme = React.useCallback(
+        (listener: Appearance.AppearancePreferences) => {
+            if (text === 'Системная') {
+                if (listener.colorScheme === 'dark') {
+                    dispatch(setTheme('Темная'));
+                    dispatch(setTheme('Системная'));
+                } else {
+                    dispatch(setTheme('Светлая'));
+                    dispatch(setTheme('Системная'));
+                }
+            }
+        },
+        [dispatch, text],
+    );
+
+    React.useEffect(() => {
+        const themeListener = Appearance.addChangeListener(setListenerTheme);
+        return () => themeListener.remove();
+    }, [setListenerTheme]);
+
+    useTrackPlayerEvents(events, async event => {
+        if (event.type === Event.PlaybackError) {
+            console.warn('An error occured while playing the current track.');
         } else {
-          dispatch(setTheme('Светлая'));
-          dispatch(setTheme('Системная'));
+            setState(!state);
         }
-      }
-    },
-    [dispatch, text],
-  );
+    });
 
-  React.useEffect(() => {
-    const themeListener = Appearance.addChangeListener(setListenerTheme);
-    return () => themeListener.remove();
-  }, [setListenerTheme]);
+    React.useEffect(() => {
+        (async () => {
+            const trackPlayingIndex = await TrackPlayer.getActiveTrackIndex();
+            if (typeof trackPlayingIndex === 'number') {
+                const activeTrack = await TrackPlayer.getActiveTrack();
+                musicContext.setMusicPlayerOption({
+                    ...musicContext.musicPlayerOption,
+                    music: activeTrack,
+                });
+            }
+        })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state]);
 
-  useTrackPlayerEvents(events, async event => {
-    if (event.type === Event.PlaybackError) {
-      console.warn('An error occured while playing the current track.');
-    } else {
-      setState(!state);
-    }
-  });
+    React.useEffect(() => {
+        if (videoContext.videoPlayerOption.video) {
+            SystemNavigationBar.navigationHide();
+            Orientation.unlockAllOrientations();
+            StatusBar.setHidden(true);
+        } else {
+            SystemNavigationBar.navigationShow();
+            Orientation.lockToPortrait();
+            StatusBar.setHidden(false);
+        }
+    }, [videoContext.videoPlayerOption.video]);
 
-  React.useEffect(() => {
-    (async () => {
-      const trackPlayingIndex = await TrackPlayer.getActiveTrackIndex();
-      if (typeof trackPlayingIndex === 'number') {
-        const activeTrack = await TrackPlayer.getActiveTrack();
-        musicContext.setMusicPlayerOption({
-          ...musicContext.musicPlayerOption,
-          music: activeTrack,
-        });
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
-
-  React.useEffect(() => {
-    if (videoContext.videoPlayerOption.video) {
-      SystemNavigationBar.navigationHide();
-      Orientation.unlockAllOrientations();
-      StatusBar.setHidden(true);
-    } else {
-      SystemNavigationBar.navigationShow();
-      Orientation.lockToPortrait();
-      StatusBar.setHidden(false);
-    }
-  }, [videoContext.videoPlayerOption.video]);
-
-  return (
-    <NavigationContainer>
-      <StatusBar
-        barStyle={theme === 'dark' ? 'light-content' : 'dark-content'}
-        backgroundColor={colors.fillPrimary}
-      />
-      <OrientationLocker orientation={PORTRAIT} />
-      {logged ? <StackNavigation /> : <LoginNavigation />}
-      <Toast config={toastConfig} />
-      {videoContext.videoPlayerOption?.video && (
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: 'black',
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-          }}>
-          <StatusBar hidden />
-          {videoContext.videoPlayerOption?.video && (
-            <VideoFullPlayer urls={videoContext.videoPlayerOption.video} />
-          )}
-        </View>
-      )}
-    </NavigationContainer>
-  );
+    return (
+        <NavigationContainer>
+            <StatusBar
+                barStyle={theme === 'dark' ? 'light-content' : 'dark-content'}
+                backgroundColor={colors.fillPrimary}
+            />
+            <OrientationLocker orientation={PORTRAIT}/>
+            {logged ? <StackNavigation/> : <LoginNavigation/>}
+            <Toast config={toastConfig}/>
+            {videoContext.videoPlayerOption?.video && (
+                <View
+                    style={{
+                        flex: 1,
+                        backgroundColor: 'black',
+                        position: 'absolute',
+                        width: '100%',
+                        height: '100%',
+                    }}>
+                    <StatusBar hidden/>
+                    {videoContext.videoPlayerOption?.video && (
+                        <VideoFullPlayer urls={videoContext.videoPlayerOption.video}/>
+                    )}
+                </View>
+            )}
+        </NavigationContainer>
+    );
 };
 
 async function requestPermission() {
-  await messaging().requestPermission({
-    sound: true,
-    announcement: true,
-  });
+    await messaging().requestPermission({
+        sound: true,
+        announcement: true,
+    });
 }
 
 const StackNavigation = () => {
-  const {colors} = useTheme();
-  const hashtags = useAppSelector(state => state.user.data?.hashtags);
-  const regionScreen = useAppSelector(state => state.auth.regionScreen);
-  const token = useAppSelector(state => state.auth.token);
-  const notificationRedux = useAppSelector(state => state.auth.notification);
-  const screenWidth = useWindowDimensions().width;
-  const videoContext = React.useContext(VideoPlayerContext);
-  const navigation = useNavigation();
-  const routes = useNavigationState(state => state?.routes);
-  const [flag, setFlag] = React.useState(false);
-  const insets = useSafeAreaInsets();
-  const userId = useAppSelector(state => state.user.data?.id);
-  // const client = useApolloClient();
-  const dispatch = useAppDispatch();
+    const {colors} = useTheme();
+    const hashtags = useAppSelector(state => state.user.data?.hashtags);
+    const regionScreen = useAppSelector(state => state.auth.regionScreen);
+    const token = useAppSelector(state => state.auth.token);
+    const notificationRedux = useAppSelector(state => state.auth.notification);
+    const screenWidth = useWindowDimensions().width;
+    const videoContext = React.useContext(VideoPlayerContext);
+    const navigation = useNavigation();
+    const routes = useNavigationState(state => state?.routes);
+    const [flag, setFlag] = React.useState(false);
+    const [isChildrenMode, setIsChildrenMode] = React.useState(false)
+    const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
+    const insets = useSafeAreaInsets();
+    const userId = useAppSelector(state => state.user.data?.id);
+    // const client = useApolloClient();
+    const dispatch = useAppDispatch();
 
-  React.useEffect(() => {
-    if (routes?.length) {
-      switch (routes[routes?.length - 1].name) {
-        case 'Tabs':
-        case 'RadioScreen':
-        case 'MusicPlayer':
-        case 'AlbumList':
-        case 'MyFavoriteSongs':
-        case 'ViewLive': {
-          setFlag(false);
-          break;
+    React.useEffect(() => {
+        if (routes?.length) {
+            switch (routes[routes?.length - 1].name) {
+                case 'Tabs':
+                case 'RadioScreen':
+                case 'MusicPlayer':
+                case 'AlbumList':
+                case 'MyFavoriteSongs':
+                case 'ViewLive': {
+                    setFlag(false);
+                    break;
+                }
+                default: {
+                    if (videoContext.videoPlayerOption?.fullscreen) {
+                        setFlag(false);
+                    } else {
+                        setFlag(true);
+                    }
+
+                    break;
+                }
+            }
         }
-        default: {
-          if (videoContext.videoPlayerOption?.fullscreen) {
-            setFlag(false);
-          } else {
-            setFlag(true);
-          }
+    }, [routes, videoContext.videoPlayerOption?.fullscreen]);
 
-          break;
-        }
-      }
-    }
-  }, [routes, videoContext.videoPlayerOption?.fullscreen]);
+    React.useEffect(() => {
+        (async function () {
+            try {
+                if (token && userId) {
+                    const client = await getUpdateClient();
+                    let response = await client.mutate({
+                        mutation: VALIDATE_TOKEN,
+                        variables: {
+                            token: token,
+                            userId: userId,
+                        },
+                    });
+                    if (response.data.validateToken === false) {
+                        dispatch(logout());
+                    }
+                }
+            } catch (e) {
+                console.log('e index', e);
+            }
+        })();
+    }, [dispatch, token, userId]);
 
-  React.useEffect(() => {
-    (async function () {
-      try {
-        if (token && userId) {
-          const client = await getUpdateClient();
-          let response = await client.mutate({
-            mutation: VALIDATE_TOKEN,
-            variables: {
-              token: token,
-              userId: userId,
-            },
-          });
-          if (response.data.validateToken === false) {
-            dispatch(logout());
-          }
-        }
-      } catch (e) {
-        console.log('e index', e);
-      }
-    })();
-  }, [dispatch, token, userId]);
-
-  function headerLeft() {
-    return (
-      <TouchableOpacity
-        style={{
-          width: 36,
-          height: 36,
-          marginRight: 4,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-        accessible={false}
-        accessibilityLabel="back button"
-        onPress={() => {
-          navigation.goBack();
-        }}>
-        <ArrowLeft color={colors.colorMain} />
-      </TouchableOpacity>
-    );
-  }
-
-  function headerTitle(props: {children: string}) {
-    return (
-      <BoldText
-        numberOfLines={1}
-        style={{
-          width: screenWidth - 48 - 50,
-          textAlign: 'left',
-          paddingBottom: 3,
-        }}>
-        {props.children}
-      </BoldText>
-    );
-  }
-
-  const notification = React.useCallback(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Platform.OS === 'android' &&
-        Toast.show({
-          type: 'success',
-          text1: remoteMessage.notification?.title,
-          text2: remoteMessage.notification?.body,
-        });
-    });
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      if (!remoteMessage.data) {
-        return;
-      }
-      return false;
-    });
-    return unsubscribe;
-  }, []);
-
-  React.useEffect(() => {
-    if (Platform.OS === 'android') {
-      PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-      );
-    } else {
-      requestPermission();
-    }
-    if (notificationRedux) {
-      notification();
-    }
-  }, [notification, notificationRedux]);
-
-  return (
-    <View
-      style={{
-        backgroundColor: colors.bgSecondary,
-        flex: 1,
-      }}>
-      <Stack.Navigator
-        initialRouteName={
-          (hashtags && hashtags?.length > 0) || regionScreen
-            ? 'Tabs'
-            : token
-            ? 'Region'
-            : 'Tabs'
-        }
-        screenOptions={({}) => ({
-          headerShadowVisible: false,
-          headerTitleStyle: {
-            fontFamily: 'NotoSans-Bold',
-            fontWeight: '700',
-            fontSize: 16,
-            width: '100%',
-          },
-          headerStyle: {
-            backgroundColor: colors.fillPrimary,
-          },
-          headerTitleAlign: 'left',
-          headerTitle,
-          headerLeft: () => headerLeft(),
-          headerBackVisible: false,
-        })}>
-        <Stack.Screen
-          name="Tabs"
-          component={TabNavigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Region"
-          component={Region}
-          options={{
-            title: 'Выберите 3 хештега',
-            headerLeft: () => <></>,
-          }}
-        />
-        <Stack.Screen
-          name="NewsView"
-          component={NewsView}
-          options={({route}) => ({
-            headerStyle: {backgroundColor: colors.fillPrimary},
-            title: route.params.post.title,
-          })}
-        />
-        <Stack.Screen
-          name="ViewTag"
-          component={ViewTag}
-          options={{
-            title: 'Хэштеги',
-          }}
-        />
-        <Stack.Screen
-          name="EditProfile"
-          component={EditProfile}
-          options={{
-            title: 'Изменить мой аккаунт',
-            headerTitle,
-          }}
-        />
-        <Stack.Screen
-          name="HashtagScreen"
-          component={HashtagScreen}
-          options={() => ({
-            title: 'Мои хэштеги',
-          })}
-        />
-        <Stack.Screen
-          name="PrivacyPolicy"
-          component={PrivacyPolicy}
-          options={{
-            presentation: 'modal',
-            headerTitleAlign: 'left',
-            title: 'Политика конфиденциальности',
-          }}
-        />
-        <Stack.Screen
-          name="UseOfTerms"
-          component={UseOfTerms}
-          options={{
-            presentation: 'modal',
-            headerTitleAlign: 'left',
-            title: 'Условия пользования',
-          }}
-        />
-        <Stack.Screen
-          name="PasswordEdit"
-          component={PasswordEdit}
-          options={{
-            presentation: 'modal',
-            headerTitleAlign: Platform.OS === 'android' ? 'left' : 'center',
-            title: 'Создайте пароль',
-            headerTitle: () => (
-              <BoldText fontSize={16}>Создайте пароль</BoldText>
-            ),
-            headerLeft: Platform.OS === 'ios' ? () => null : headerLeft,
-          }}
-        />
-        <Stack.Screen
-          name="PasswordEditNew"
-          component={PasswordEditNew}
-          options={{
-            presentation: 'modal',
-            headerTitleAlign: Platform.OS === 'android' ? 'left' : 'center',
-            title: 'Введите новый пароль',
-            headerLeft: Platform.OS === 'ios' ? () => null : headerLeft,
-          }}
-        />
-        <Stack.Screen
-          name="AboutScreen"
-          component={AboutScreen}
-          options={{
-            presentation: 'modal',
-            headerShown: Platform.OS === 'ios' ? false : true,
-            title: 'О приложении',
-          }}
-        />
-        <Stack.Screen
-          name="Settings"
-          component={Settings}
-          options={{
-            presentation: 'modal',
-            headerShown: Platform.OS === 'ios' ? false : true,
-            title: 'Настройки',
-            headerStyle: {
-              backgroundColor:
-                Platform.OS === 'android'
-                  ? colors.fillPrimary
-                  : colors.bgSecondary,
-            },
-          }}
-        />
-        <Stack.Screen
-          name="TechSupport"
-          component={TechSupport}
-          options={{
-            presentation: 'modal',
-            headerShown: Platform.OS === 'ios' ? false : true,
-            title: 'Тех.поддержка',
-          }}
-        />
-        <Stack.Screen
-          name="ViewLive"
-          component={ViewLive}
-          options={{
-            title: 'Прямой эфир',
-            gestureEnabled: !videoContext.videoPlayerOption?.fullscreen,
-          }}
-        />
-        <Stack.Screen
-          name="LiveQuestion"
-          component={LiveQuestion}
-          options={{
-            title: 'Задать вопрос',
-            presentation: 'modal',
-            gestureEnabled: !videoContext.videoPlayerOption?.fullscreen,
-            headerLeft: Platform.OS === 'ios' ? () => null : headerLeft,
-            headerTitleAlign: Platform.OS === 'android' ? 'left' : 'center',
-            headerTitle: () => (
-              <BoldText
-                fontSize={16}
+    function headerLeft() {
+        return (
+            <TouchableOpacity
                 style={{
-                  width: screenWidth - 48,
-                  textAlign: Platform.OS === 'ios' ? 'center' : 'left',
-                  paddingRight: Platform.OS === 'android' ? 48 : 0,
-                  paddingBottom: Platform.OS === 'android' ? 3 : 0,
+                    width: 36,
+                    height: 36,
+                    marginRight: 4,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+                accessible={false}
+                accessibilityLabel="back button"
+                onPress={() => {
+                    navigation.goBack();
                 }}>
-                Задать вопрос
-              </BoldText>
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="RadioScreen"
-          component={RadioScreen}
-          options={{
-            headerShown: false,
-            title: 'Радио Тэтим',
-            headerTitle: () => (
-              <BoldText
+                <ArrowLeft color={colors.colorMain}/>
+            </TouchableOpacity>
+        );
+    }
+
+    function headerTitle(props: { children: string }) {
+        return (
+            <BoldText
                 numberOfLines={1}
                 style={{
-                  width: screenWidth - 48 - 50,
-                  textAlign: 'left',
-                  color: colors.white,
+                    width: screenWidth - 48 - 50,
+                    textAlign: 'left',
+                    paddingBottom: 3,
                 }}>
-                Радио Тэтим
-              </BoldText>
-            ),
-            headerStyle: {backgroundColor: colors.blackText},
-          }}
-        />
-        <Stack.Screen
-          name="ServicesScreen"
-          component={ServicesScreen}
-          options={{
-            title: 'Услуги НВК Саха',
-          }}
-        />
-        <Stack.Screen
-          name="ViewService"
-          component={ViewService}
-          options={({route}) => ({
-            title: route.params.name,
-          })}
-        />
-        <Stack.Screen
-          name="Broadcasts"
-          component={Broadcasts}
-          options={{
-            title: 'Передачи',
-          }}
-        />
-        <Stack.Screen
-          name="BroadcastView"
-          component={BroadcastsView}
-          options={({route}) => ({
-            title: route.params.broadcast.name,
-            gestureEnabled: !videoContext.videoPlayerOption?.fullscreen,
-          })}
-        />
-        <Stack.Screen
-          name="BroadcastSeasonList"
-          component={BroadcastSeasonList}
-          options={({route}) => ({
-            title: route.params.broadcast.name,
-          })}
-        />
-        <Stack.Screen
-          name="Music"
-          component={Music}
-          options={{
-            title: 'Музыка',
-            headerStyle: {backgroundColor: colors.fillPrimary},
-          }}
-        />
-        <Stack.Screen
-          name="AlbumList"
-          component={AlbumList}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="AllAlbum"
-          component={AllAlbum}
-          options={({route}) => ({
-            title:
-              route.params.type === 'album' ? 'Все альбомы' : 'Все сборники',
-          })}
-        />
-        <Stack.Screen
-          name="AllAuthor"
-          component={AllAuthor}
-          options={{
-            title: 'Все авторы',
-          }}
-        />
-        <Stack.Screen
-          name="AllMusic"
-          component={AllMusic}
-          options={{
-            title: 'Все треки',
-          }}
-        />
-        <Stack.Screen
-          name="MyFavoriteSongs"
-          component={MyFavoriteSongs}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="MusicPlayer"
-          component={MusicPlayer}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Podcast"
-          component={Podcast}
-          options={{
-            title: 'Подкасты',
-            headerStyle: {backgroundColor: colors.background},
-          }}
-        />
-        <Stack.Screen
-          name="AllAlbumPodcast"
-          component={AllAlbumPodcast}
-          options={({route}) => ({
-            title:
-              route.params.type === 'podcast'
-                ? 'Подкасты'
-                : route.params.type === 'olonho'
-                ? 'Олонхо'
-                : 'Сказки',
-          })}
-        />
-        <Stack.Screen
-          name="Horoscope"
-          component={Horoscope}
-          options={{
-            headerShown: false,
-          }}
-        />
-          <Stack.Screen
-              name="Films"
-              component={FilmsScreen}
-              options={{
-                  title: 'Фильмы',
-                  headerStyle: {backgroundColor: colors.fillPrimary},
-              }}
-          />
-          <Stack.Screen
-              name="Film"
-              component={FilmScreen}
-              options={({route}) => ({
-                  title: route.params.title,
-                  headerRight: () => <Rating rating={route.params.rating} isStar />,
-                  headerStyle: {backgroundColor: colors.fillPrimary},
-              })}
-          />
-          <Stack.Screen
-              name="Series"
-              component={SeriesScreen}
-              options={{
-                  title: 'Сериалы',
-                  headerStyle: {backgroundColor: colors.fillPrimary},
-              }}
-          />
-          <Stack.Screen
-              name="AllSeries"
-              component={AllSeriesScreen}
-              options={({route}) => ({
-                  title: route.params.title,
-                  headerStyle: {backgroundColor: colors.fillPrimary},
-              })}
-          />
-          <Stack.Screen
-              name="CurrentSeries"
-              component={CurrentSeriesScreen}
-              options={({route}) => ({
-                  title: route.params.title,
-                  headerRight: () => <Rating rating={route.params.rating} isStar/>,
-                  headerStyle: {backgroundColor: colors.fillPrimary},
-              })}
-          />
-          <Stack.Screen
-              name="Cartoons"
-              component={CartoonsScreen}
-              options={{
-                  title: 'Мультсериалы',
-                  headerRight: () => <Rating rating={'Детский'} lock/>,
-                  headerStyle: {backgroundColor: colors.fillPrimary},
-              }}
-          />
-          <Stack.Screen
-              name="Cartoon"
-              component={CartoonScreen}
-              options={({route}) => ({
-                  title: route.params.title,
-                  headerRight: () => <Rating rating={'Детский'} lock/>,
-                  headerStyle: {backgroundColor: colors.fillPrimary},
-              })}
-          />
+                {props.children}
+            </BoldText>
+        );
+    }
 
-      </Stack.Navigator>
-      {flag ? <MusicTrackView insets={insets.bottom} /> : <></>}
-    </View>
-  );
+    const onChildrenMode = () => {
+        if (!isChildrenMode) {
+            setIsChildrenMode(true)
+        } else {
+            setBottomSheetVisible(true)
+        }
+    }
+
+    const notification = React.useCallback(() => {
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            Platform.OS === 'android' &&
+            Toast.show({
+                type: 'success',
+                text1: remoteMessage.notification?.title,
+                text2: remoteMessage.notification?.body,
+            });
+        });
+        messaging().onNotificationOpenedApp(remoteMessage => {
+            if (!remoteMessage.data) {
+                return;
+            }
+            return false;
+        });
+        return unsubscribe;
+    }, []);
+
+    React.useEffect(() => {
+        if (Platform.OS === 'android') {
+            PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+            );
+        } else {
+            requestPermission();
+        }
+        if (notificationRedux) {
+            notification();
+        }
+    }, [notification, notificationRedux]);
+
+    return (
+        <View
+            style={{
+                backgroundColor: colors.bgSecondary,
+                flex: 1,
+            }}>
+            <Stack.Navigator
+                initialRouteName={
+                    (hashtags && hashtags?.length > 0) || regionScreen
+                        ? 'Tabs'
+                        : token
+                            ? 'Region'
+                            : 'Tabs'
+                }
+                screenOptions={({}) => ({
+                    headerShadowVisible: false,
+                    headerTitleStyle: {
+                        fontFamily: 'NotoSans-Bold',
+                        fontWeight: '700',
+                        fontSize: 16,
+                        width: '100%',
+                    },
+                    headerStyle: {
+                        backgroundColor: colors.fillPrimary,
+                    },
+                    headerTitleAlign: 'left',
+                    headerTitle,
+                    headerLeft: () => headerLeft(),
+                    headerBackVisible: false,
+                })}>
+                <Stack.Screen
+                    name="Tabs"
+                    component={TabNavigation}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name="Region"
+                    component={Region}
+                    options={{
+                        title: 'Выберите 3 хештега',
+                        headerLeft: () => <></>,
+                    }}
+                />
+                <Stack.Screen
+                    name="NewsView"
+                    component={NewsView}
+                    options={({route}) => ({
+                        headerStyle: {backgroundColor: colors.fillPrimary},
+                        title: route.params.post.title,
+                    })}
+                />
+                <Stack.Screen
+                    name="ViewTag"
+                    component={ViewTag}
+                    options={{
+                        title: 'Хэштеги',
+                    }}
+                />
+                <Stack.Screen
+                    name="EditProfile"
+                    component={EditProfile}
+                    options={{
+                        title: 'Изменить мой аккаунт',
+                        headerTitle,
+                    }}
+                />
+                <Stack.Screen
+                    name="HashtagScreen"
+                    component={HashtagScreen}
+                    options={() => ({
+                        title: 'Мои хэштеги',
+                    })}
+                />
+                <Stack.Screen
+                    name="PrivacyPolicy"
+                    component={PrivacyPolicy}
+                    options={{
+                        presentation: 'modal',
+                        headerTitleAlign: 'left',
+                        title: 'Политика конфиденциальности',
+                    }}
+                />
+                <Stack.Screen
+                    name="UseOfTerms"
+                    component={UseOfTerms}
+                    options={{
+                        presentation: 'modal',
+                        headerTitleAlign: 'left',
+                        title: 'Условия пользования',
+                    }}
+                />
+                <Stack.Screen
+                    name="PasswordEdit"
+                    component={PasswordEdit}
+                    options={{
+                        presentation: 'modal',
+                        headerTitleAlign: Platform.OS === 'android' ? 'left' : 'center',
+                        title: 'Создайте пароль',
+                        headerTitle: () => (
+                            <BoldText fontSize={16}>Создайте пароль</BoldText>
+                        ),
+                        headerLeft: Platform.OS === 'ios' ? () => null : headerLeft,
+                    }}
+                />
+                <Stack.Screen
+                    name="PasswordEditNew"
+                    component={PasswordEditNew}
+                    options={{
+                        presentation: 'modal',
+                        headerTitleAlign: Platform.OS === 'android' ? 'left' : 'center',
+                        title: 'Введите новый пароль',
+                        headerLeft: Platform.OS === 'ios' ? () => null : headerLeft,
+                    }}
+                />
+                <Stack.Screen
+                    name="AboutScreen"
+                    component={AboutScreen}
+                    options={{
+                        presentation: 'modal',
+                        headerShown: Platform.OS === 'ios' ? false : true,
+                        title: 'О приложении',
+                    }}
+                />
+                <Stack.Screen
+                    name="Settings"
+                    component={Settings}
+                    options={{
+                        presentation: 'modal',
+                        headerShown: Platform.OS === 'ios' ? false : true,
+                        title: 'Настройки',
+                        headerStyle: {
+                            backgroundColor:
+                                Platform.OS === 'android'
+                                    ? colors.fillPrimary
+                                    : colors.bgSecondary,
+                        },
+                    }}
+                />
+                <Stack.Screen
+                    name="TechSupport"
+                    component={TechSupport}
+                    options={{
+                        presentation: 'modal',
+                        headerShown: Platform.OS === 'ios' ? false : true,
+                        title: 'Тех.поддержка',
+                    }}
+                />
+                <Stack.Screen
+                    name="ViewLive"
+                    component={ViewLive}
+                    options={{
+                        title: 'Прямой эфир',
+                        gestureEnabled: !videoContext.videoPlayerOption?.fullscreen,
+                    }}
+                />
+                <Stack.Screen
+                    name="LiveQuestion"
+                    component={LiveQuestion}
+                    options={{
+                        title: 'Задать вопрос',
+                        presentation: 'modal',
+                        gestureEnabled: !videoContext.videoPlayerOption?.fullscreen,
+                        headerLeft: Platform.OS === 'ios' ? () => null : headerLeft,
+                        headerTitleAlign: Platform.OS === 'android' ? 'left' : 'center',
+                        headerTitle: () => (
+                            <BoldText
+                                fontSize={16}
+                                style={{
+                                    width: screenWidth - 48,
+                                    textAlign: Platform.OS === 'ios' ? 'center' : 'left',
+                                    paddingRight: Platform.OS === 'android' ? 48 : 0,
+                                    paddingBottom: Platform.OS === 'android' ? 3 : 0,
+                                }}>
+                                Задать вопрос
+                            </BoldText>
+                        ),
+                    }}
+                />
+                <Stack.Screen
+                    name="RadioScreen"
+                    component={RadioScreen}
+                    options={{
+                        headerShown: false,
+                        title: 'Радио Тэтим',
+                        headerTitle: () => (
+                            <BoldText
+                                numberOfLines={1}
+                                style={{
+                                    width: screenWidth - 48 - 50,
+                                    textAlign: 'left',
+                                    color: colors.white,
+                                }}>
+                                Радио Тэтим
+                            </BoldText>
+                        ),
+                        headerStyle: {backgroundColor: colors.blackText},
+                    }}
+                />
+                <Stack.Screen
+                    name="ServicesScreen"
+                    component={ServicesScreen}
+                    options={{
+                        title: 'Услуги НВК Саха',
+                    }}
+                />
+                <Stack.Screen
+                    name="ViewService"
+                    component={ViewService}
+                    options={({route}) => ({
+                        title: route.params.name,
+                    })}
+                />
+                <Stack.Screen
+                    name="Broadcasts"
+                    component={Broadcasts}
+                    options={{
+                        title: 'Передачи',
+                    }}
+                />
+                <Stack.Screen
+                    name="BroadcastView"
+                    component={BroadcastsView}
+                    options={({route}) => ({
+                        title: route.params.broadcast.name,
+                        gestureEnabled: !videoContext.videoPlayerOption?.fullscreen,
+                    })}
+                />
+                <Stack.Screen
+                    name="BroadcastSeasonList"
+                    component={BroadcastSeasonList}
+                    options={({route}) => ({
+                        title: route.params.broadcast.name,
+                    })}
+                />
+                <Stack.Screen
+                    name="Music"
+                    component={Music}
+                    options={{
+                        title: 'Музыка',
+                        headerStyle: {backgroundColor: colors.fillPrimary},
+                    }}
+                />
+                <Stack.Screen
+                    name="AlbumList"
+                    component={AlbumList}
+                    options={{
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="AllAlbum"
+                    component={AllAlbum}
+                    options={({route}) => ({
+                        title:
+                            route.params.type === 'album' ? 'Все альбомы' : 'Все сборники',
+                    })}
+                />
+                <Stack.Screen
+                    name="AllAuthor"
+                    component={AllAuthor}
+                    options={{
+                        title: 'Все авторы',
+                    }}
+                />
+                <Stack.Screen
+                    name="AllMusic"
+                    component={AllMusic}
+                    options={{
+                        title: 'Все треки',
+                    }}
+                />
+                <Stack.Screen
+                    name="MyFavoriteSongs"
+                    component={MyFavoriteSongs}
+                    options={{
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="MusicPlayer"
+                    component={MusicPlayer}
+                    options={{
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="Podcast"
+                    component={Podcast}
+                    options={{
+                        title: 'Подкасты',
+                        headerStyle: {backgroundColor: colors.background},
+                    }}
+                />
+                <Stack.Screen
+                    name="AllAlbumPodcast"
+                    component={AllAlbumPodcast}
+                    options={({route}) => ({
+                        title:
+                            route.params.type === 'podcast'
+                                ? 'Подкасты'
+                                : route.params.type === 'olonho'
+                                    ? 'Олонхо'
+                                    : 'Сказки',
+                    })}
+                />
+                <Stack.Screen
+                    name="Horoscope"
+                    component={Horoscope}
+                    options={{
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="Films"
+                    component={FilmsScreen}
+                    options={{
+                        title: 'Фильмы',
+                        headerStyle: {backgroundColor: colors.fillPrimary},
+                    }}
+                />
+                <Stack.Screen
+                    name="Film"
+                    component={FilmScreen}
+                    options={({route}) => ({
+                        title: route.params.title,
+                        headerRight: () => <Rating rating={route.params.rating} isStar/>,
+                        headerStyle: {backgroundColor: colors.fillPrimary},
+                    })}
+                />
+                <Stack.Screen
+                    name="Series"
+                    component={SeriesScreen}
+                    options={{
+                        title: 'Сериалы',
+                        headerStyle: {backgroundColor: colors.fillPrimary},
+                    }}
+                />
+                <Stack.Screen
+                    name="AllSeries"
+                    component={AllSeriesScreen}
+                    options={({route}) => ({
+                        title: route.params.title,
+                        headerStyle: {backgroundColor: colors.fillPrimary},
+                    })}
+                />
+                <Stack.Screen
+                    name="CurrentSeries"
+                    component={CurrentSeriesScreen}
+                    options={({route}) => ({
+                        title: route.params.title,
+                        headerRight: () => <Rating rating={route.params.rating} isStar/>,
+                        headerStyle: {backgroundColor: colors.fillPrimary},
+                    })}
+                />
+                <Stack.Screen
+                    name="Cartoons"
+                    component={CartoonsScreen}
+                    options={{
+                        title: 'Мультсериалы',
+                        headerLeft: () => isChildrenMode ? null : headerLeft(),
+                        headerRight: () => <TouchableOpacity onPress={onChildrenMode}>
+                            <Rating disabled={isChildrenMode} rating={'Детский'} lock/>
+                        </TouchableOpacity>,
+                        headerStyle: {backgroundColor: colors.fillPrimary},
+                    }}
+                />
+                <Stack.Screen
+                    name="Cartoon"
+                    component={CartoonScreen}
+                    options={({route}) => ({
+                        title: route.params.title,
+                        headerLeft: () => isChildrenMode ? null : headerLeft(),
+                        headerRight: () => <TouchableOpacity onPress={onChildrenMode}>
+                            <Rating disabled={isChildrenMode} rating={'Детский'} lock/>
+                        </TouchableOpacity>,
+                        headerStyle: {backgroundColor: colors.fillPrimary},
+                    })}
+                />
+            </Stack.Navigator>
+            {flag ? <MusicTrackView insets={insets.bottom}/> : <></>}
+            <ChildrenModeModal
+                isBottomSheetVisible={isBottomSheetVisible}
+                setIsChildrenMode={setIsChildrenMode}
+                setBottomSheetVisible={setBottomSheetVisible}
+            />
+        </View>
+    );
 };

@@ -21,6 +21,7 @@ interface SearchProps {
   value: string;
   placeholder?: string;
   onEndEditing?: () => void;
+  isSearch?: boolean
 }
 
 const ANIM_VALUE = 0;
@@ -34,6 +35,7 @@ export const SearchComponent: React.FC<SearchProps> &
     value,
     placeholder,
     onEndEditing,
+    isSearch = true,
     ...rest
   } = props;
   const ref = React.useRef<any>(null);
@@ -61,7 +63,9 @@ export const SearchComponent: React.FC<SearchProps> &
 
   const currentAnim = animValue.current.interpolate({
     inputRange: [ANIM_VALUE, 16],
-    outputRange: [screenWidth - 30 - 71, screenWidth - 30],
+    outputRange: isSearch
+        ? [screenWidth - 30 - 71, screenWidth - 30]
+        : [screenWidth - 30, screenWidth - 30],
   });
 
   return (
@@ -89,13 +93,14 @@ export const SearchComponent: React.FC<SearchProps> &
               marginRight: value !== '' ? 15 : 0,
               borderColor:
                 theme === 'light' ? colors.borderPrimary : 'transparent',
+              paddingLeft: isSearch ? 20 : 4
             },
             containerStyle,
           ]}
           onPress={() => {
             ref.current?.focus();
           }}>
-          <Search color={colors.colorMain} />
+          {isSearch && <Search color={colors.colorMain} />}
           <Animated.Text
             style={[
               styleSearch.label,
@@ -109,6 +114,7 @@ export const SearchComponent: React.FC<SearchProps> &
                   inputRange: [ANIM_VALUE, 16],
                   outputRange: [8, Platform.OS === 'ios' ? 18 : 12],
                 }),
+                left: isSearch ? 20 + 24 + 15 : 20
               },
             ]}>
             {placeholder}
@@ -132,7 +138,7 @@ export const SearchComponent: React.FC<SearchProps> &
           />
         </TouchableOpacity>
       </Animated.View>
-      {value !== '' ? (
+      {value !== '' && isSearch ? (
         <TouchableOpacity
           onPress={() => {
             onChangeText && onChangeText('');
