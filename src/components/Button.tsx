@@ -7,12 +7,13 @@ import {
   ViewStyle,
   Platform,
 } from 'react-native';
-import {useTheme} from '../Styles/Styles';
+import { useTheme } from '../Styles/Styles';
 import BoldText from './BoldText';
 
 interface ButtonProps {
   title?: string;
   style?: ViewStyle | ViewStyle[];
+  mt?: number | string;
   value?: any;
   onPress?: any;
   disabled?: boolean;
@@ -27,6 +28,7 @@ interface ButtonProps {
 export const Button: React.FC<ButtonProps> = ({
   title,
   style,
+  mt,
   onPress,
   disabled = false,
   icon,
@@ -36,11 +38,11 @@ export const Button: React.FC<ButtonProps> = ({
   loadingSize,
   ref,
 }) => {
-  const {colors, theme, Style} = useTheme();
+  const { colors, theme, Style } = useTheme();
   return (
     <TouchableOpacity
       ref={ref}
-      style={[disabled === true ? Style.disabledButton : Style.button, style]}
+      style={[disabled === true ? Style.disabledButton : Style.button, style, { marginTop: mt }]}
       onPress={onPress}
       disabled={disabled}>
       {loading ? (
@@ -56,8 +58,8 @@ export const Button: React.FC<ButtonProps> = ({
                 color: disabled
                   ? colors.textSecondary
                   : theme === 'dark'
-                  ? colors.black
-                  : colors.white,
+                    ? colors.black
+                    : colors.white,
               },
               textStyle,
             ]}>
@@ -73,8 +75,8 @@ export const Button: React.FC<ButtonProps> = ({
               color: disabled
                 ? colors.textSecondary
                 : theme === 'dark'
-                ? colors.black
-                : colors.white,
+                  ? colors.black
+                  : colors.white,
             },
             textStyle,
           ]}>
