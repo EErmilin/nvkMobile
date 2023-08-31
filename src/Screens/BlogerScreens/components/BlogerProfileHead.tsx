@@ -1,16 +1,23 @@
 import { View, Text, StyleSheet, Dimensions } from 'react-native'
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import FastImage from 'react-native-fast-image';
 import { Button } from '../../../components';
+import TextWithMore from '../../../components/TextWithMore';
+import DropDown_Icon from '../../../assets/icons/DropDown_Icon';
+import { ShowSocialModalizeHandle } from './ShowSocialModal';
 
 
 const { width } = Dimensions.get('screen');
 
 type TProps = {
-    profile?: any
+    profile?: any,
+    openSocial?: () => void;
 }
 
-const BlogerProfileHead = ({ profile }: TProps) => {
+const BlogerProfileHead = ({ profile, openSocial }: TProps) => {
+
+
+
     return (
         <View style={styles.container}>
             <View style={styles.head_wraper}>
@@ -25,7 +32,7 @@ const BlogerProfileHead = ({ profile }: TProps) => {
             </View>
 
             <AboutBloger text='Не следует, однако забывать, что начало повседневной работы по формированию позиции влечет за собой процесс внедр' />
-            <SocialInfo />
+            <SocialInfo openSocial={openSocial} />
         </View>
     )
 }
@@ -51,28 +58,51 @@ type TAboutBlogerProps = {
 }
 
 
-const AboutBloger = ({ text }: TAboutBlogerProps) =>
-    <View style={styles.about_wraper}>
-        <Text style={styles.about_text}>{text}
-            <Text style={styles.about_text_else}> ещё ...</Text>
-        </Text>
+const AboutBloger = ({ text }: TAboutBlogerProps) => {
+    const [showFullText, setShowFullText] = useState(false);
+
+    const toggleShowFullText = () => {
+        setShowFullText(!showFullText);
+    };
+
+    return (<View style={styles.about_wraper}>
+        <TextWithMore
+            text={'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum consectetur ligula eget urna ultricies, eu bibendum nulla tincidunt. Vivamus pellentesque libero eget tortor ullamcorper placerat.'}
+        />
 
 
-    </View>
-
-
-type TSocialInfo = {
+    </View>)
 }
 
 
-const SocialInfo = ({ }: TSocialInfo) =>
-    <View style={styles.social_wraper}>
-        <Button
-            title='Подписаться'
-            style={styles.social_subscribeButton}
-        />
+type TSocialInfo = {
+    openSocial?: () => void;
+}
 
-    </View>
+
+const SocialInfo = ({ openSocial }: TSocialInfo) => {
+    const socialButtonInput = (
+        <View style={styles.social_showButton_inputWrapper}>
+            <Text style={styles.social_showButton_inputText}
+            >Соц. сети</Text>
+            <DropDown_Icon />
+        </View>
+    );
+
+    return (
+        <View style={styles.social_wraper}>
+            <Button
+                title='Подписаться'
+                style={styles.social_subscribeButton}
+            />
+
+            <Button
+                item={socialButtonInput}
+                style={styles.social_showButton}
+                onPress={openSocial}
+            />
+        </View>);
+}
 
 
 
@@ -123,10 +153,27 @@ const styles = StyleSheet.create({
     },
     social_wraper: {
         width: '100%',
-        marginTop: 15
+        marginTop: 15,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
     social_subscribeButton: {
         width: 155,
         height: 40
+    },
+    social_showButton: {
+        width: 155,
+        height: 40,
+        backgroundColor: 'transparent'
+    },
+    social_showButton_inputWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    social_showButton_inputText: {
+        fontFamily: 'NotoSans-Regular',
+        fontSize: 14,
+        marginRight: 8
     }
 })

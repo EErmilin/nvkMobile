@@ -42,15 +42,32 @@ const CreateBloger = () => {
     };
 
     const handleSubmitForm = async (fields: any) => {
-
-
-
+        console.log(fields);
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView>
+            <ScrollView
+                style={styles.scroll_container}
+                showsVerticalScrollIndicator={false}
+            >
                 <BoldText fontSize={16} mt={21}>Профиль</BoldText>
+
+                <InputForm
+                    name='nik'
+                    placeholder='Эелаемый никнейм'
+                    control={control}
+                    maxLength={16}
+                    mt={15}
+                />
+
+                <InputForm
+                    name='about'
+                    placeholder='Описание'
+                    control={control}
+                    mt={15}
+                    multiline
+                />
 
                 <BoldText fontSize={16} mt={30} mb={15}>Сайт(ы)</BoldText>
 
@@ -138,8 +155,7 @@ const CreateBloger = () => {
                 </View>
             </ScrollView>
 
-            <Button title='Опубликовать'  disabled={true} onPress={handleSubmit(handleSubmitForm)} />
-
+            <Button title='Опубликовать' disabled={false} onPress={handleSubmit(handleSubmitForm)} />
 
         </SafeAreaView>
     )
@@ -150,12 +166,12 @@ export default CreateBloger
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 15,        
+        paddingHorizontal: 15,
         paddingBottom: 15,
         backgroundColor: '#fff'
     },
-    scrollContainer: {
-
+    scroll_container: {
+        marginBottom: 15
     },
 
     social_container: {

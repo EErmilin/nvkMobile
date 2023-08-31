@@ -8,6 +8,8 @@ type TInputFormProp = {
   name: string;
   control: Control;
   required?: boolean;
+  multiline?: boolean;
+  maxLength?: number;
   placeholder: string;
   rules?: { [x: string]: any };
   width?: number | string;
@@ -21,6 +23,8 @@ export const InputForm: FC<TInputFormProp> = ({
   required,
   placeholder,
   rules = {},
+  multiline,
+  maxLength,
   width,
   mt
 }) => {
@@ -35,8 +39,12 @@ export const InputForm: FC<TInputFormProp> = ({
           value={value}
           onChangeText={onChange}
           required={required}
-          style={{ marginTop: mt, width: width }}
-          label={placeholder}
+          styleText={{ marginTop: 0 }}
+          style={{ marginTop: mt, width: width, alignItems: 'center' }}
+          placeholder={placeholder}
+          multiline={multiline}
+          maxLength={maxLength}
+          placeholderToLabel
 
         />
       )}

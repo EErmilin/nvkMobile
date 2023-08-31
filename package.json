@@ -44,6 +44,7 @@
     "react-native-google-recaptcha": "^1.0.2",
     "react-native-image-crop-picker": "^0.39.0",
     "react-native-mask-input": "^1.2.3",
+    "react-native-modalize": "^2.1.1",
     "react-native-orientation-locker": "^1.5.0",
     "react-native-pager-view": "^6.1.2",
     "react-native-permissions": "^3.8.0",

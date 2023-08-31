@@ -13,6 +13,7 @@ import BoldText from './BoldText';
 interface ButtonProps {
   title?: string;
   style?: ViewStyle | ViewStyle[];
+  item?: React.JSX.Element;
   mt?: number | string;
   value?: any;
   onPress?: any;
@@ -29,6 +30,7 @@ export const Button: React.FC<ButtonProps> = ({
   title,
   style,
   mt,
+  item,
   onPress,
   disabled = false,
   icon,
@@ -45,11 +47,13 @@ export const Button: React.FC<ButtonProps> = ({
       style={[disabled === true ? Style.disabledButton : Style.button, style, { marginTop: mt }]}
       onPress={onPress}
       disabled={disabled}>
+      {item}
+
       {loading ? (
         <ActivityIndicator color={loadingColor} size={loadingSize} />
       ) : icon ? (
         <>
-          <BoldText
+          {title && <BoldText
             fontSize={14}
             style={[
               {
@@ -64,7 +68,7 @@ export const Button: React.FC<ButtonProps> = ({
               textStyle,
             ]}>
             {title}
-          </BoldText>
+          </BoldText>}
           <View>{icon}</View>
         </>
       ) : (

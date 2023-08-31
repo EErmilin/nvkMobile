@@ -9,24 +9,26 @@ import {
   ReturnKeyType,
   Text,
   Platform,
+  View,
 } from 'react-native';
-import {TextStyle, ViewStyle} from 'react-native';
-import {useTheme} from '../Styles/Styles';
+import { TextStyle, ViewStyle } from 'react-native';
+import { useTheme } from '../Styles/Styles';
 import MaskInput from 'react-native-mask-input';
-import {PHONE_MASK} from '../helpers/masks';
+import { PHONE_MASK } from '../helpers/masks';
 
 const ANIM_VALUE = 0;
 interface InputProps {
   style?: ViewStyle | ViewStyle[];
   value: string;
   onChangeText?:
-    | ((formatted: string, extracted?: string | undefined) => void)
-    | undefined;
+  | ((formatted: string, extracted?: string | undefined) => void)
+  | undefined;
   ref?: React.Ref<TextInput>;
   editable?: boolean;
   onFocus?: () => void;
   onEndEditing?: () => void;
   placeholder?: string;
+  placeholderToLabel?: boolean;
   placeholderTextColor?: ColorValue;
   keyboardType?: KeyboardType;
   phoneMask?: boolean;
@@ -46,7 +48,7 @@ interface InputProps {
   logo?: React.ReactNode;
   secureTextEntry?: boolean;
   onChange?: (value: {
-    nativeEvent: {eventCount: number; target: number; text: string};
+    nativeEvent: { eventCount: number; target: number; text: string };
   }) => void;
   required?: boolean;
   errorState?: boolean;
@@ -61,6 +63,7 @@ export const InputText: React.FC<InputProps> = props => {
     onFocus,
     onEndEditing,
     placeholder,
+    placeholderToLabel,
     placeholderTextColor,
     keyboardType,
     autoFocus = false,
@@ -86,7 +89,7 @@ export const InputText: React.FC<InputProps> = props => {
   ).current;
   const [focus, setFocus] = React.useState(false);
   const refTextInput = React.useRef<TextInput>(null);
-  const {colors} = useTheme();
+  const { colors } = useTheme();
 
   const handleFocus = () => {
     setFocus(true);
@@ -121,69 +124,74 @@ export const InputText: React.FC<InputProps> = props => {
       style={[
         styles.main,
         {
+          height: multiline ? undefined : 60,
           paddingRight: logo ? 0 : 20,
           backgroundColor: colors.input,
           borderWidth: 1,
           borderColor: errorState
             ? colors.red
             : focus
-            ? colors.colorMain
-            : colors.borderPrimary,
+              ? colors.colorMain
+              : colors.borderPrimary,
         },
         style,
       ]}
       onFocus={handleFocus}
       onBlur={handleBlur}>
-      <Animated.Text
-        style={[
-          styles.label,
-          {
-            paddingBottom: Platform.OS === 'android' ? 4 : 0,
-            color: colors.textSecondary,
-            fontSize: animValue.interpolate({
-              inputRange: [ANIM_VALUE, 16],
-              outputRange: [12, 14],
-            }),
-            top: animValue.interpolate({
-              inputRange: [ANIM_VALUE, 16],
-              outputRange: [8, Platform.OS === 'ios' ? 20 : 16],
-            }),
-          },
-          styleLabel,
-        ]}>
-        {label}
-        {required ? <Text style={{color: colors.danger}}>*</Text> : <></>}
-      </Animated.Text>
-      <MaskInput
-        mask={mask === 'phone' ? PHONE_MASK : mask}
-        editable={editable}
-        secureTextEntry={secureTextEntry}
-        value={value}
-        cursorColor={colors.colorMain}
-        onChangeText={onChangeText}
-        allowFontScaling={allowFontScalling}
-        style={[styles.text, {color: colors.textPrimary, flex: 1}, styleText]}
-        ref={refTextInput}
-        onFocus={() => {
-          onFocus;
-          setFocus(true);
-        }}
-        onBlur={() => {
-          onBlur;
-          setFocus(false);
-        }}
-        onEndEditing={onEndEditing}
-        placeholder={placeholder}
-        placeholderTextColor={placeholderTextColor}
-        keyboardType={keyboardType}
-        autoFocus={autoFocus}
-        multiline={multiline}
-        maxLength={maxLength}
-        onLayout={onLayout}
-        onScroll={onScroll}
-        returnKeyLabel={returnKeyLabel}
-        returnKeyType={returnKeyType}
-      />
+      <View>
+        {(label || placeholderToLabel && value && value.length > 0) && <Animated.Text
+          style={[
+            styles.label,
+            {
+              position: placeholderToLabel ? 'relative' : 'absolute',
+              paddingBottom: Platform.OS === 'android' ? 4 : 0,
+              color: colors.textSecondary,
+              fontSize: animValue.interpolate({
+                inputRange: [ANIM_VALUE, 16],
+                outputRange: [12, 14],
+              }),
+              top: animValue.interpolate({
+                inputRange: [ANIM_VALUE, 16],
+                outputRange: [8, Platform.OS === 'ios' ? 20 : 16],
+              }),
+            },
+            styleLabel,
+          ]}>
+          {label}
+          {placeholder}
+          {required ? <Text style={{ color: colors.danger }}>*</Text> : <></>}
+        </Animated.Text>}
+        <MaskInput
+          mask={mask === 'phone' ? PHONE_MASK : mask}
+          editable={editable}
+          secureTextEntry={secureTextEntry}
+          value={value}
+          cursorColor={colors.colorMain}
+          onChangeText={onChangeText}
+          allowFontScaling={allowFontScalling}
+          style={[styles.text, { color: colors.textPrimary, flex: 1 }, styleText]}
+          ref={refTextInput}
+          onFocus={() => {
+            onFocus;
+            setFocus(true);
+          }}
+          onBlur={() => {
+            onBlur;
+            setFocus(false);
+          }}
+          onEndEditing={onEndEditing}
+          placeholder={placeholder}
+          placeholderTextColor={placeholderTextColor}
+          keyboardType={keyboardType}
+          autoFocus={autoFocus}
+          multiline={multiline}
+          maxLength={maxLength}
+          onLayout={onLayout}
+          onScroll={onScroll}
+          returnKeyLabel={returnKeyLabel}
+          returnKeyType={returnKeyType}
+        />
+      </View>
       {logo}
     </TouchableOpacity>
   );
@@ -192,7 +200,7 @@ export const InputText: React.FC<InputProps> = props => {
 const styles = StyleSheet.create({
   main: {
     borderRadius: 18,
-    height: 60,
+    minHeight: 60,
     fontSize: 14,
     fontFamily: 'NotoSans-Medium',
     justifyContent: 'space-between',
@@ -204,7 +212,6 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   label: {
-    position: 'absolute',
     flex: 1,
     fontSize: 12,
     fontFamily: 'NotoSans-Regular',
