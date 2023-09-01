@@ -1,4 +1,4 @@
-import {IUser} from '../../models/User';
+import {IBloger, IUser} from '../../models/User';
 
 export interface UserTypes {
   data: IUser | null;
@@ -6,6 +6,7 @@ export interface UserTypes {
   subscribes: number;
   listSearch: string[];
   hashtags: {hashtag: {name: string; id: number}}[];
+  selectedSibscribe: IBloger | null;
 }
 
 export interface IUserInput {

@@ -21,6 +21,7 @@ const initialState: UserTypes = {
   subscribes: 0,
   listSearch: [],
   hashtags: [],
+  selectedSibscribe: null,
 };
 
 const userSlice = createSlice({
@@ -61,6 +62,9 @@ const userSlice = createSlice({
         hashtag => hashtag.hashtag.name !== action.payload,
       );
     },
+    setSelectedSubscrebe: (state, action) => {
+      state.selectedSibscribe = action.payload;
+    },    
   },
   extraReducers: builder => {
     builder.addCase(createUser.fulfilled, (state, action) => {

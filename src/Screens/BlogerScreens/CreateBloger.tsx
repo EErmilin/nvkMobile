@@ -55,7 +55,7 @@ const CreateBloger = () => {
 
                 <InputForm
                     name='nik'
-                    placeholder='Эелаемый никнейм'
+                    placeholder='Желаемый никнейм'
                     control={control}
                     maxLength={16}
                     mt={15}
