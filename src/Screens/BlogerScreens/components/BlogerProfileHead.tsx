@@ -97,8 +97,10 @@ const SocialInfo = ({ openSocial }: TSocialInfo) => {
             />
 
             <Button
-                item={socialButtonInput}
+                title='Соц. сети'
+                icon={<DropDown_Icon />}
                 style={styles.social_showButton}
+                textStyle={{color: '#000'}}
                 onPress={openSocial}
             />
         </View>);
@@ -110,7 +112,8 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         paddingHorizontal: 15,
-        paddingBottom: 20
+        paddingBottom: 20,
+        backgroundColor: '#fff'
     },
     head_wraper: {
         height: 90,

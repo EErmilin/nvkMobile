@@ -1,63 +1,102 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native'
-import React, { useRef, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { useAppSelector } from '../../redux/hooks';
-import FastImage from 'react-native-fast-image';
+import React, { useState } from 'react';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import { SceneMap } from 'react-native-tab-view';
+import { HScrollView } from 'react-native-head-tab-view'
+import { CollapsibleHeaderTabView } from 'react-native-tab-view-collapsible-header'
 import BlogerProfileHead from './components/BlogerProfileHead';
-import ShowSocialModal, { ShowSocialModalizeHandle } from './components/ShowSocialModal';
+import BlogerContentTabBar from './components/BlogerContentTabBar';
+import { tmpData1, tmpData2 } from './components/tmpData';
+import FastImage from 'react-native-fast-image';
+import { BlogerContent_Audio, BlogerContent_Photo, BlogerContent_Video } from './components/BlogerContent';
 
 const { width } = Dimensions.get('screen');
 
+const PhotoRoute = () => (
+    <HScrollView index={0}>
+        <View style={styles.grid}>
+            {tmpData1.map((element, index) =>
+                <BlogerContent_Photo
+                    key={`s_${index}`}
+                    post={element}
+                    onPress={() => { }}
+                />
+            )}
+        </View>
+    </HScrollView>
+);
 
+const VideoRoute = () => (
+    <HScrollView index={1} onMomentumScrollEnd={() => {}}>
+        <View style={styles.grid}>
+            {tmpData2.map((element, index) =>
+                <BlogerContent_Video
+                    key={`s_${index}`}
+                    post={element}
+                    onPress={() => { }}
+                />)}
+        </View>
+    </HScrollView>
+);
+
+const AudioRoute = () => (
+    <HScrollView index={1} onMomentumScrollEnd={() => {}}>
+        <View style={styles.grid}>
+            {tmpData1.map((element, index) =>
+                <BlogerContent_Audio
+                    key={`s_${index}`}
+                    post={element}
+                    onPress={() => { }}
+                />)}
+        </View>
+    </HScrollView>
+);
+
+const initialLayout = { width: Dimensions.get('window').width };
 
 const BlogerProfile = () => {
-    const postsRedux = useAppSelector(state => state.post.data);
-
-    const showSocialRef = useRef<ShowSocialModalizeHandle>();
+    const [index, setIndex] = useState(0);
 
 
-    const openSocial = () => { showSocialRef.current?.open() }
-    const getSortedData = () => {
-        // return new Array(10);
+    const tabs = ['photo', 'audio', 'video'];
 
-        let temp = [...postsRedux];
-        return temp.sort(function (a, b) {
-            return new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf();
-        });
-    };
+
+    const [routes] = React.useState([
+        { key: 'photo', title: 'First' },
+        { key: 'video', title: 'Second' },
+        { key: 'audio', title: 'Third' },
+    ]);
+
+    const renderScene = SceneMap({
+        photo: PhotoRoute,
+        video: VideoRoute,
+        audio: AudioRoute,
+    });
+
+    const renderTabBar = () => <BlogerContentTabBar
+        tabs={tabs}
+        activeTab={index}
+        goToPage={setIndex}
+    />
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView bounces={false}>
+        <CollapsibleHeaderTabView
+            renderScrollHeader={() => <BlogerProfileHead />}
+            navigationState={{ index, routes }}
+            renderTabBar={renderTabBar}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={initialLayout}
 
-                <BlogerProfileHead openSocial={openSocial} />
-
-                <View style={styles.grid}>
-                    {getSortedData().map((element,) =>
-
-                        <FastImage
-                            key={element.id}
-                            source={{ uri: "https://avatars.githubusercontent.com/u/20685587?v=4" }}
-                            style={styles.post_image}
-                        />
-                    )}
-
-                </View>
-            </ScrollView>
-            <ShowSocialModal ref={showSocialRef} />
-        </SafeAreaView>
-    )
+        />
+    );
 }
 
 export default BlogerProfile;
 
 const styles = StyleSheet.create({
-    container: {
+    scene: {
         flex: 1,
         backgroundColor: '#fff'
-    },
-    scrollContainer: {
-
     },
     grid: {
         flexDirection: 'row',
@@ -70,6 +109,17 @@ const styles = StyleSheet.create({
         height: width / 3,
         marginTop: 1,
         backgroundColor: "#f2f2f2"
-    }
-
-})
+    },
+    post_video: {
+        width: (width - 2) / 3,
+        height: width / 3,
+        marginTop: 1,
+        backgroundColor: "#f2f2f2"
+    },
+    post_audio: {
+        width: (width - 2) / 3,
+        height: width / 3,
+        marginTop: 1,
+        backgroundColor: "#f2f2f2"
+    },
+});

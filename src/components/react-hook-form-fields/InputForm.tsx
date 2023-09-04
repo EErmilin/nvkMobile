@@ -6,7 +6,7 @@ import { InputText } from '../InputText';
 
 type TInputFormProp = {
   name: string;
-  control: Control;
+  control: any;
   required?: boolean;
   multiline?: boolean;
   maxLength?: number;
