@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { View, StyleSheet, Dimensions, SafeAreaView } from 'react-native';
 import { SceneMap } from 'react-native-tab-view';
 import { HScrollView } from 'react-native-head-tab-view'
 import { CollapsibleHeaderTabView } from 'react-native-tab-view-collapsible-header'
@@ -8,6 +8,7 @@ import BlogerContentTabBar from './components/BlogerContentTabBar';
 import { tmpData1, tmpData2 } from './components/tmpData';
 import FastImage from 'react-native-fast-image';
 import { BlogerContent_Audio, BlogerContent_Photo, BlogerContent_Video } from './components/BlogerContent';
+import ShowSocialModal, { ShowSocialModalizeHandle } from './components/ShowSocialModal';
 
 const { width } = Dimensions.get('screen');
 
@@ -26,7 +27,7 @@ const PhotoRoute = () => (
 );
 
 const VideoRoute = () => (
-    <HScrollView index={1} onMomentumScrollEnd={() => {}}>
+    <HScrollView index={1} onMomentumScrollEnd={() => { }}>
         <View style={styles.grid}>
             {tmpData2.map((element, index) =>
                 <BlogerContent_Video
@@ -39,7 +40,7 @@ const VideoRoute = () => (
 );
 
 const AudioRoute = () => (
-    <HScrollView index={1} onMomentumScrollEnd={() => {}}>
+    <HScrollView index={1} onMomentumScrollEnd={() => { }}>
         <View style={styles.grid}>
             {tmpData1.map((element, index) =>
                 <BlogerContent_Audio
@@ -54,12 +55,14 @@ const AudioRoute = () => (
 const initialLayout = { width: Dimensions.get('window').width };
 
 const BlogerProfile = () => {
+
+    const showSocialRef = useRef<ShowSocialModalizeHandle>();
+
+
+    const openSocial = () => { showSocialRef.current?.open() }
+
     const [index, setIndex] = useState(0);
-
-
     const tabs = ['photo', 'audio', 'video'];
-
-
     const [routes] = React.useState([
         { key: 'photo', title: 'First' },
         { key: 'video', title: 'Second' },
@@ -79,21 +82,30 @@ const BlogerProfile = () => {
     />
 
     return (
-        <CollapsibleHeaderTabView
-            renderScrollHeader={() => <BlogerProfileHead />}
-            navigationState={{ index, routes }}
-            renderTabBar={renderTabBar}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={initialLayout}
+        <SafeAreaView style={styles.container}>
 
-        />
+            <CollapsibleHeaderTabView
+                renderScrollHeader={() => <BlogerProfileHead openSocial={openSocial} />}
+                navigationState={{ index, routes }}
+                renderTabBar={renderTabBar}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={initialLayout}
+
+            />
+            <ShowSocialModal ref={showSocialRef} />
+
+        </SafeAreaView>
     );
 }
 
 export default BlogerProfile;
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff'
+    },
     scene: {
         flex: 1,
         backgroundColor: '#fff'

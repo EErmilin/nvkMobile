@@ -33,7 +33,7 @@ const ShowSocialModal = forwardRef((_, ref) => {
         return <></>;
 
     return (
-        <TouchableOpacity style={styles.container} onPress={tongleVisible}>
+        <TouchableOpacity style={styles.container} onPress={tongleVisible} activeOpacity={2}>
             <TouchableOpacity style={[styles.content, { backgroundColor: colors.textPrimary }]} activeOpacity={2}>
                 <SocialElement link='vk://nvk-online' icon={<VK_Icon />} onPress={onLinkPress} />
                 <Separator mt={15} mb={15} color={colors.borderPrimary} />
