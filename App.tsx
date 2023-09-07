@@ -46,40 +46,6 @@ export default function App() {
     })();
   }, []);
 
-  React.useEffect(() => {
-    remoteConfig()
-      .setDefaults({
-        awesome_new_feature: 'disabled',
-        onBoarding_text_1:
-          'Добро пожаловать в приложение НВК«Саха»!Теперь все медиапроекты нашей компании – в одном месте!',
-        onBoarding_text_2:
-          'Мы не забыли и про наших самых маленьких зрителей – хиты Российской мультипликации, а так же мультики нашего собственного производства теперь доступны на родном языке.',
-        onBoarding_text_3:
-          'Здесь вы сможете общаться с другими пользователями, делиться мнениями, стать блогером и публиковать свой собственный контент.',
-        onBoarding_title_1: 'Прямые эфиры',
-        onBoarding_title_2: 'Сервисы',
-        onBoarding_title_3: 'Блогеры и посты',
-        onBoard_carousel_interval: 6000,
-        onBoard_duration: 300,
-        broadcast_visible: false,
-        broadcast_android_visible: false,
-        music_visible: false,
-        music_android_visible: false,
-      })
-      .then(() => remoteConfig().fetchAndActivate())
-      .then(fetchedRemotely => {
-        if (fetchedRemotely) {
-          console.log(
-            'Configs were retrieved from the backend and activated.',
-            fetchedRemotely,
-          );
-        } else {
-          console.log(
-            'No configs were fetched from the backend, and the local configs were already activated',
-          );
-        }
-      });
-  }, []);
 
   if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {

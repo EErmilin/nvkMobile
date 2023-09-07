@@ -4,6 +4,7 @@ import {
   useWindowDimensions,
   ActivityIndicator,
   Platform,
+  AppState,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 // @ts-ignore
@@ -15,34 +16,39 @@ import {
   ProgramLive,
   VideoPlayer,
 } from '../../../components';
-import {LIVERSTREAM} from '../../../gql/query/livestreams/LiveStreams';
-import {ILive} from '../../../models/LiveStream';
-import {IProgram} from '../../../models/Program';
-import {RootNavigationProps} from '../../../navigation/types/RootStackTypes';
-import {useAppSelector} from '../../../redux/hooks';
-import {useTheme} from '../../../Styles/Styles';
+import { LIVERSTREAM } from '../../../gql/query/livestreams/LiveStreams';
+import { ILive } from '../../../models/LiveStream';
+import { IProgram } from '../../../models/Program';
+import { RootNavigationProps } from '../../../navigation/types/RootStackTypes';
+import { useAppSelector } from '../../../redux/hooks';
+import { useTheme } from '../../../Styles/Styles';
 import DeviceInfo from 'react-native-device-info';
-import {TrackPlayerReset} from '../../../services/service';
-import {useApolloClient} from '@apollo/client';
-import {LiveSkeleton} from './LIveSkeleton';
-import {MusicPlayerContext} from '../../../contexts/musicContext';
-import {ButtonQuestion} from './components/ButtonQuestion';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {NextProgram} from './components/NextProgram';
-import {CurrentProgram} from './components/CurrentProgram';
+import { TrackPlayerReset } from '../../../services/service';
+import { useApolloClient } from '@apollo/client';
+import { LiveSkeleton } from './LIveSkeleton';
+import { MusicPlayerContext } from '../../../contexts/musicContext';
+import { ButtonQuestion } from './components/ButtonQuestion';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { NextProgram } from './components/NextProgram';
+import { CurrentProgram } from './components/CurrentProgram';
+import PipHandler, { usePipModeListener } from 'react-native-pip-android';
+import WebView from 'react-native-webview';
 
 export const ViewLive: React.FC<RootNavigationProps<'ViewLive'>> = props => {
-  const {route} = props;
-  const {id} = route.params;
+  const { route, navigation } = props;
+  const { id } = route.params;
   const screenWidth = useWindowDimensions().width;
   const [data, setData] = React.useState<ILive | null>(null);
   const [loading, setLoading] = React.useState(false);
-  const {colors} = useTheme();
+  const { colors } = useTheme();
   const user = useAppSelector(state => state.user.data);
   const client = useApolloClient();
   const musicContext = React.useContext(MusicPlayerContext);
   const [isOpen, setIsOpen] = React.useState(false);
+  const appState = React.useRef(AppState.currentState);
+
   const insets = useSafeAreaInsets();
+  const inPipMode = usePipModeListener();
 
   const [programs, setPrograms] = React.useState<IProgram[]>([]);
 
@@ -94,8 +100,64 @@ export const ViewLive: React.FC<RootNavigationProps<'ViewLive'>> = props => {
     update();
   }, [update]);
 
+  React.useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (nextAppState == "background") {
+        PipHandler.enterPipMode();
+        navigation.setOptions({
+          headerShown: false,
+        });
+      } else {
+        navigation.setOptions({
+          headerShown: true,
+        });
+      }
+
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+  const html = `<html>
+						<head>
+							<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
+						</head>
+						<body style="margin: 0;">
+							<video id="player" style="width: 100%; height: 100%; background: #000;" controls autoplay>
+								<source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
+							</video>
+
+							<script>
+								var player = document.getElementById("player");
+
+								player.addEventListener("loadeddata", () => {
+									window.ReactNativeWebView.postMessage("duration: " + String(player.duration));
+								}, false)
+								
+								player.addEventListener("timeupdate", () => {
+									window.ReactNativeWebView.postMessage(player.currentTime);
+								});
+							</script>
+						</body>
+					</html>`;
+  if (inPipMode)
+    return (
+      <View
+        style={{ flex: 1, backgroundColor: "black" }}
+      >
+        <WebView
+          source={{ html: html }}
+
+          mediaPlaybackRequiresUserAction={false}
+        />
+      </View>
+    );
+
+
   return (
-    <View style={{flex: 1, backgroundColor: colors.bgSecondary}}>
+    <View style={{ flex: 1, backgroundColor: colors.bgSecondary }}>
       {data?.url ? (
         <VideoPlayer
           urls={{
@@ -116,13 +178,13 @@ export const ViewLive: React.FC<RootNavigationProps<'ViewLive'>> = props => {
         </View>
       )}
 
-      <Containter style={{paddingBottom: 0}}>
+      <Containter style={{ paddingBottom: 0 }}>
         {loading && programs.length > 0 ? (
           <LiveSkeleton />
         ) : (
           <>
             <NextProgram programs={programs} />
-            <BoldText fontSize={18} style={{marginTop: 10, fontWeight: '800'}}>
+            <BoldText fontSize={18} style={{ marginTop: 10, fontWeight: '800' }}>
               {data?.name ?? ''}
             </BoldText>
             <CurrentProgram programs={programs} />

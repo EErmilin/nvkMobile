@@ -23,7 +23,6 @@ import { SkipRightVideo } from './SVGcomponents/media/SkipRightVideo';
 import { SkipLeftVideo } from './SVGcomponents/media/SkipLeftVideo';
 import Orientation from 'react-native-orientation-locker';
 import TrackPlayer from 'react-native-track-player';
-import PipHandler, { usePipModeListener } from 'react-native-pip-android';
 
 import CompositeAnimation = Animated.CompositeAnimation;
 import {
@@ -55,7 +54,6 @@ const BOTTOM = 54;
 
 export const VideoPlayer = (props: VideoPlayerProps) => {
   const { videoName, urls, style, live, scrollRef } = props;
-  const inPipMode = usePipModeListener();
 
   const refVideo = React.useRef<Video>(null);
   const animValueLeft = React.useRef(new Animated.Value(0)).current;
@@ -282,26 +280,6 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
       },
   });
 
-  if (inPipMode) {
-    return (
-      <Video
-        ref={refVideo}
-        style={[styleScreen.fullscreen, style]}
-        // source={{uri: modalSetting.quality}}
-        source={{ uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" }}
-        rate={modalSetting.speed}
-        resizeMode="contain"
-
-        automaticallyWaitsToMinimizeStalling
-        preferredForwardBufferDuration={500}
-        fullscreen={Platform.OS === 'android' ? fullscreen : false}
-
-        posterResizeMode="cover"
-        playWhenInactive
-        playInBackground={false}
-      />)
-  }
-
   //стиль при портретном состоянии
   const styleButtonPortrait =
     SCREEN_HEIGHT >= SCREEN_WIDTH
@@ -451,9 +429,9 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
             automaticallyWaitsToMinimizeStalling
             preferredForwardBufferDuration={500}
             fullscreen={Platform.OS === 'android' ? fullscreen : false}
-            paused={
-              paused || contextNavBar.videoPlayerOption.video !== undefined
-            }
+            // paused={
+            //   paused || contextNavBar.videoPlayerOption.video !== undefined
+            // }
             repeat={true}
             onReadyForDisplay={() => {
               setLoading(false);
@@ -515,10 +493,8 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
                 <FullScreenButton
                   style={styleButtonPortrait.fullscreenButton}
                   onPress={() => {
-                    PipHandler.enterPipMode(300, 214)
-
-                    // setTap(!tap);
-                    // handleFullScreen();
+                    setTap(!tap);
+                    handleFullScreen();
                   }}
                 />
               </GestureDetector>
