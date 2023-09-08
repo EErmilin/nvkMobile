@@ -32,7 +32,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NextProgram } from './components/NextProgram';
 import { CurrentProgram } from './components/CurrentProgram';
 import PipHandler, { usePipModeListener } from 'react-native-pip-android';
-import WebView from 'react-native-webview';
 
 export const ViewLive: React.FC<RootNavigationProps<'ViewLive'>> = props => {
   const { route, navigation } = props;
@@ -120,40 +119,7 @@ export const ViewLive: React.FC<RootNavigationProps<'ViewLive'>> = props => {
       subscription.remove();
     };
   }, []);
-  const html = `<html>
-						<head>
-							<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
-						</head>
-						<body style="margin: 0;">
-							<video id="player" style="width: 100%; height: 100%; background: #000;" controls autoplay>
-								<source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
-							</video>
 
-							<script>
-								var player = document.getElementById("player");
-
-								player.addEventListener("loadeddata", () => {
-									window.ReactNativeWebView.postMessage("duration: " + String(player.duration));
-								}, false)
-								
-								player.addEventListener("timeupdate", () => {
-									window.ReactNativeWebView.postMessage(player.currentTime);
-								});
-							</script>
-						</body>
-					</html>`;
-  if (inPipMode)
-    return (
-      <View
-        style={{ flex: 1, backgroundColor: "black" }}
-      >
-        <WebView
-          source={{ html: html }}
-
-          mediaPlaybackRequiresUserAction={false}
-        />
-      </View>
-    );
 
 
   return (
