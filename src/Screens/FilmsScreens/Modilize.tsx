@@ -1,24 +1,28 @@
-import {current} from '@reduxjs/toolkit';
-import {forwardRef, useEffect, useImperativeHandle, useRef} from 'react';
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 
-// import {
-//   setUserSettingsModalRef,
-//   setWatchCompanionModalRefACTION,
-// } from '../../store/app/actions';
-// import {useAnalyticEvent} from '../../api/analytics/useAnalyticEvent';
+import BottomSheet from '../../components/BottomSheet';
 
 export type WatchCompanionsHandle = {
   open: () => void;
 };
 
 const Modilize = forwardRef((_, ref) => {
+  const [isVisible, setIsVisible] = useState(false);
   //   const dispatch = useTypedDispatch();
   //   const trackEvent = useAnalyticEvent();
   const modalizeRef = useRef<any>(null);
 
+  console.log(isVisible);
+
   useImperativeHandle<unknown, WatchCompanionsHandle>(ref, () => ({
-    open: () => modalizeRef.current?.open(),
+    open: () => setIsVisible(prev => !prev),
   }));
 
   useEffect(() => {
@@ -26,15 +30,8 @@ const Modilize = forwardRef((_, ref) => {
   }, []);
 
   return (
-    <View
-      ref={modalizeRef}
-      // modalStyle={styles.modalizeStyle}
-      // scrollViewProps={{ keyboardShouldPersistTaps: "always" }}
-      // closeOnOverlayTap={false}
-      // closeSnapPointStraightEnabled={false}
-      // adjustToContentHeight
-    >
-      <View style={styles.loader}></View>
+    <View ref={modalizeRef}>
+      <BottomSheet isVisible={isVisible} />
     </View>
   );
 });

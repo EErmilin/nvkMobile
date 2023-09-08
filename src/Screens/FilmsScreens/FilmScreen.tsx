@@ -23,7 +23,7 @@ import {Review} from '../../components/Review';
 import Animated, {useSharedValue, withTiming} from 'react-native-reanimated';
 import MediumText from '../../components/MediumText';
 import {useNavigation} from '@react-navigation/native';
-import Modilize from './Modilize';
+import BottomSheet from '../../components/BottomSheet';
 
 //mock data
 const data = [1];
@@ -70,13 +70,16 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = () => {
   const [isBottomSheet, setIsBottomSheet] = React.useState(false);
   const {colors} = useTheme();
   const navigation = useNavigation();
+  const modalRef = React.useRef();
+
+  const openModal = () => {
+    modalRef.current.show();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {isBottomSheet && <BottomSheet isVisible={isBottomSheet} />}
-      {/* <Pressable onPress={() => console.log(modalRef.current)}>
-        <Modilize ref={modalRef} />
-      </Pressable> */}
+      <BottomSheet ref={modalRef} />
+      {/* <Modilize ref={modalRef} /> */}
 
       <ScrollView>
         {data.length ? (
@@ -212,7 +215,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = () => {
                   </Animated.View>
                 </Animated.View>
                 <TouchableOpacity
-                  onPress={() => setIsBottomSheet(prev => !prev)}
+                  onPress={openModal}
                   style={[styles.smallBtn, styles.btnOutlined]}>
                   <RegularText>Оценить</RegularText>
                 </TouchableOpacity>
@@ -306,6 +309,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: colors.orange,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  contentContainer: {
+    flex: 1,
     alignItems: 'center',
   },
 });
