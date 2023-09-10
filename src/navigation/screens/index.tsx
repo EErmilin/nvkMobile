@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   View,
+  Text,
 } from 'react-native';
 import {
   NavigationContainer,
@@ -94,6 +95,7 @@ import {ChildrenModeModal} from '../../components/ChildrenModeModal';
 import CreateBloger from '../../Screens/BlogerScreens/CreateBloger';
 import BlogerProfile from '../../Screens/BlogerScreens/BlogerProfile';
 import ReviewsScreen from '../../Screens/ ReviewsScreen/ReviewsScreen';
+import {useSelector} from 'react-redux';
 
 LogBox.ignoreAllLogs();
 
@@ -214,10 +216,16 @@ const StackNavigation = () => {
   const [flag, setFlag] = React.useState(false);
   const [isChildrenMode, setIsChildrenMode] = React.useState(false);
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [showHeader, setShowHeader] = React.useState(false);
   const insets = useSafeAreaInsets();
   const userId = useAppSelector(state => state.user.data?.id);
   // const client = useApolloClient();
   const dispatch = useAppDispatch();
+
+  //BOTTOM SHEET
+  const {isVisible} = useSelector(state => state.bottomSheet);
+
+  console.log(isVisible);
 
   React.useEffect(() => {
     if (routes?.length) {
@@ -338,6 +346,20 @@ const StackNavigation = () => {
       notification();
     }
   }, [notification, notificationRedux]);
+
+  const CustomHeader = () => {
+    return <Text>CustomHEader</Text>;
+  };
+
+  React.useEffect(() => {
+    if (isVisible) {
+      setShowHeader(true);
+    }
+    console.log(isVisible);
+    return () => {
+      setShowHeader(false);
+    };
+  }, [isVisible]);
 
   return (
     <View
@@ -681,6 +703,7 @@ const StackNavigation = () => {
             title: route.params.title,
             headerRight: () => <Rating rating={route.params.rating} isStar />,
             headerStyle: {backgroundColor: colors.fillPrimary},
+            // header: () => (showHeader ? <CustomHeader /> : null),
           })}
         />
         <Stack.Screen

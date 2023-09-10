@@ -5,7 +5,7 @@ import {LockIcon} from './SVGcomponents/LockIcon';
 import {LockCloseIcon} from './SVGcomponents/LockCloseIcon';
 
 interface Props {
-  rating: number | string;
+  rating?: number | string;
   isStar?: boolean;
   lock?: boolean;
   disabled?: boolean;

@@ -87,6 +87,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = () => {
         ) : (
           <ActivityIndicator color={colors.colorMain} size={'large'} />
         )}
+
         <Containter style={{gap: 25}}>
           <Animated.View style={{gap: 10}}>
             <Animated.View

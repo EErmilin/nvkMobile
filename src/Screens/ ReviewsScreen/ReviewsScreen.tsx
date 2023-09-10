@@ -8,6 +8,8 @@ import {
   Animated,
 } from 'react-native';
 
+import RankComponent from '../../components/RankComponent';
+
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import {colors, useTheme} from '../../Styles/Styles';
 
@@ -18,8 +20,6 @@ import {StarIcon} from '../../components/SVGcomponents/StarIcon';
 import {RootNavigationProps} from '../../navigation/types/RootStackTypes';
 
 //dummy data
-
-const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
 const item = {
   name: 'name',
@@ -58,31 +58,7 @@ const item = {
   ],
 };
 
-//boxContainer
-
-interface Props {
-  item: number;
-  index: number;
-  activeIndex: number;
-}
-
-const BoxContainer = ({item, index, activeIndex}: Props) => {
-  return (
-    <View
-      style={[
-        styles.rating,
-        activeIndex === index ? {backgroundColor: colors.orange} : null,
-      ]}>
-      <BoldText
-        fontSize={16}
-        style={{
-          color: activeIndex === index ? colors.white : colors.blackText,
-        }}>
-        {item}
-      </BoldText>
-    </View>
-  );
-};
+const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
 const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = props => {
   const {route, navigation} = props;
@@ -113,11 +89,12 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = props => {
                 {rankNumber &&
                   rankNumber.map((item, index) => {
                     return (
-                      <BoxContainer
+                      <RankComponent
                         item={item}
                         index={index}
                         activeIndex={activeIndex}
                         key={index}
+                        style
                       />
                     );
                   })}
