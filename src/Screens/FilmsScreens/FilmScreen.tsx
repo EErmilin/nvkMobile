@@ -3,11 +3,7 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
-  useWindowDimensions,
-  Pressable,
 } from 'react-native';
 import * as React from 'react';
 import {FC} from 'react';
@@ -20,10 +16,10 @@ import {ViewedIcon} from '../../components/SVGcomponents/ViewedIcon';
 import WebView from 'react-native-webview';
 import {ArrowRight} from '../../components/SVGcomponents';
 import {Review} from '../../components/Review';
-import Animated, {useSharedValue, withTiming} from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import MediumText from '../../components/MediumText';
 import {useNavigation} from '@react-navigation/native';
-import BottomSheet from '../../components/BottomSheet';
+import {useSelector} from 'react-redux';
 
 //mock data
 const data = [1];
@@ -64,23 +60,24 @@ const item = {
   ],
 };
 
-//BottomSheet
-
 export const FilmScreen: FC<RootNavigationProps<'Film'>> = () => {
-  const [isBottomSheet, setIsBottomSheet] = React.useState(false);
   const {colors} = useTheme();
   const navigation = useNavigation();
-  const modalRef = React.useRef();
+  const [bottomSheetRef, setBottomSheetRef] = React.useState(null);
+  const {reviewModalRef} = useSelector(state => state.bottomSheet);
 
   const openModal = () => {
-    modalRef.current.show();
+    bottomSheetRef?.current?.open();
+    console.log(bottomSheetRef);
   };
+  React.useEffect(() => {
+    if (reviewModalRef) {
+      setBottomSheetRef(reviewModalRef);
+    }
+  }, [reviewModalRef]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <BottomSheet ref={modalRef} />
-      {/* <Modilize ref={modalRef} /> */}
-
       <ScrollView>
         {data.length ? (
           <VideoPlayer urls={{url: '', hls: []}} />

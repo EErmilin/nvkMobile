@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   View,
-  Text,
 } from 'react-native';
 import {
   NavigationContainer,
@@ -113,6 +112,9 @@ export const AppNavigation = () => {
   const videoContext = React.useContext(VideoPlayerContext);
   const {theme, text, colors} = useTheme();
   const dispatch = useAppDispatch();
+
+  const {isOpen} = useSelector(state => state.bottomSheet);
+  console.log(isOpen);
 
   const setListenerTheme = React.useCallback(
     (listener: Appearance.AppearancePreferences) => {
@@ -223,9 +225,6 @@ const StackNavigation = () => {
   const dispatch = useAppDispatch();
 
   //BOTTOM SHEET
-  const {isVisible} = useSelector(state => state.bottomSheet);
-
-  console.log(isVisible);
 
   React.useEffect(() => {
     if (routes?.length) {
@@ -346,20 +345,6 @@ const StackNavigation = () => {
       notification();
     }
   }, [notification, notificationRedux]);
-
-  const CustomHeader = () => {
-    return <Text>CustomHEader</Text>;
-  };
-
-  React.useEffect(() => {
-    if (isVisible) {
-      setShowHeader(true);
-    }
-    console.log(isVisible);
-    return () => {
-      setShowHeader(false);
-    };
-  }, [isVisible]);
 
   return (
     <View
@@ -701,9 +686,9 @@ const StackNavigation = () => {
           component={FilmScreen}
           options={({route}) => ({
             title: route.params.title,
+            navigationBarHidden: true,
             headerRight: () => <Rating rating={route.params.rating} isStar />,
             headerStyle: {backgroundColor: colors.fillPrimary},
-            // header: () => (showHeader ? <CustomHeader /> : null),
           })}
         />
         <Stack.Screen

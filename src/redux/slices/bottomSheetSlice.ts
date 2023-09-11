@@ -3,14 +3,15 @@ import {createSlice} from '@reduxjs/toolkit';
 const bottomSheetSlice = createSlice({
   name: 'bottomSheet',
   initialState: {
-    isVisible: false,
+    reviewModalRef: null,
+    isOpen: false,
   },
   reducers: {
-    setIsVisible: (state, action) => {
-      state.isVisible = action.payload;
+    setRef: (state, action) => {
+      state.reviewModalRef = action.payload;
     },
   },
 });
 
-export const {setIsVisible} = bottomSheetSlice.actions;
+export const {setRef} = bottomSheetSlice.actions;
 export default bottomSheetSlice.reducer;

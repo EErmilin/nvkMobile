@@ -5,9 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
-  Text,
   View,
   StyleSheet,
   Image,
@@ -22,48 +20,45 @@ import {Rating} from './Rating';
 import RankComponent from './RankComponent';
 
 import {Button} from './Button';
-import {useDispatch, useSelector} from 'react-redux';
-import {setIsVisible} from '../redux/slices/bottomSheetSlice';
+import {useDispatch} from 'react-redux';
+import {setRef} from '../redux/slices/bottomSheetSlice';
 import MediumText from './MediumText';
 
 const {width, height} = Dimensions.get('window');
 
 const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
+export type BottomSheetHandle = {
+  open: () => void;
+  isOpen: boolean;
+};
+
 const BottomSheet = forwardRef((_, ref) => {
   //state
-  const [activeIndex, setActiveIndex] = useState(4);
+  const [activeIndex] = useState(4);
 
-  const showModalRef = useRef<any>(null);
+  const showModalRef = useRef<BottomSheet>(null);
   const translateYR = useSharedValue(0);
-  const {isVisible} = useSelector(state => state.bottomSheet);
   const dispatch = useDispatch();
 
-  useImperativeHandle(ref, () => ({
-    show: () => {
-      if (!isVisible) {
-        translateYR.value = withTiming(translateYR.value - height, {
-          duration: 400,
-        });
-        dispatch(setIsVisible(true));
-      }
+  useImperativeHandle<unknown, BottomSheetHandle>(ref, () => ({
+    open: () => {
+      translateYR.value = withTiming(translateYR.value - height, {
+        duration: 400,
+      });
     },
+    isOpen: true,
   }));
 
   const publishReviewHandler = () => {
-    if (isVisible) {
-      translateYR.value = withTiming(translateYR.value + height, {
-        duration: 400,
-      });
-      dispatch(setIsVisible(false));
-    }
+    translateYR.value = withTiming(translateYR.value + height, {
+      duration: 400,
+    });
   };
 
   useEffect(() => {
-    return () => {
-      dispatch(setIsVisible(false));
-    };
-  }, []);
+    dispatch(setRef(ref));
+  }, [dispatch, ref]);
 
   return (
     <Animated.View
@@ -71,12 +66,10 @@ const BottomSheet = forwardRef((_, ref) => {
         styles.container,
         {
           transform: [{translateY: translateYR}],
-          height,
-          width,
         },
       ]}
       ref={showModalRef}>
-      <View style={styles.topInfo}>
+      <View>
         <View style={styles.drag} />
         <BoldText fontSize={18} style={{textAlign: 'center'}}>
           Оценить
@@ -156,16 +149,15 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     backgroundColor: colors.white,
-    flex: 1,
     alignItems: 'center',
+    height,
+    width,
     zIndex: 1,
     bottom: -height,
-    borderRadius: 25,
     paddingHorizontal: 12,
     paddingVertical: 12,
     justifyContent: 'space-between',
   },
-  topInfo: {},
   drag: {
     width: 50,
     height: 4,

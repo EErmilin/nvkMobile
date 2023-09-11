@@ -6,7 +6,7 @@ interface Props {
   item: number;
   index: number;
   activeIndex: number;
-  style: boolean;
+  style?: boolean;
 }
 
 const RankComponent = ({item, index, activeIndex, style}: Props) => {
