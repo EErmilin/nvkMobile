@@ -413,7 +413,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
           <Video
             ref={refVideo}
             style={[styleScreen.fullscreen, style]}
-            source={{uri: modalSetting.quality}}
+            source={{uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"}}
             rate={modalSetting.speed}
             resizeMode="contain"
             onPlaybackRateChange={async res => {
@@ -449,6 +449,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
             }}
             posterResizeMode="cover"
             playWhenInactive
+            pictureInPicture
             playInBackground={false}
           />
           <Animated.View

@@ -1,9 +1,11 @@
 import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { BoldText, Button, InputText } from '../../components'
 
-import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm, useFieldArray } from 'react-hook-form';
 
 import { InputForm } from '../../components/react-hook-form-fields/InputForm'
 import { colors } from '../../Styles/Styles';
@@ -12,12 +14,29 @@ import Plus_icon from '../../assets/icons/Plus_icon';
 import Telegram_Icon from '../../assets/icons/Telegram_Icon';
 import YouTube_Icon from '../../assets/icons/YouTube_Icon';
 import Odnoklassniki_icon from '../../assets/icons/Odnoklassniki_icon';
+import { TEST_BLOGER_DATA } from './components/tmpData';
+import { useAppSelector } from '../../redux/hooks';
+import PlusWithCircle_icon from '../../assets/icons/PlusWithCircle_icon';
 
 const { width } = Dimensions.get('screen');
 
+const INITIAL_VALUES = {
+    about: '',
+    nik: '',
+    odnoklassniki: '',
+    telegram: '',
+    vk: '',
+    youTube: '',
+    sites: []
+}
 
 
-const CreateBloger = () => {
+type TFormProps = {
+    type?: string;
+};
+
+const CreateBloger: React.FC<TFormProps> = ({ type }) => {
+
 
 
     const {
@@ -25,57 +44,78 @@ const CreateBloger = () => {
         handleSubmit,
         formState: { errors },
         setValue,
-    } = useForm();
+    } = useForm({
+        defaultValues:
+            type === "Edit"
+                ? TEST_BLOGER_DATA
+                : INITIAL_VALUES,
+    });
 
-    const [siteList, setSiteList] = useState([""]);
+    const { fields, append, remove } = useFieldArray({
+        control,
+        // @ts-expect-error incorrect schema resolution in library types
+        name: 'sites',
+    });
 
-    const addSite = () => {
-        setSiteList([
-            ...siteList,
-            ""
-        ]);
-        console.log("addSite")
-    };
+    useEffect(()=>{
+        if(fields.length === 0)
+            append("")
+    },[])
 
-    const removeSite = (currentIndex: number) => {
-        setSiteList(siteList.filter((_, index) => index !== currentIndex));
-    };
+
 
     const handleSubmitForm = async (fields: any) => {
-
-
-
+        console.log(fields);
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView>
+            <ScrollView
+                style={styles.scroll_container}
+                showsVerticalScrollIndicator={false}
+            >
                 <BoldText fontSize={16} mt={21}>Профиль</BoldText>
+
+                <InputForm
+                    name='nik'
+                    placeholder='Желаемый никнейм'
+                    control={control}
+                    maxLength={16}
+                    mt={15}
+                />
+
+                <InputForm
+                    name='about'
+                    placeholder='Описание'
+                    control={control}
+                    mt={15}
+                    multiline
+                />
 
                 <BoldText fontSize={16} mt={30} mb={15}>Сайт(ы)</BoldText>
 
-                {siteList.map((_, index) =>
+                {fields.map((field, index) => (
                     <View style={styles.social_container} key={`sites[${index}]`}>
-
                         <InputForm
                             name={`sites[${index}]`}
                             placeholder='Сайт'
                             control={control}
                             width={width - 100}
                         />
-                        <Plus_icon
+                        <PlusWithCircle_icon
                             containerStyle={styles.social_icon}
-                            backgroundColor={colors.background}
-                            onPress={
-                                index !== 0 ?
-                                    () => removeSite(index)
-                                    :
-                                    addSite
-                            }
+                            backgroundColor={colors.background}                            
+                            iconColor="#F6A80B"
+                            onPress={() => {
+                                if (index !== 0) {
+                                    remove(index); // Удаление элемента через remove
+                                } else {
+                                    append(""); // Добавление нового элемента
+                                }
+                            }}
                         />
-
                     </View>
-                )}
+                ))}
 
                 <BoldText fontSize={16} mt={30}>Соц. сети</BoldText>
 
@@ -125,7 +165,7 @@ const CreateBloger = () => {
 
                 <View style={styles.social_container}>
                     <InputForm
-                        name='oddnoklassniki'
+                        name='odnoklassniki'
                         placeholder='Ссылка'
                         control={control}
                         width={width - 100}
@@ -138,8 +178,7 @@ const CreateBloger = () => {
                 </View>
             </ScrollView>
 
-            <Button title='Опубликовать'  disabled={true} onPress={handleSubmit(handleSubmitForm)} />
-
+            <Button title='Опубликовать' disabled={false} onPress={handleSubmit(handleSubmitForm)} />
 
         </SafeAreaView>
     )
@@ -150,18 +189,19 @@ export default CreateBloger
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 15,        
+        paddingHorizontal: 15,
         paddingBottom: 15,
         backgroundColor: '#fff'
     },
-    scrollContainer: {
-
+    scroll_container: {
+        marginBottom: 15
     },
 
     social_container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 15
+        marginTop: 15,
+        height:60,
     },
     social_input: {
         width: width - 100

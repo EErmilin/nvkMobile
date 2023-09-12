@@ -22,6 +22,7 @@ import ShowSocialModal, {
   ShowSocialModalizeHandle,
 } from './components/ShowSocialModal';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {AnimatedRef} from 'react-native-reanimated';
 import BlogerProfileHead from './components/BlogerProfileHead';
 
 const {width} = Dimensions.get('screen');
@@ -70,17 +71,16 @@ const AudioRoute = () => (
 
 const initialLayout = {width: Dimensions.get('window').width};
 
-const BlogerProfile = () => {
+const BlogerProfile1 = () => {
   const showSocialRef = useRef<ShowSocialModalizeHandle>();
+  const profileHeader = useRef<LegacyRef>();
 
   const openSocial = () => {
     showSocialRef.current?.open();
   };
 
   const [index, setIndex] = useState(0);
-
   const tabs = ['photo', 'audio', 'video'];
-
   const [routes] = React.useState([
     {key: 'photo', title: 'First'},
     {key: 'video', title: 'Second'},
@@ -97,8 +97,19 @@ const BlogerProfile = () => {
     <BlogerContentTabBar tabs={tabs} activeTab={index} goToPage={setIndex} />
   );
 
+  const onResponderMove = (event: PointerEvent) => {
+
+    const value = event.
+  };
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <GestureHandlerRootView
+      onPointerMove={onResponderMove}
+      >
+        <View ref={profileHeader}></View>
+      </GestureHandlerRootView>
+
       <CollapsibleHeaderTabView
         renderScrollHeader={() => <BlogerProfileHead openSocial={openSocial} />}
         navigationState={{index, routes}}
@@ -108,11 +119,11 @@ const BlogerProfile = () => {
         initialLayout={initialLayout}
       />
       <ShowSocialModal ref={showSocialRef} />
-    </View>
+    </SafeAreaView>
   );
 };
 
-export default BlogerProfile;
+export default BlogerProfile1;
 
 const styles = StyleSheet.create({
   container: {

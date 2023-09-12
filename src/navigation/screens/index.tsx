@@ -93,6 +93,7 @@ import {CartoonScreen} from '../../Screens/CartoonsScreen/CartoonScreen';
 import {ChildrenModeModal} from '../../components/ChildrenModeModal';
 import CreateBloger from '../../Screens/BlogerScreens/CreateBloger';
 import BlogerProfile from '../../Screens/BlogerScreens/BlogerProfile';
+import EditBlogger from '../../Screens/BlogerScreens/EditBloger';
 import ReviewsScreen from '../../Screens/ ReviewsScreen/ReviewsScreen';
 import {useSelector} from 'react-redux';
 
@@ -743,6 +744,28 @@ const StackNavigation = () => {
             ),
             headerStyle: {backgroundColor: colors.fillPrimary},
           })}
+        />
+        <Stack.Screen
+          name="CreateBloger"
+          component={CreateBloger}
+          options={() => ({
+            title: 'Стать блогером',
+          })}
+        />
+        <Stack.Screen
+          name="EditBloger"
+          component={EditBlogger}
+          options={() => ({
+            title: 'Редактировать',
+          })}
+        />
+        <Stack.Screen
+          name="BlogerProfile"
+          component={BlogerProfile}
+          options={{
+            title: '',
+            headerTitle,
+          }}
         />
         {/* ReviewsScreen */}
         <Stack.Screen
