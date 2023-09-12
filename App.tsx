@@ -3,8 +3,7 @@ import {Platform, UIManager} from 'react-native';
 import {apolloClient} from './src/apolloClient';
 import {ApolloProvider} from '@apollo/client';
 import SplashScreen from 'react-native-splash-screen';
-import {Provider} from 'react-redux';
-import {persistor, store} from './src/redux/persist';
+import {persistor} from './src/redux/persist';
 import {PersistGate} from 'redux-persist/integration/react';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {VideoPlayerProvider} from './src/contexts/videoContext';
@@ -18,9 +17,11 @@ import remoteConfig from '@react-native-firebase/remote-config';
 import AppMetrica from 'react-native-appmetrica-next';
 import {YANDEX_APPMETRICA_API_KEY} from './src/api/config';
 import {TrackPlayerReset} from './src/services/service';
+import BottomSheet from './src/components/BottomSheet';
 
 export default function App() {
   const tempRef = React.useRef(false);
+  const modalRef = React.useRef();
 
   React.useEffect(() => {
     (async function () {
@@ -88,23 +89,22 @@ export default function App() {
   }
 
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ApolloProvider client={apolloClient}>
-          <VideoPlayerProvider>
-            <MusicPlayerProvider>
-              <BottomSheetModalProvider>
-                <GestureHandlerRootView style={{flex: 1}}>
-                  <SafeAreaProvider>
-                    <AppNavigation />
-                  </SafeAreaProvider>
-                </GestureHandlerRootView>
-              </BottomSheetModalProvider>
-            </MusicPlayerProvider>
-          </VideoPlayerProvider>
-        </ApolloProvider>
-      </PersistGate>
-    </Provider>
+    <PersistGate loading={null} persistor={persistor}>
+      <ApolloProvider client={apolloClient}>
+        <VideoPlayerProvider>
+          <MusicPlayerProvider>
+            <BottomSheetModalProvider>
+              <GestureHandlerRootView style={{flex: 1}}>
+                <SafeAreaProvider>
+                  <BottomSheet ref={modalRef} />
+                  <AppNavigation />
+                </SafeAreaProvider>
+              </GestureHandlerRootView>
+            </BottomSheetModalProvider>
+          </MusicPlayerProvider>
+        </VideoPlayerProvider>
+      </ApolloProvider>
+    </PersistGate>
   );
 }
 
