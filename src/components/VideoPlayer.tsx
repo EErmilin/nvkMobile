@@ -453,7 +453,8 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
             }}
             posterResizeMode="cover"
             playWhenInactive
-            playInBackground={true}
+            pictureInPicture
+            playInBackground={false}
           />
           <Animated.View
             pointerEvents={!touch ? 'none' : undefined}

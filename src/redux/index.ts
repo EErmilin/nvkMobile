@@ -7,6 +7,7 @@ import themeSlice from './slices/themeSlice';
 import mainSlice from './slices/mainSlice';
 import favoriteSlice from './slices/favoriteSlice';
 import screensSlice from './slices/screensSlice';
+import bottomSheetSlice from './slices/bottomSheetSlice';
 
 export const reducersObj = {
   auth: authSlice,
@@ -16,6 +17,7 @@ export const reducersObj = {
   main: mainSlice,
   favorite: favoriteSlice,
   screens: screensSlice,
+  bottomSheet: bottomSheetSlice,
 };
 
 export const rootReducer = combineReducers(reducersObj);

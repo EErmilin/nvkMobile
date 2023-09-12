@@ -1,82 +1,161 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { useAppSelector } from '../../redux/hooks';
+import React, {useRef, useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  SafeAreaView,
+  GestureResponderEvent,
+  Animated,
+} from 'react-native';
+import {SceneMap} from 'react-native-tab-view';
+import {HScrollView} from 'react-native-head-tab-view';
+import {CollapsibleHeaderTabView} from 'react-native-tab-view-collapsible-header';
+import BlogerContentTabBar from './components/BlogerContentTabBar';
+import {tmpData1, tmpData2} from './components/tmpData';
 import FastImage from 'react-native-fast-image';
+import {
+  BlogerContent_Audio,
+  BlogerContent_Photo,
+  BlogerContent_Video,
+} from './components/BlogerContent';
+import ShowSocialModal, {
+  ShowSocialModalizeHandle,
+} from './components/ShowSocialModal';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {AnimatedRef} from 'react-native-reanimated';
 import BlogerProfileHead from './components/BlogerProfileHead';
-import ShowSocialModal, { ShowSocialModalizeHandle } from './components/ShowSocialModal';
-import BlogerProfileContentTabs from './components/BlogerProfileContentTabs';
 
-const { width, height } = Dimensions.get('screen');
+const {width} = Dimensions.get('screen');
 
+const PhotoRoute = () => (
+  <HScrollView index={0}>
+    <View style={styles.grid}>
+      {tmpData1.map((element, index) => (
+        <BlogerContent_Photo
+          key={`s_${index}`}
+          post={element}
+          onPress={() => {}}
+        />
+      ))}
+    </View>
+  </HScrollView>
+);
 
+const VideoRoute = () => (
+  <HScrollView index={1} onMomentumScrollEnd={() => {}}>
+    <View style={styles.grid}>
+      {tmpData2.map((element, index) => (
+        <BlogerContent_Video
+          key={`s_${index}`}
+          post={element}
+          onPress={() => {}}
+        />
+      ))}
+    </View>
+  </HScrollView>
+);
+
+const AudioRoute = () => (
+  <HScrollView index={1} onMomentumScrollEnd={() => {}}>
+    <View style={styles.grid}>
+      {tmpData1.map((element, index) => (
+        <BlogerContent_Audio
+          key={`s_${index}`}
+          post={element}
+          onPress={() => {}}
+        />
+      ))}
+    </View>
+  </HScrollView>
+);
+
+const initialLayout = {width: Dimensions.get('window').width};
 
 const BlogerProfile1 = () => {
-    const postsRedux = useAppSelector(state => state.post.data);
+  const showSocialRef = useRef<ShowSocialModalizeHandle>();
+  const profileHeader = useRef<LegacyRef>();
 
-    const showSocialRef = useRef<ShowSocialModalizeHandle>();
+  const openSocial = () => {
+    showSocialRef.current?.open();
+  };
 
+  const [index, setIndex] = useState(0);
+  const tabs = ['photo', 'audio', 'video'];
+  const [routes] = React.useState([
+    {key: 'photo', title: 'First'},
+    {key: 'video', title: 'Second'},
+    {key: 'audio', title: 'Third'},
+  ]);
 
-    const openSocial = () => { showSocialRef.current?.open() }
+  const renderScene = SceneMap({
+    photo: PhotoRoute,
+    video: VideoRoute,
+    audio: AudioRoute,
+  });
 
-    const [scrollEnabled, setScrollEnabled] = useState<boolean>(true);
+  const renderTabBar = () => (
+    <BlogerContentTabBar tabs={tabs} activeTab={index} goToPage={setIndex} />
+  );
 
-    const handleScroll = (event: any) => {
-        const offsetY: number = event.nativeEvent?.contentOffset?.y;
-        console.log(offsetY)
-        // Если offsetY достигает 300, отключаем прокрутку
-        if (offsetY && offsetY >= 150) {
-            // setScrollEnabled(false);
-        }
-    };
+  const onResponderMove = (event: PointerEvent) => {
 
+    const value = event.
+  };
 
-    return (
-        <SafeAreaView style={styles.container}>
+  return (
+    <SafeAreaView style={styles.container}>
+      <GestureHandlerRootView
+      onPointerMove={onResponderMove}
+      >
+        <View ref={profileHeader}></View>
+      </GestureHandlerRootView>
 
-            <ScrollView
-                style={styles.scrollContainer}
-                scrollEnabled={scrollEnabled}
-                onScroll={handleScroll}
-                onTouchMove={handleScroll}
-                showsVerticalScrollIndicator={false}
-                bounces={false}
-            >
-                <BlogerProfileHead openSocial={openSocial} />
-                <View
-                    style={styles.scrollContainer}
-                >
-                    <BlogerProfileContentTabs onTop={() => setScrollEnabled(true)} componentHeight={545} />
-                </View>
-            </ScrollView>
-            <ShowSocialModal ref={showSocialRef} />
-        </SafeAreaView>
-    )
-}
+      <CollapsibleHeaderTabView
+        renderScrollHeader={() => <BlogerProfileHead openSocial={openSocial} />}
+        navigationState={{index, routes}}
+        renderTabBar={renderTabBar}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={initialLayout}
+      />
+      <ShowSocialModal ref={showSocialRef} />
+    </SafeAreaView>
+  );
+};
 
 export default BlogerProfile1;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff'
-    },
-    scrollContainer: {
-        flexGrow: 1,
-        paddingBottom: 20, // Подстройте отступ в соответствии с вашим дизайном
-        minHeight: height,
-    },
-    grid: {
-        flexDirection: 'row',
-        gap: 1,
-        flexWrap: 'wrap',
-        width: width,
-    },
-    post_image: {
-        width: (width - 2) / 3,
-        height: width / 3,
-        marginTop: 1,
-        backgroundColor: "#f2f2f2"
-    }
-
-})
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  scene: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  grid: {
+    flexDirection: 'row',
+    gap: 1,
+    flexWrap: 'wrap',
+    width: width,
+  },
+  post_image: {
+    width: (width - 2) / 3,
+    height: width / 3,
+    marginTop: 1,
+    backgroundColor: '#f2f2f2',
+  },
+  post_video: {
+    width: (width - 2) / 3,
+    height: width / 3,
+    marginTop: 1,
+    backgroundColor: '#f2f2f2',
+  },
+  post_audio: {
+    width: (width - 2) / 3,
+    height: width / 3,
+    marginTop: 1,
+    backgroundColor: '#f2f2f2',
+  },
+});
