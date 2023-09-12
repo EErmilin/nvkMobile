@@ -21,7 +21,7 @@ import RankComponent from './RankComponent';
 
 import {Button} from './Button';
 import {useDispatch} from 'react-redux';
-import {setRef} from '../redux/slices/bottomSheetSlice';
+import {setReview, setOpen} from '../redux/slices/bottomSheetSlice';
 import MediumText from './MediumText';
 
 const {width, height} = Dimensions.get('window');
@@ -30,35 +30,45 @@ const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
 export type BottomSheetHandle = {
   open: () => void;
-  isOpen: boolean;
 };
 
 const BottomSheet = forwardRef((_, ref) => {
   //state
+  const modalRef = useRef<() => void | null>(null);
   const [activeIndex] = useState(4);
-
-  const showModalRef = useRef<BottomSheet>(null);
   const translateYR = useSharedValue(0);
   const dispatch = useDispatch();
 
   useImperativeHandle<unknown, BottomSheetHandle>(ref, () => ({
     open: () => {
+      dispatch(setOpen(false));
       translateYR.value = withTiming(translateYR.value - height, {
-        duration: 400,
+        duration: 600,
       });
     },
-    isOpen: true,
   }));
 
   const publishReviewHandler = () => {
-    translateYR.value = withTiming(translateYR.value + height, {
-      duration: 400,
-    });
+    if (ref) {
+      dispatch(setOpen(true));
+      translateYR.value = withTiming(translateYR.value + height, {
+        duration: 600,
+      });
+    }
   };
 
   useEffect(() => {
-    dispatch(setRef(ref));
-  }, [dispatch, ref]);
+    if (ref) {
+      dispatch(setReview(ref));
+      dispatch(setOpen(true));
+    }
+  }, [ref, dispatch]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(setOpen(false));
+    };
+  }, [dispatch]);
 
   return (
     <Animated.View
@@ -68,7 +78,7 @@ const BottomSheet = forwardRef((_, ref) => {
           transform: [{translateY: translateYR}],
         },
       ]}
-      ref={showModalRef}>
+      ref={modalRef}>
       <View>
         <View style={styles.drag} />
         <BoldText fontSize={18} style={{textAlign: 'center'}}>
@@ -132,7 +142,6 @@ const BottomSheet = forwardRef((_, ref) => {
                 // },
               ]}
               placeholder="Ваш комментарий"
-              // placeholderTextColor={colors.textSecondary}
             />
           </View>
         </View>
@@ -152,8 +161,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height,
     width,
-    zIndex: 1,
     bottom: -height,
+    zIndex: 1,
     paddingHorizontal: 12,
     paddingVertical: 12,
     justifyContent: 'space-between',

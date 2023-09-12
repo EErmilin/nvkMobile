@@ -13,13 +13,14 @@ import {colors, useTheme} from '../../Styles/Styles';
 import {HeartIcon} from '../../components/SVGcomponents/HeartIcon';
 import {ClockIcon} from '../../components/SVGcomponents/ClockIcon';
 import {ViewedIcon} from '../../components/SVGcomponents/ViewedIcon';
-import WebView from 'react-native-webview';
+// import WebView from 'react-native-webview';
 import {ArrowRight} from '../../components/SVGcomponents';
 import {Review} from '../../components/Review';
 import Animated from 'react-native-reanimated';
 import MediumText from '../../components/MediumText';
 import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {setOpen} from '../../redux/slices/bottomSheetSlice';
 
 //mock data
 const data = [1];
@@ -63,18 +64,11 @@ const item = {
 export const FilmScreen: FC<RootNavigationProps<'Film'>> = () => {
   const {colors} = useTheme();
   const navigation = useNavigation();
-  const [bottomSheetRef, setBottomSheetRef] = React.useState(null);
-  const {reviewModalRef} = useSelector(state => state.bottomSheet);
+  const {reviewSheet} = useSelector(state => state.bottomSheet);
 
   const openModal = () => {
-    bottomSheetRef?.current?.open();
-    console.log(bottomSheetRef);
+    reviewSheet?.current?.open();
   };
-  React.useEffect(() => {
-    if (reviewModalRef) {
-      setBottomSheetRef(reviewModalRef);
-    }
-  }, [reviewModalRef]);
 
   return (
     <SafeAreaView style={styles.container}>

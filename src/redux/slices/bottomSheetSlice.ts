@@ -3,15 +3,18 @@ import {createSlice} from '@reduxjs/toolkit';
 const bottomSheetSlice = createSlice({
   name: 'bottomSheet',
   initialState: {
-    reviewModalRef: null,
-    isOpen: false,
+    reviewSheet: null,
+    isOpen: true,
   },
   reducers: {
-    setRef: (state, action) => {
-      state.reviewModalRef = action.payload;
+    setReview: (state, action) => {
+      state.reviewSheet = action.payload;
+    },
+    setOpen: (state, action) => {
+      state.isOpen = action.payload;
     },
   },
 });
 
-export const {setRef} = bottomSheetSlice.actions;
+export const {setReview, setOpen} = bottomSheetSlice.actions;
 export default bottomSheetSlice.reducer;

@@ -114,9 +114,6 @@ export const AppNavigation = () => {
   const {theme, text, colors} = useTheme();
   const dispatch = useAppDispatch();
 
-  const {isOpen} = useSelector(state => state.bottomSheet);
-  console.log(isOpen);
-
   const setListenerTheme = React.useCallback(
     (listener: Appearance.AppearancePreferences) => {
       if (text === 'Системная') {
@@ -219,7 +216,8 @@ const StackNavigation = () => {
   const [flag, setFlag] = React.useState(false);
   const [isChildrenMode, setIsChildrenMode] = React.useState(false);
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
-  const [showHeader, setShowHeader] = React.useState(false);
+  const {isOpen} = useSelector(state => state.bottomSheet);
+
   const insets = useSafeAreaInsets();
   const userId = useAppSelector(state => state.user.data?.id);
   // const client = useApolloClient();
@@ -687,9 +685,9 @@ const StackNavigation = () => {
           component={FilmScreen}
           options={({route}) => ({
             title: route.params.title,
-            navigationBarHidden: true,
             headerRight: () => <Rating rating={route.params.rating} isStar />,
             headerStyle: {backgroundColor: colors.fillPrimary},
+            headerShown: isOpen,
           })}
         />
         <Stack.Screen
