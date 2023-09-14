@@ -21,7 +21,7 @@ import RankComponent from './RankComponent';
 
 import {Button} from './Button';
 import {useDispatch} from 'react-redux';
-import {setReview, setOpen} from '../redux/slices/bottomSheetSlice';
+import {setOpen} from '../redux/slices/bottomSheetSlice';
 import MediumText from './MediumText';
 
 const {width, height} = Dimensions.get('window');
@@ -32,7 +32,7 @@ export type BottomSheetHandle = {
   open: () => void;
 };
 
-const BottomSheet = forwardRef((_, ref) => {
+const BottomSheet = forwardRef(({name}, ref) => {
   //state
   const modalRef = useRef<() => void | null>(null);
   const [activeIndex] = useState(4);
@@ -59,7 +59,6 @@ const BottomSheet = forwardRef((_, ref) => {
 
   useEffect(() => {
     if (ref) {
-      dispatch(setReview(ref));
       dispatch(setOpen(true));
     }
   }, [ref, dispatch]);
@@ -69,6 +68,8 @@ const BottomSheet = forwardRef((_, ref) => {
       dispatch(setOpen(false));
     };
   }, [dispatch]);
+
+  console.log(name);
 
   return (
     <Animated.View
@@ -85,19 +86,42 @@ const BottomSheet = forwardRef((_, ref) => {
           Оценить
         </BoldText>
         <View style={styles.movieInfo}>
-          <Image
-            source={{
-              uri: 'https://avatars.mds.yandex.net/get-kinopoisk-image/1777765/6fa09de3-4afd-4155-a6b9-4149be130ccd/3840x',
-            }}
-            style={styles.poster}
-          />
+          {name === 'film' && (
+            <Image
+              source={{
+                uri: 'https://avatars.mds.yandex.net/get-kinopoisk-image/1777765/6fa09de3-4afd-4155-a6b9-4149be130ccd/3840x',
+              }}
+              style={styles.poster}
+            />
+          )}
+          {name === 'serial' && (
+            <Image
+              source={{
+                uri: 'https://nvk-online.ru/new/movie/html/wp-content/uploads/2019/12/st1.jpg',
+              }}
+              style={styles.poster}
+            />
+          )}
+
+          {name === 'cartoon' && (
+            <Image
+              source={{
+                uri: 'https://kartinkof.club/uploads/posts/2022-09/1662203681_1-kartinkof-club-p-novie-i-krasivie-kartinki-masha-i-medved-1.jpg',
+              }}
+              style={styles.poster}
+            />
+          )}
           <View>
             <View style={{alignSelf: 'flex-start'}}>
               <Rating isStar />
             </View>
 
             <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-              <BoldText fontSize={18}>Пугало</BoldText>
+              <BoldText fontSize={18}>
+                {(name === 'film' && 'Пугало') ||
+                  (name === 'cartoon' && 'Маша и медведь') ||
+                  (name === 'serial' && 'Дьулаан дьыала')}
+              </BoldText>
               <MediumText
                 style={{
                   paddingVertical: 2,

@@ -20,7 +20,7 @@ import Animated from 'react-native-reanimated';
 import MediumText from '../../components/MediumText';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {setOpen} from '../../redux/slices/bottomSheetSlice';
+import BottomSheet from '../../components/BottomSheet';
 
 //mock data
 const data = [1];
@@ -64,14 +64,15 @@ const item = {
 export const FilmScreen: FC<RootNavigationProps<'Film'>> = () => {
   const {colors} = useTheme();
   const navigation = useNavigation();
-  const {reviewSheet} = useSelector(state => state.bottomSheet);
+  const bottomSheetRef = React.useRef();
 
   const openModal = () => {
-    reviewSheet?.current?.open();
+    bottomSheetRef?.current?.open();
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      <BottomSheet name={'film'} ref={bottomSheetRef} />
       <ScrollView>
         {data.length ? (
           <VideoPlayer urls={{url: '', hls: []}} />

@@ -18,12 +18,10 @@ import AppMetrica from 'react-native-appmetrica-next';
 import {YANDEX_APPMETRICA_API_KEY} from './src/api/config';
 import {TrackPlayerReset} from './src/services/service';
 import BottomSheet from './src/components/BottomSheet';
-import {useSelector} from 'react-redux';
 
 export default function App() {
   const tempRef = React.useRef(false);
-  const ref = React.useRef();
-  // const {isOpen} = useSelector(state => state.bottomSheet);
+  // const bottomSheetRef = React.useRef();
 
   React.useEffect(() => {
     (async function () {
@@ -49,7 +47,6 @@ export default function App() {
     })();
   }, []);
 
-
   if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -64,7 +61,7 @@ export default function App() {
             <BottomSheetModalProvider>
               <GestureHandlerRootView style={{flex: 1}}>
                 <SafeAreaProvider>
-                  <BottomSheet ref={ref} />
+                  {/* <BottomSheet ref={bottomSheetRef} /> */}
                   <AppNavigation />
                 </SafeAreaProvider>
               </GestureHandlerRootView>

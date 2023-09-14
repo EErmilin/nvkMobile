@@ -93,6 +93,9 @@ android {
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
+    lint {//
+        baseline = file("lint-baseline.xml")
+    }
 
     namespace "com.nvksakha"
     defaultConfig {

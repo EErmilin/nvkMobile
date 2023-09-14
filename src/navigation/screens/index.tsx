@@ -418,21 +418,21 @@ const StackNavigation = () => {
             title: 'Мои хэштеги',
           })}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="CreateBloger"
           component={CreateBloger}
           options={() => ({
             title: 'Стать блогером',
           })}
-        />
-        <Stack.Screen
+        /> */}
+        {/* <Stack.Screen
           name="BlogerProfile"
           component={BlogerProfile}
           options={{
             title: '',
             headerTitle,
           }}
-        />
+        /> */}
         <Stack.Screen
           name="PrivacyPolicy"
           component={PrivacyPolicy}
@@ -713,6 +713,7 @@ const StackNavigation = () => {
             title: route.params.title,
             headerRight: () => <Rating rating={route.params.rating} isStar />,
             headerStyle: {backgroundColor: colors.fillPrimary},
+            headerShown: isOpen,
           })}
         />
         <Stack.Screen
@@ -741,6 +742,7 @@ const StackNavigation = () => {
               </TouchableOpacity>
             ),
             headerStyle: {backgroundColor: colors.fillPrimary},
+            headerShown: isOpen,
           })}
         />
         <Stack.Screen
