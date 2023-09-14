@@ -19,7 +19,6 @@ import {ArrowRight} from '../../components/SVGcomponents';
 import {Review} from '../../components/Review';
 import MediumText from '../../components/MediumText';
 import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
 import BottomSheet from '../../components/BottomSheet';
 
 //mock data

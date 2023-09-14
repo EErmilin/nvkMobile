@@ -7,9 +7,6 @@ const bottomSheetSlice = createSlice({
     isOpen: true,
   },
   reducers: {
-    setReview: (state, action) => {
-      state.reviewSheet = action.payload;
-    },
     setOpen: (state, action) => {
       state.isOpen = action.payload;
     },

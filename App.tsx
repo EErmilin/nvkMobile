@@ -17,11 +17,9 @@ import remoteConfig from '@react-native-firebase/remote-config';
 import AppMetrica from 'react-native-appmetrica-next';
 import {YANDEX_APPMETRICA_API_KEY} from './src/api/config';
 import {TrackPlayerReset} from './src/services/service';
-import BottomSheet from './src/components/BottomSheet';
 
 export default function App() {
   const tempRef = React.useRef(false);
-  // const bottomSheetRef = React.useRef();
 
   React.useEffect(() => {
     (async function () {
@@ -61,7 +59,6 @@ export default function App() {
             <BottomSheetModalProvider>
               <GestureHandlerRootView style={{flex: 1}}>
                 <SafeAreaProvider>
-                  {/* <BottomSheet ref={bottomSheetRef} /> */}
                   <AppNavigation />
                 </SafeAreaProvider>
               </GestureHandlerRootView>

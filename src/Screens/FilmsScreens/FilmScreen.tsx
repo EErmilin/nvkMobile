@@ -19,7 +19,6 @@ import {Review} from '../../components/Review';
 import Animated from 'react-native-reanimated';
 import MediumText from '../../components/MediumText';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
 import BottomSheet from '../../components/BottomSheet';
 
 //mock data

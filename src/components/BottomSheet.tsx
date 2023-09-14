@@ -32,7 +32,11 @@ export type BottomSheetHandle = {
   open: () => void;
 };
 
-const BottomSheet = forwardRef(({name}, ref) => {
+interface IProps {
+  name: string;
+}
+
+const BottomSheet = forwardRef(({name}: IProps, ref) => {
   //state
   const modalRef = useRef<() => void | null>(null);
   const [activeIndex] = useState(4);
@@ -68,8 +72,6 @@ const BottomSheet = forwardRef(({name}, ref) => {
       dispatch(setOpen(false));
     };
   }, [dispatch]);
-
-  console.log(name);
 
   return (
     <Animated.View

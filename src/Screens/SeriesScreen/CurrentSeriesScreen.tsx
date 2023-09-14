@@ -67,8 +67,7 @@ export const CurrentSeriesScreen: FC<
 > = () => {
   const {colors} = useTheme();
   const navigation = useNavigation();
-
-  const bottomSheetRef = React.useRef();
+  const bottomSheetRef = React.useRef(null);
 
   const openModal = () => {
     bottomSheetRef?.current?.open();

@@ -1,12 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  ActivityIndicator,
-  Animated,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, SafeAreaView, ScrollView, ActivityIndicator} from 'react-native';
 
 import RankComponent from '../../components/RankComponent';
 
@@ -62,14 +55,12 @@ const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
 const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = props => {
   const {route, navigation} = props;
-
+  const {colors} = useTheme();
   //dummy
-  const [activeIndex, setActiveIndex] = useState(4);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [rank, setRank] = useState<number | null>(null);
   const [isReviewedFilm, setIsReviewedFilm] = useState(false);
 
-  const {colors} = useTheme();
-
-  useEffect(() => {}, []);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -87,13 +78,15 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = props => {
               {/* Оценка */}
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {rankNumber &&
-                  rankNumber.map((item, index) => {
+                  rankNumber.map((itemNumber, index) => {
                     return (
                       <RankComponent
-                        item={item}
+                        item={itemNumber}
                         index={index}
                         activeIndex={activeIndex}
                         key={index}
+                        setActiveIndex={setActiveIndex}
+                        setRank={setRank}
                         style
                       />
                     );
@@ -117,8 +110,8 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = props => {
           {/* Reviews Cards */}
           <View style={{gap: 16}}>
             {item.reviews.length ? (
-              item.reviews.map(item => (
-                <Review key={item.id.toString()} item={item} cardWidth />
+              item.reviews.map(r => (
+                <Review key={r.id.toString()} item={r} cardWidth />
               ))
             ) : (
               <ActivityIndicator color={colors.colorMain} size={'large'} />
