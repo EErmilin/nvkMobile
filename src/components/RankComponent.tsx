@@ -8,8 +8,10 @@ interface Props {
   index: number;
   activeIndex: number | null;
   style?: boolean;
-  setActiveIndex: Dispatch<SetStateAction<number | null>>;
-  setRank: Dispatch<SetStateAction<number | null>>;
+  setActiveIndex?: Dispatch<SetStateAction<number | null>>;
+  setRank?: Dispatch<SetStateAction<number | null>>;
+  rankItem?: number | undefined;
+  activeItem: number | undefined;
 }
 
 const RankComponent = ({
@@ -19,11 +21,16 @@ const RankComponent = ({
   style,
   setActiveIndex,
   setRank,
+  rankItem,
+  activeItem,
 }: Props) => {
   //rank movie handler
   const getRank = (activeIndexItem: number, rank: number) => {
-    setActiveIndex(activeIndexItem);
-    setRank(rank);
+    if (setActiveIndex !== undefined && setRank !== undefined) {
+      setActiveIndex(activeIndexItem);
+      setRank(rank);
+    }
+    return;
   };
 
   const rankToMovieHandle = (indexChecked: number) => {
@@ -60,19 +67,22 @@ const RankComponent = ({
         break;
     }
   };
-
   return (
     <TouchableOpacity
       style={[
         styles.rating,
         style && {marginTop: 0},
-        activeIndex === index ? {backgroundColor: colors.orange} : null,
+        rankItem
+          ? activeItem === index && {backgroundColor: colors.orange}
+          : activeIndex === index && {backgroundColor: colors.orange},
       ]}
       onPress={() => rankToMovieHandle(index)}>
       <BoldText
         fontSize={16}
         style={{
-          color: activeIndex === index ? colors.white : colors.blackText,
+          color: rankItem
+            ? activeItem === index && colors.white
+            : activeIndex === index && colors.blackText,
         }}>
         {item.toString()}
       </BoldText>

@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleProp, StyleSheet, Text, TextStyle } from 'react-native';
-import { useTheme } from '../Styles/Styles';
+import {StyleProp, StyleSheet, Text, TextStyle} from 'react-native';
+import {useTheme} from '../Styles/Styles';
 
 interface TextProps {
   fontSize?: number;
@@ -21,7 +21,7 @@ const BoldText: React.FC<TextProps> = ({
   m,
   ...rest
 }) => {
-  const { colors } = useTheme();
+  const {colors} = useTheme();
   const styles = StyleSheet.create({
     text: {
       fontFamily: 'NotoSans-Bold',
@@ -29,7 +29,7 @@ const BoldText: React.FC<TextProps> = ({
       fontSize: fontSize,
       margin: m,
       marginTop: mt,
-      marginBottom: mb
+      marginBottom: mb,
     },
   });
   return (

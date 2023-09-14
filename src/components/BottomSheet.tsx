@@ -34,12 +34,15 @@ export type BottomSheetHandle = {
 
 interface IProps {
   name: string;
+  rankItem?: number | undefined;
+  activeItem?: number | undefined;
 }
 
-const BottomSheet = forwardRef(({name}: IProps, ref) => {
+const BottomSheet = forwardRef(({name, rankItem, activeItem}: IProps, ref) => {
   //state
   const modalRef = useRef<() => void | null>(null);
-  const [activeIndex] = useState(4);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [rank, setRank] = useState<number | null>(null);
   const translateYR = useSharedValue(0);
   const dispatch = useDispatch();
 
@@ -69,7 +72,9 @@ const BottomSheet = forwardRef(({name}: IProps, ref) => {
 
   useEffect(() => {
     return () => {
-      dispatch(setOpen(false));
+      dispatch(setOpen(true));
+      setRank(null);
+      setActiveIndex(null);
     };
   }, [dispatch]);
 
@@ -148,6 +153,10 @@ const BottomSheet = forwardRef(({name}: IProps, ref) => {
                     index={index}
                     activeIndex={activeIndex}
                     key={index}
+                    rankItem={rankItem}
+                    activeItem={activeItem}
+                    setActiveIndex={setActiveIndex}
+                    setRank={setRank}
                   />
                 );
               })}

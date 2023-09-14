@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {View, SafeAreaView, ScrollView, ActivityIndicator} from 'react-native';
-
 import RankComponent from '../../components/RankComponent';
-
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import {colors, useTheme} from '../../Styles/Styles';
-
-//components
 import {BoldText, Containter, MediumText} from '../../components';
 import {Review} from '../../components/Review';
 import {StarIcon} from '../../components/SVGcomponents/StarIcon';
 import {RootNavigationProps} from '../../navigation/types/RootStackTypes';
+import BottomSheet from '../../components/BottomSheet';
+import {setOpen} from '../../redux/slices/bottomSheetSlice';
+import {useDispatch} from 'react-redux';
 
 //dummy data
 
@@ -56,13 +55,25 @@ const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = props => {
   const {route, navigation} = props;
   const {colors} = useTheme();
+
+  const bottomSheetRef = React.useRef();
+
+  const openModal = () => {
+    bottomSheetRef?.current?.open();
+  };
   //dummy
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [rank, setRank] = useState<number | null>(null);
-  const [isReviewedFilm, setIsReviewedFilm] = useState(false);
+  const [activeIndex, setActiveIndex] = useState<number | undefined>();
+  const [rank, setRank] = useState<number | undefined>();
+  const [isReviewedFilm] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
+      <BottomSheet
+        name={'film'}
+        rankItem={rank}
+        activeItem={activeIndex}
+        ref={bottomSheetRef}
+      />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Containter style={{gap: 25}}>
           {isReviewedFilm ? (
@@ -98,7 +109,8 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = props => {
                   styles.btn,
                   styles.btnOutlined,
                   {flexDirection: 'row', gap: 8, paddingVertical: 16},
-                ]}>
+                ]}
+                onPress={openModal}>
                 <StarIcon color={colors.orange} size={20} />
                 <MediumText style={{color: colors.blackText}}>
                   Оставить Отзыв

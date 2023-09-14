@@ -1,14 +1,14 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StackScreenProps } from '@react-navigation/stack';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StackScreenProps} from '@react-navigation/stack';
 
-import { IBroadcast } from '../../models/Broadcast';
-import { IPost } from '../../models/Post';
-import { IAlbum, ISongType, IMusicAlbumID } from '../../models/Music';
-import { IRadioProgram } from '../../models/Radio';
-import { Track } from 'react-native-track-player';
-import { CompositeScreenProps } from '@react-navigation/native';
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { TabParamList } from './TabTypes';
+import {IBroadcast} from '../../models/Broadcast';
+import {IPost} from '../../models/Post';
+import {IAlbum, ISongType, IMusicAlbumID} from '../../models/Music';
+import {IRadioProgram} from '../../models/Radio';
+import {Track} from 'react-native-track-player';
+import {CompositeScreenProps} from '@react-navigation/native';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import {TabParamList} from './TabTypes';
 
 export type RootStackParamList = {
   Tabs: undefined;
@@ -17,21 +17,21 @@ export type RootStackParamList = {
   CreateBloger: undefined;
   EditBloger: undefined;
   BlogerProfile: undefined;
-  NewsView: { post: IPost };
+  NewsView: {post: IPost};
   Horoscope: undefined;
   Broadcasts: undefined;
-  BroadcastView: { broadcast: IBroadcast };
-  BroadcastSeasonList: { broadcast: IBroadcast };
+  BroadcastView: {broadcast: IBroadcast};
+  BroadcastSeasonList: {broadcast: IBroadcast};
   Music: undefined;
-  AlbumList: { album: IAlbum; type: ISongType };
-  AllAlbum: { type: ISongType };
+  AlbumList: {album: IAlbum; type: ISongType};
+  AllAlbum: {type: ISongType};
   AllAuthor: undefined;
   AllMusic: undefined;
   ViewTag: {
     id: number;
     name: string;
   };
-  MyFavoriteSongs: { type: 'podcast' | 'music' };
+  MyFavoriteSongs: {type: 'podcast' | 'music'};
   MusicPlayer: {
     album: Track[];
     music: Track;
@@ -40,7 +40,7 @@ export type RootStackParamList = {
     type: ISongType;
   };
   Podcast: undefined;
-  AllAlbumPodcast: { id: number };
+  AllAlbumPodcast: {id: number};
   LiveScreen: undefined;
   ViewLive: {
     id: number;
@@ -103,7 +103,6 @@ export type RootStackParamList = {
     title: string;
   };
   Reviews: {
-    id: string;
     name: string;
   };
 };

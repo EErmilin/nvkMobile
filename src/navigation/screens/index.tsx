@@ -771,6 +771,7 @@ const StackNavigation = () => {
         <Stack.Screen
           options={({route}) => ({
             headerTitle: `Все отзывы ${route.params.name}`,
+            headerShown: isOpen,
           })}
           name="Reviews"
           component={ReviewsScreen}
