@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, SafeAreaView, ScrollView, ActivityIndicator} from 'react-native';
 import RankComponent from '../../components/RankComponent';
 import {StyleSheet, TouchableOpacity} from 'react-native';
@@ -8,8 +8,6 @@ import {Review} from '../../components/Review';
 import {StarIcon} from '../../components/SVGcomponents/StarIcon';
 import {RootNavigationProps} from '../../navigation/types/RootStackTypes';
 import BottomSheet from '../../components/BottomSheet';
-import {setOpen} from '../../redux/slices/bottomSheetSlice';
-import {useDispatch} from 'react-redux';
 
 //dummy data
 
@@ -52,28 +50,31 @@ const item = {
 
 const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
-const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = props => {
-  const {route, navigation} = props;
-  const {colors} = useTheme();
+const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
+  // const {route, navigation} = props;
+  // const {colors} = useTheme();
 
-  const bottomSheetRef = React.useRef();
+  const bottomSheetRef = React.useRef(null);
 
   const openModal = () => {
     bottomSheetRef?.current?.open();
   };
-  //dummy
-  const [activeIndex, setActiveIndex] = useState<number | undefined>();
-  const [rank, setRank] = useState<number | undefined>();
+
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [rank, setRank] = useState<number | null>(null);
+
   const [isReviewedFilm] = useState(false);
+  //component Unmount
+  useEffect(() => {
+    return () => {
+      setActiveIndex(null);
+      setRank(null);
+    };
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      <BottomSheet
-        name={'film'}
-        rankItem={rank}
-        activeItem={activeIndex}
-        ref={bottomSheetRef}
-      />
+      <BottomSheet name={'film'} active={activeIndex} ref={bottomSheetRef} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Containter style={{gap: 25}}>
           {isReviewedFilm ? (
@@ -94,11 +95,12 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = props => {
                       <RankComponent
                         item={itemNumber}
                         index={index}
+                        style
+                        key={index.toString()}
+                        //
                         activeIndex={activeIndex}
-                        key={index}
                         setActiveIndex={setActiveIndex}
                         setRank={setRank}
-                        style
                       />
                     );
                   })}
@@ -126,7 +128,7 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = props => {
                 <Review key={r.id.toString()} item={r} cardWidth />
               ))
             ) : (
-              <ActivityIndicator color={colors.colorMain} size={'large'} />
+              <ActivityIndicator color={colors.white} size={'large'} />
             )}
           </View>
         </Containter>

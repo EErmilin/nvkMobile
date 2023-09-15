@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React, {Dispatch, SetStateAction, useState, useEffect} from 'react';
 import {TouchableOpacity, StyleSheet} from 'react-native';
 import {colors} from '../Styles/Styles';
 import BoldText from './BoldText';
@@ -6,33 +6,29 @@ import BoldText from './BoldText';
 interface Props {
   item: number;
   index: number;
-  activeIndex: number | null;
   style?: boolean;
+  //from comments
+  activeIndex: number | null;
   setActiveIndex?: Dispatch<SetStateAction<number | null>>;
   setRank?: Dispatch<SetStateAction<number | null>>;
-  rankItem?: number | undefined;
-  activeItem: number | undefined;
+  //inside bottomSheet
 }
 
 const RankComponent = ({
-  item,
-  index,
-  activeIndex,
-  style,
+  item, //number of arr
+  index, // index of arr
+  style, //
+
+  activeIndex, //active index of arr
   setActiveIndex,
   setRank,
-  rankItem,
-  activeItem,
-}: Props) => {
-  //rank movie handler
-  const getRank = (activeIndexItem: number, rank: number) => {
-    if (setActiveIndex !== undefined && setRank !== undefined) {
-      setActiveIndex(activeIndexItem);
-      setRank(rank);
-    }
-    return;
-  };
+}: // setActiveIndex,
+// setRank,
+Props) => {
+  const [active, setActive] = useState<number | null>(null);
+  const [grade, setGrade] = useState<number | null>();
 
+  //rank movie handler
   const rankToMovieHandle = (indexChecked: number) => {
     switch (indexChecked) {
       case 0:
@@ -67,22 +63,30 @@ const RankComponent = ({
         break;
     }
   };
+
+  const getRank = (activeIndexItem: number, rank: number) => {
+    if (setActiveIndex && setRank) {
+      setActiveIndex(activeIndexItem);
+      setRank(rank);
+    } else {
+      setActive(activeIndexItem);
+    }
+  };
+
   return (
     <TouchableOpacity
       style={[
         styles.rating,
         style && {marginTop: 0},
-        rankItem
-          ? activeItem === index && {backgroundColor: colors.orange}
-          : activeIndex === index && {backgroundColor: colors.orange},
+        activeIndex === index || active === index
+          ? {backgroundColor: colors.orange}
+          : null,
       ]}
       onPress={() => rankToMovieHandle(index)}>
       <BoldText
         fontSize={16}
         style={{
-          color: rankItem
-            ? activeItem === index && colors.white
-            : activeIndex === index && colors.blackText,
+          color: activeIndex === index ? colors.white : colors.blackText,
         }}>
         {item.toString()}
       </BoldText>
@@ -103,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RankComponent;
+export default React.memo(RankComponent);

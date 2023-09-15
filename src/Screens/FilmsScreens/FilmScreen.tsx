@@ -63,8 +63,10 @@ const item = {
 export const FilmScreen: FC<RootNavigationProps<'Film'>> = () => {
   const {colors} = useTheme();
   const navigation = useNavigation();
-  const bottomSheetRef = React.useRef();
+  //
 
+  const bottomSheetRef = React.useRef();
+  //
   const openModal = () => {
     bottomSheetRef?.current?.open();
   };

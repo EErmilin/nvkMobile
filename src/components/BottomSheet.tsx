@@ -34,24 +34,24 @@ export type BottomSheetHandle = {
 
 interface IProps {
   name: string;
-  rankItem?: number | undefined;
-  activeItem?: number | undefined;
+  isReview?: boolean;
+  active?: number | null | undefined;
 }
 
-const BottomSheet = forwardRef(({name, rankItem, activeItem}: IProps, ref) => {
-  //state
-  const modalRef = useRef<() => void | null>(null);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [rank, setRank] = useState<number | null>(null);
+const BottomSheet = forwardRef(({name, active}: IProps, ref) => {
+  const modalRef = useRef();
+
   const translateYR = useSharedValue(0);
   const dispatch = useDispatch();
 
   useImperativeHandle<unknown, BottomSheetHandle>(ref, () => ({
     open: () => {
-      dispatch(setOpen(false));
-      translateYR.value = withTiming(translateYR.value - height, {
-        duration: 600,
-      });
+      if (translateYR.value !== -height) {
+        dispatch(setOpen(false));
+        translateYR.value = withTiming(translateYR.value - height, {
+          duration: 600,
+        });
+      }
     },
   }));
 
@@ -65,16 +65,8 @@ const BottomSheet = forwardRef(({name, rankItem, activeItem}: IProps, ref) => {
   };
 
   useEffect(() => {
-    if (ref) {
-      dispatch(setOpen(true));
-    }
-  }, [ref, dispatch]);
-
-  useEffect(() => {
     return () => {
       dispatch(setOpen(true));
-      setRank(null);
-      setActiveIndex(null);
     };
   }, [dispatch]);
 
@@ -151,12 +143,8 @@ const BottomSheet = forwardRef(({name, rankItem, activeItem}: IProps, ref) => {
                   <RankComponent
                     item={item}
                     index={index}
-                    activeIndex={activeIndex}
-                    key={index}
-                    rankItem={rankItem}
-                    activeItem={activeItem}
-                    setActiveIndex={setActiveIndex}
-                    setRank={setRank}
+                    key={index.toString()}
+                    activeIndex={active}
                   />
                 );
               })}
@@ -187,7 +175,7 @@ const BottomSheet = forwardRef(({name, rankItem, activeItem}: IProps, ref) => {
   );
 });
 
-export default BottomSheet;
+export default React.memo(BottomSheet);
 
 const styles = StyleSheet.create({
   container: {
@@ -197,7 +185,7 @@ const styles = StyleSheet.create({
     height,
     width,
     bottom: -height,
-    zIndex: 1,
+    zIndex: 200,
     paddingHorizontal: 12,
     paddingVertical: 12,
     justifyContent: 'space-between',

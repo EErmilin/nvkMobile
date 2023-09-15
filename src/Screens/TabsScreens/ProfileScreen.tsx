@@ -34,7 +34,7 @@ export const ProfileScreen: React.FC<TabNavigationProps<'Profile'>> = ({
           hashtagPress={() => navigation.navigate('HashtagScreen')}
           createBloderPress={() => navigation.navigate('CreateBloger')}
           editBloderPress={() => navigation.navigate('EditBloger')}
-          showBloderPress={() => navigation.navigate('BlogerProfile')}          
+          showBloderPress={() => navigation.navigate('BlogerProfile')}
           navigation={navigation}
           loading={loading}
         />

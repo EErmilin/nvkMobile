@@ -3,7 +3,6 @@ import {createSlice} from '@reduxjs/toolkit';
 const bottomSheetSlice = createSlice({
   name: 'bottomSheet',
   initialState: {
-    reviewSheet: null,
     isOpen: true,
   },
   reducers: {
@@ -13,5 +12,5 @@ const bottomSheetSlice = createSlice({
   },
 });
 
-export const {setReview, setOpen} = bottomSheetSlice.actions;
+export const {setOpen} = bottomSheetSlice.actions;
 export default bottomSheetSlice.reducer;
