@@ -96,6 +96,7 @@ import BlogerProfile from '../../Screens/BlogerScreens/BlogerProfile';
 import EditBlogger from '../../Screens/BlogerScreens/EditBloger';
 import ReviewsScreen from '../../Screens/ ReviewsScreen/ReviewsScreen';
 import {useSelector} from 'react-redux';
+import NewsComments from '../../Screens/NewsScreen/NewsCommets';
 
 LogBox.ignoreAllLogs();
 
@@ -775,6 +776,13 @@ const StackNavigation = () => {
           })}
           name="Reviews"
           component={ReviewsScreen}
+        />
+        <Stack.Screen
+          options={({route}) => ({
+            headerTitle: 'Все комментарии',
+          })}
+          name="Comments"
+          component={NewsComments}
         />
       </Stack.Navigator>
       {flag ? <MusicTrackView insets={insets.bottom} /> : <></>}

@@ -25,8 +25,8 @@ const RankComponent = ({
 }: // setActiveIndex,
 // setRank,
 Props) => {
-  const [active, setActive] = useState<number | null>(null);
-  const [grade, setGrade] = useState<number | null>();
+  // const [active, setActive] = useState<number | null>(null);
+  // const [grade, setGrade] = useState<number | null>();
 
   //rank movie handler
   const rankToMovieHandle = (indexChecked: number) => {
@@ -68,8 +68,6 @@ Props) => {
     if (setActiveIndex && setRank) {
       setActiveIndex(activeIndexItem);
       setRank(rank);
-    } else {
-      setActive(activeIndexItem);
     }
   };
 

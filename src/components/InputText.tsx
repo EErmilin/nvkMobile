@@ -11,18 +11,19 @@ import {
   Platform,
   View,
 } from 'react-native';
-import { TextStyle, ViewStyle } from 'react-native';
-import { useTheme } from '../Styles/Styles';
+import {TextStyle, ViewStyle} from 'react-native';
+import {useTheme} from '../Styles/Styles';
 import MaskInput from 'react-native-mask-input';
-import { PHONE_MASK } from '../helpers/masks';
+import {PHONE_MASK} from '../helpers/masks';
 
 const ANIM_VALUE = 0;
 interface InputProps {
   style?: ViewStyle | ViewStyle[];
   value: string;
+  comment: boolean;
   onChangeText?:
-  | ((formatted: string, extracted?: string | undefined) => void)
-  | undefined;
+    | ((formatted: string, extracted?: string | undefined) => void)
+    | undefined;
   ref?: React.Ref<TextInput>;
   editable?: boolean;
   onFocus?: () => void;
@@ -48,7 +49,7 @@ interface InputProps {
   logo?: React.ReactNode;
   secureTextEntry?: boolean;
   onChange?: (value: {
-    nativeEvent: { eventCount: number; target: number; text: string };
+    nativeEvent: {eventCount: number; target: number; text: string};
   }) => void;
   required?: boolean;
   errorState?: boolean;
@@ -58,6 +59,7 @@ export const InputText: React.FC<InputProps> = props => {
   const {
     style,
     value,
+    comment,
     onChangeText,
     editable,
     onFocus,
@@ -89,7 +91,7 @@ export const InputText: React.FC<InputProps> = props => {
   ).current;
   const [focus, setFocus] = React.useState(false);
   const refTextInput = React.useRef<TextInput>(null);
-  const { colors } = useTheme();
+  const {colors} = useTheme();
 
   const handleFocus = () => {
     setFocus(true);
@@ -131,36 +133,38 @@ export const InputText: React.FC<InputProps> = props => {
           borderColor: errorState
             ? colors.red
             : focus
-              ? colors.colorMain
-              : colors.borderPrimary,
+            ? colors.colorMain
+            : colors.borderPrimary,
         },
         style,
       ]}
       onFocus={handleFocus}
       onBlur={handleBlur}>
       <View>
-        {(label || placeholderToLabel && value && value.length > 0) && <Animated.Text
-          style={[
-            styles.label,
-            {
-              position: placeholderToLabel ? 'relative' : 'absolute',
-              paddingBottom: Platform.OS === 'android' ? 4 : 0,
-              color: colors.textSecondary,
-              fontSize: animValue.interpolate({
-                inputRange: [ANIM_VALUE, 16],
-                outputRange: [12, 14],
-              }),
-              top: animValue.interpolate({
-                inputRange: [ANIM_VALUE, 16],
-                outputRange: [8, Platform.OS === 'ios' ? 20 : 16],
-              }),
-            },
-            styleLabel,
-          ]}>
-          {label}
-          {placeholder}
-          {required ? <Text style={{ color: colors.danger }}>*</Text> : <></>}
-        </Animated.Text>}
+        {(label || (placeholderToLabel && value && value.length > 0)) && (
+          <Animated.Text
+            style={[
+              styles.label,
+              {
+                position: placeholderToLabel ? 'relative' : 'absolute',
+                paddingBottom: Platform.OS === 'android' ? 4 : 0,
+                color: colors.textSecondary,
+                fontSize: animValue.interpolate({
+                  inputRange: [ANIM_VALUE, 16],
+                  outputRange: [12, 14],
+                }),
+                top: animValue.interpolate({
+                  inputRange: [ANIM_VALUE, 16],
+                  outputRange: [8, Platform.OS === 'ios' ? 20 : 16],
+                }),
+              },
+              styleLabel,
+            ]}>
+            {label}
+            {placeholder}
+            {required ? <Text style={{color: colors.danger}}>*</Text> : <></>}
+          </Animated.Text>
+        )}
         <MaskInput
           mask={mask === 'phone' ? PHONE_MASK : mask}
           editable={editable}
@@ -169,7 +173,12 @@ export const InputText: React.FC<InputProps> = props => {
           cursorColor={colors.colorMain}
           onChangeText={onChangeText}
           allowFontScaling={allowFontScalling}
-          style={[styles.text, { color: colors.textPrimary, flex: 1 }, styleText]}
+          style={[
+            styles.text,
+            {color: colors.textPrimary, flex: 1},
+            styleText,
+            comment && {marginTop: 0},
+          ]}
           ref={refTextInput}
           onFocus={() => {
             onFocus;
