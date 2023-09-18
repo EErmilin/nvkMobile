@@ -9,10 +9,14 @@ const CommentsNews = prop => {
   return (
     <View style={styles.commentCard}>
       <View style={styles.commentAuthor}>
-        <Image source={{uri: commentItem?.image}} style={styles.image} />
+        <Image
+          source={{uri: commentItem?.image}}
+          style={styles.image}
+          resizeMode="contain"
+        />
         <MediumText>{commentItem?.name}</MediumText>
       </View>
-      <MediumText>{commentItem?.comment}</MediumText>
+      <MediumText style={{marginTop: 10}}>{commentItem?.comment}</MediumText>
       <MediumText style={{color: colors.gray}}>
         {commentItem?.createdAt}
       </MediumText>

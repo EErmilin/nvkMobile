@@ -778,9 +778,9 @@ const StackNavigation = () => {
           component={ReviewsScreen}
         />
         <Stack.Screen
-          options={({route}) => ({
+          options={{
             headerTitle: 'Все комментарии',
-          })}
+          }}
           name="Comments"
           component={NewsComments}
         />

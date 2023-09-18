@@ -37,6 +37,7 @@ import {setLogged} from '../../redux/slices/authSlice';
 import AppMetrica from 'react-native-appmetrica-next';
 import DeviceInfo from 'react-native-device-info';
 import NewsCommentCard from '../../components/NewsCommentCard';
+import SendMessage_icon from '../../assets/icons/SendMessage_icon';
 
 const REGULAR_HASTAG = /#[0-9A-Za-zА-Яа-яё]+/g;
 //mock
@@ -358,18 +359,26 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
             <BoldText style={{color: colors.textPrimary}}>
               Комметарии (12)
             </BoldText>
-            <Pressable onPress={() => navigation.navigate('Comments')}>
+            <Pressable
+              hitSlop={10}
+              onPress={() => navigation.navigate('Comments')}>
               <MediumText style={{color: colors.orange}}>
                 <Text>Показать все</Text>
               </MediumText>
             </Pressable>
           </View>
           {/* INPUT */}
-          <InputText
-            placeholder="Написать комментарий"
-            style={{alignItems: 'center', marginBottom: 20}}
-            comment
-          />
+          <View style={styles.leaveComment}>
+            <InputText
+              placeholder="Написать комментарий"
+              style={{alignItems: 'center', marginBottom: 20, flex: 1}}
+              comment
+            />
+            <TouchableOpacity style={styles.send}>
+              <SendMessage_icon />
+            </TouchableOpacity>
+          </View>
+
           {/* CommentCard */}
 
           <View>
@@ -499,5 +508,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
+  },
+  leaveComment: {
+    flexDirection: 'row',
+  },
+  send: {
+    width: 55,
+    aspectRatio: 1,
+    backgroundColor: colors.orange,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 30,
+    marginLeft: 10,
   },
 });

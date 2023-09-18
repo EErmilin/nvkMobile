@@ -60,21 +60,27 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
     bottomSheetRef?.current?.open();
   };
 
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [rank, setRank] = useState<number | null>(null);
+  const [activeReview, setActiveReview] = useState<number | null>(null);
+  const [rankReview, setRankReview] = useState<number | null>(null);
+
+  console.log(activeReview);
 
   const [isReviewedFilm] = useState(false);
   //component Unmount
   useEffect(() => {
     return () => {
-      setActiveIndex(null);
-      setRank(null);
+      setActiveReview(null);
+      setRankReview(null);
     };
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      <BottomSheet name={'film'} active={activeIndex} ref={bottomSheetRef} />
+      <BottomSheet
+        name={'film'}
+        ref={bottomSheetRef}
+        activeReview={activeReview}
+      />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Containter style={{gap: 25}}>
           {isReviewedFilm ? (
@@ -88,23 +94,9 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
               {/* Титул */}
               <BoldText fontSize={16}>Как Вам фильм?</BoldText>
               {/* Оценка */}
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {rankNumber &&
-                  rankNumber.map((itemNumber, index) => {
-                    return (
-                      <RankComponent
-                        item={itemNumber}
-                        index={index}
-                        style
-                        key={index.toString()}
-                        //
-                        activeIndex={activeIndex}
-                        setActiveIndex={setActiveIndex}
-                        setRank={setRank}
-                      />
-                    );
-                  })}
-              </ScrollView>
+
+              <RankComponent style setActiveReview={setActiveReview} />
+
               {/* Оставить отзыв */}
               <TouchableOpacity
                 style={[

@@ -1,32 +1,16 @@
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-  ScrollView,
-  TextInput,
-  Dimensions,
-} from 'react-native';
+import React, {forwardRef, useEffect, useImperativeHandle, useRef} from 'react';
+import {View, StyleSheet, Image, Dimensions} from 'react-native';
 import Animated, {useSharedValue, withTiming} from 'react-native-reanimated';
 import {colors} from '../Styles/Styles';
 import BoldText from './BoldText';
 import {Rating} from './Rating';
 import RankComponent from './RankComponent';
 
-import {Button} from './Button';
 import {useDispatch} from 'react-redux';
 import {setOpen} from '../redux/slices/bottomSheetSlice';
 import MediumText from './MediumText';
 
 const {width, height} = Dimensions.get('window');
-
-const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
 export type BottomSheetHandle = {
   open: () => void;
@@ -35,15 +19,15 @@ export type BottomSheetHandle = {
 interface IProps {
   name: string;
   isReview?: boolean;
-  active?: number | null | undefined;
+  activeReview?: number | null | undefined;
 }
 
-const BottomSheet = forwardRef(({name, active}: IProps, ref) => {
+const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
   const modalRef = useRef();
 
   const translateYR = useSharedValue(0);
   const dispatch = useDispatch();
-
+  //open BottomSheet
   useImperativeHandle<unknown, BottomSheetHandle>(ref, () => ({
     open: () => {
       if (translateYR.value !== -height) {
@@ -54,8 +38,8 @@ const BottomSheet = forwardRef(({name, active}: IProps, ref) => {
       }
     },
   }));
-
-  const publishReviewHandler = () => {
+  //leave Comment and close bottomSheet
+  const publishReviewHandler = (rank: number, comment: string) => {
     if (ref) {
       dispatch(setOpen(true));
       translateYR.value = withTiming(translateYR.value + height, {
@@ -63,7 +47,7 @@ const BottomSheet = forwardRef(({name, active}: IProps, ref) => {
       });
     }
   };
-
+  //reset state
   useEffect(() => {
     return () => {
       dispatch(setOpen(true));
@@ -102,14 +86,14 @@ const BottomSheet = forwardRef(({name, active}: IProps, ref) => {
             />
           )}
 
-          {name === 'cartoon' && (
+          {name === 'cartoon' ? (
             <Image
               source={{
                 uri: 'https://kartinkof.club/uploads/posts/2022-09/1662203681_1-kartinkof-club-p-novie-i-krasivie-kartinki-masha-i-medved-1.jpg',
               }}
               style={styles.poster}
             />
-          )}
+          ) : null}
           <View>
             <View style={{alignSelf: 'flex-start'}}>
               <Rating isStar />
@@ -134,43 +118,12 @@ const BottomSheet = forwardRef(({name, active}: IProps, ref) => {
           </View>
         </View>
 
-        <View style={{width: '100%', marginTop: 15}}>
-          <BoldText fontSize={18}>Как Вам фильм?</BoldText>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {rankNumber &&
-              rankNumber.map((item, index) => {
-                return (
-                  <RankComponent
-                    item={item}
-                    index={index}
-                    key={index.toString()}
-                    activeIndex={active}
-                  />
-                );
-              })}
-          </ScrollView>
-          <View style={{marginTop: 20}}>
-            <TextInput
-              multiline
-              style={[
-                styles.inputText,
-                // {
-                //   backgroundColor: colors.input,
-                //   borderColor: textError
-                //     ? colors.danger
-                //     : textFocused
-                //     ? colors.colorMain
-                //     : colors.borderPrimary,
-                //   color: colors.textPrimary,
-                // },
-              ]}
-              placeholder="Ваш комментарий"
-            />
-          </View>
-        </View>
+        <BoldText fontSize={18}>Как Вам фильм?</BoldText>
+        <RankComponent
+          publishReviewHandler={publishReviewHandler}
+          activeReview={activeReview}
+        />
       </View>
-
-      <Button title="Опубликовать" onPress={publishReviewHandler} />
     </Animated.View>
   );
 });
@@ -188,7 +141,6 @@ const styles = StyleSheet.create({
     zIndex: 200,
     paddingHorizontal: 12,
     paddingVertical: 12,
-    justifyContent: 'space-between',
   },
   drag: {
     width: 50,
@@ -207,15 +159,5 @@ const styles = StyleSheet.create({
     height: 170,
     borderRadius: 15,
     marginRight: 15,
-  },
-  inputText: {
-    minHeight: 100,
-    borderRadius: 20,
-    textAlignVertical: 'top',
-    borderWidth: 1,
-    padding: 16,
-    paddingTop: 12,
-    fontFamily: 'NotoSans-Regular',
-    borderColor: colors.secondaryGray,
   },
 });

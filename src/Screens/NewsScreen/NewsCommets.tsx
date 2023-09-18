@@ -1,8 +1,16 @@
 import React from 'react';
-import {View, FlatList, StyleSheet, TextInput, Dimensions} from 'react-native';
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  TextInput,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import {Containter} from '../../components';
 import NewsCommentCard from '../../components/NewsCommentCard';
 import {colors} from '../../Styles/Styles';
+import SendMessage_icon from '../../assets/icons/SendMessage_icon';
 
 const width = Dimensions.get('window').width;
 
@@ -51,7 +59,9 @@ const NewsComments = () => {
           placeholder="Ваш комментарий"
           multiline
         />
-        <View style={styles.send} />
+        <TouchableOpacity style={styles.send} activeOpacity={0.7}>
+          <SendMessage_icon />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -86,11 +96,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'flex-end',
     backgroundColor: colors.white,
   },
   input: {
     backgroundColor: colors.bluishGray,
-    borderRadius: 10,
+    minHeight: 55,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: colors.borderGray,
     paddingHorizontal: 15,
@@ -99,9 +111,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   send: {
-    aspectRatio: 1,
+    width: 55,
+    height: 55,
     backgroundColor: colors.orange,
     borderRadius: width / 2,
     marginLeft: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

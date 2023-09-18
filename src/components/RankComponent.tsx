@@ -1,94 +1,113 @@
-import React, {Dispatch, SetStateAction, useState, useEffect} from 'react';
-import {TouchableOpacity, StyleSheet} from 'react-native';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  View,
+  TextInput,
+} from 'react-native';
 import {colors} from '../Styles/Styles';
 import BoldText from './BoldText';
+import {Button} from './Button';
 
 interface Props {
-  item: number;
-  index: number;
   style?: boolean;
-  //from comments
-  activeIndex: number | null;
-  setActiveIndex?: Dispatch<SetStateAction<number | null>>;
-  setRank?: Dispatch<SetStateAction<number | null>>;
-  //inside bottomSheet
+  activeReview: number | null | undefined;
+  publishReviewHandler: () => void;
+  setActiveReview?: Dispatch<SetStateAction<number | null>>;
 }
 
-const RankComponent = ({
-  item, //number of arr
-  index, // index of arr
-  style, //
+const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
-  activeIndex, //active index of arr
-  setActiveIndex,
-  setRank,
-}: // setActiveIndex,
-// setRank,
-Props) => {
-  // const [active, setActive] = useState<number | null>(null);
-  // const [grade, setGrade] = useState<number | null>();
+// const isRank = rankNumber.reverse().map(item => {
+//   console.log(item);
+// });
+
+// const foo = index => {
+//   const item = rankNumber.find(index + 1);
+//   console.log(item);
+// };
+
+const RankComponent = ({
+  style, //
+  publishReviewHandler,
+  // from review
+  setActiveReview,
+  activeReview,
+}: Props) => {
+  //
+  const [active, setActive] = useState<number>();
+  const [rankActive, setRankActive] = useState<number>();
+  //
 
   //rank movie handler
   const rankToMovieHandle = (indexChecked: number) => {
-    switch (indexChecked) {
-      case 0:
-        getRank(indexChecked, 10);
-        break;
-      case 1:
-        getRank(indexChecked, 9);
-        break;
-      case 2:
-        getRank(indexChecked, 8);
-        break;
-      case 3:
-        getRank(indexChecked, 7);
-        break;
-      case 4:
-        getRank(indexChecked, 6);
-        break;
-      case 5:
-        getRank(indexChecked, 5);
-        break;
-      case 6:
-        getRank(indexChecked, 4);
-        break;
-      case 7:
-        getRank(indexChecked, 3);
-        break;
-      case 8:
-        getRank(indexChecked, 2);
-        break;
-      case 9:
-        getRank(indexChecked, 1);
-        break;
-    }
+    setActive(indexChecked);
+    setRankActive(rankNumber[indexChecked]);
   };
-
-  const getRank = (activeIndexItem: number, rank: number) => {
-    if (setActiveIndex && setRank) {
-      setActiveIndex(activeIndexItem);
-      setRank(rank);
+  //to review screen
+  useEffect(() => {
+    if (setActiveReview && active) {
+      setActiveReview(active);
     }
-  };
+  }, [active, setActiveReview]);
+  //from review screen to bottomSheet if active
+  useEffect(() => {
+    if (activeReview) {
+      setActive(activeReview);
+    }
+  }, [activeReview]);
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.rating,
-        style && {marginTop: 0},
-        activeIndex === index || active === index
-          ? {backgroundColor: colors.orange}
-          : null,
-      ]}
-      onPress={() => rankToMovieHandle(index)}>
-      <BoldText
-        fontSize={16}
-        style={{
-          color: activeIndex === index ? colors.white : colors.blackText,
-        }}>
-        {item.toString()}
-      </BoldText>
-    </TouchableOpacity>
+    <>
+      <View style={{flex: 0.2}}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {rankNumber.map((item, index) => {
+            return (
+              <TouchableOpacity
+                style={[
+                  styles.rating,
+                  style && {marginTop: 0},
+                  active === index ? {backgroundColor: colors.orange} : null,
+                ]}
+                onPress={() => rankToMovieHandle(index)}>
+                <BoldText
+                  fontSize={16}
+                  style={{
+                    color: active === index ? colors.white : colors.blackText,
+                  }}>
+                  {item.toString()}
+                </BoldText>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
+
+      {!style ? (
+        <>
+          <View style={{flex: 1}}>
+            <TextInput
+              multiline
+              style={[
+                styles.inputText,
+                // {
+                //   backgroundColor: colors.input,
+                //   borderColor: textError
+                //     ? colors.danger
+                //     : textFocused
+                //     ? colors.colorMain
+                //     : colors.borderPrimary,
+                //   color: colors.textPrimary,
+                // },
+              ]}
+              placeholder="Ваш комментарий"
+            />
+          </View>
+          <Button title="Опубликовать" onPress={publishReviewHandler} />
+        </>
+      ) : null}
+    </>
   );
 };
 
@@ -102,6 +121,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 15,
     marginTop: 16,
+  },
+  inputText: {
+    minHeight: 100,
+    borderRadius: 20,
+    textAlignVertical: 'top',
+    borderWidth: 1,
+    padding: 16,
+    paddingTop: 12,
+    fontFamily: 'NotoSans-Regular',
+    borderColor: colors.secondaryGray,
   },
 });
 
