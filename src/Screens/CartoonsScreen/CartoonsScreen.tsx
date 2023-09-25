@@ -1,7 +1,7 @@
+import React from 'react';
 import {
   Button,
   FlatList,
-  Modal,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -14,12 +14,7 @@ import {colors, useTheme} from '../../Styles/Styles';
 import {useAppDispatch} from '../../redux/hooks';
 import {FC, useEffect, useState} from 'react';
 import Toast from 'react-native-toast-message';
-import {
-  BoldText,
-  Containter,
-  MediumText,
-  SearchComponent,
-} from '../../components';
+import {BoldText, Containter, SearchComponent} from '../../components';
 import {FilterIcon} from '../../components/SVGcomponents/FilterIcon';
 import {ArrowsIcon} from '../../components/SVGcomponents/ArrowsIcon';
 import {ArrowDownIcon} from '../../components/SVGcomponents/ArrowDownIcon';

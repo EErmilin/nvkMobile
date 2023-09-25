@@ -7,7 +7,7 @@ import {
   ViewStyle,
   Platform,
 } from 'react-native';
-import { useTheme } from '../Styles/Styles';
+import {useTheme} from '../Styles/Styles';
 import BoldText from './BoldText';
 
 interface ButtonProps {
@@ -40,11 +40,16 @@ export const Button: React.FC<ButtonProps> = ({
   loadingSize,
   ref,
 }) => {
-  const { colors, theme, Style } = useTheme();
+  const {colors, theme, Style} = useTheme();
+
   return (
     <TouchableOpacity
       ref={ref}
-      style={[disabled === true ? Style.disabledButton : Style.button, style, { marginTop: mt }]}
+      style={[
+        disabled === true ? Style.disabledButton : Style.button,
+        style,
+        {marginTop: mt},
+      ]}
       onPress={onPress}
       disabled={disabled}>
       {item}
@@ -53,22 +58,24 @@ export const Button: React.FC<ButtonProps> = ({
         <ActivityIndicator color={loadingColor} size={loadingSize} />
       ) : icon ? (
         <>
-          {title && <BoldText
-            fontSize={14}
-            style={[
-              {
-                paddingBottom: Platform.OS === 'android' ? 3 : 0,
-                marginRight: 10,
-                color: disabled
-                  ? colors.textSecondary
-                  : theme === 'dark'
+          {title && (
+            <BoldText
+              fontSize={14}
+              style={[
+                {
+                  paddingBottom: Platform.OS === 'android' ? 3 : 0,
+                  marginRight: 10,
+                  color: disabled
+                    ? colors.textSecondary
+                    : theme === 'dark'
                     ? colors.black
                     : colors.white,
-              },
-              textStyle,
-            ]}>
-            {title}
-          </BoldText>}
+                },
+                textStyle,
+              ]}>
+              {title}
+            </BoldText>
+          )}
           <View>{icon}</View>
         </>
       ) : (
@@ -79,8 +86,8 @@ export const Button: React.FC<ButtonProps> = ({
               color: disabled
                 ? colors.textSecondary
                 : theme === 'dark'
-                  ? colors.black
-                  : colors.white,
+                ? colors.black
+                : colors.white,
             },
             textStyle,
           ]}>

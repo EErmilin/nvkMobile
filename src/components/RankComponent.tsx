@@ -5,7 +5,10 @@ import {
   ScrollView,
   View,
   TextInput,
+  KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
+import Animated, {useSharedValue, withTiming} from 'react-native-reanimated';
 import {colors} from '../Styles/Styles';
 import BoldText from './BoldText';
 import {Button} from './Button';
@@ -19,15 +22,6 @@ interface Props {
 
 const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
-// const isRank = rankNumber.reverse().map(item => {
-//   console.log(item);
-// });
-
-// const foo = index => {
-//   const item = rankNumber.find(index + 1);
-//   console.log(item);
-// };
-
 const RankComponent = ({
   style, //
   publishReviewHandler,
@@ -35,7 +29,12 @@ const RankComponent = ({
   setActiveReview,
   activeReview,
 }: Props) => {
+  //animated
+
+  const translateButton = useSharedValue(0);
+
   //
+
   const [active, setActive] = useState<number>();
   const [rankActive, setRankActive] = useState<number>();
   //
@@ -58,9 +57,45 @@ const RankComponent = ({
     }
   }, [activeReview]);
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      event => {
+        const endHeight = event.endCoordinates?.height;
+        if (endHeight) {
+          translateButton.value = withTiming(
+            translateButton.value + endHeight,
+            {
+              duration: 200,
+            },
+          );
+        }
+      },
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      event => {
+        const endHeight = event.endCoordinates?.height;
+        translateButton.value = withTiming(
+          (translateButton.value = endHeight),
+          {
+            duration: 200,
+          },
+        );
+      },
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, [translateButton]);
+
   return (
-    <>
-      <View style={{flex: 0.2}}>
+    <View style={{flex: 1}}>
+      {/* Rank items */}
+      <View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {rankNumber.map((item, index) => {
             return (
@@ -86,7 +121,9 @@ const RankComponent = ({
 
       {!style ? (
         <>
-          <View style={{flex: 1}}>
+          {/* Comment text */}
+
+          <View style={{marginTop: 16, flex: 1}}>
             <TextInput
               multiline
               style={[
@@ -104,10 +141,20 @@ const RankComponent = ({
               placeholder="Ваш комментарий"
             />
           </View>
-          <Button title="Опубликовать" onPress={publishReviewHandler} />
+          {/* publish */}
+          <KeyboardAvoidingView enabled={true}>
+            <Animated.View
+              style={{
+                position: 'absolute',
+                bottom: translateButton,
+                width: '100%',
+              }}>
+              <Button title="Опубликовать" onPress={publishReviewHandler} />
+            </Animated.View>
+          </KeyboardAvoidingView>
         </>
       ) : null}
-    </>
+    </View>
   );
 };
 

@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import React, {FC} from 'react';
 
-import { Control, Controller, } from 'react-hook-form';
+import {Control, Controller} from 'react-hook-form';
 
-import { InputText } from '../InputText';
+import {InputText} from '../InputText';
 
 type TInputFormProp = {
   name: string;
@@ -11,11 +11,10 @@ type TInputFormProp = {
   multiline?: boolean;
   maxLength?: number;
   placeholder: string;
-  rules?: { [x: string]: any };
+  rules?: {[x: string]: any};
   width?: number | string;
   mt?: number | string;
 };
-
 
 export const InputForm: FC<TInputFormProp> = ({
   name,
@@ -26,29 +25,26 @@ export const InputForm: FC<TInputFormProp> = ({
   multiline,
   maxLength,
   width,
-  mt
+  mt,
 }) => {
-
   return (
     <Controller
       control={control}
       name={name}
       rules={rules}
-      render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
+      render={({field: {value, onChange, onBlur}, fieldState: {error}}) => (
         <InputText
           value={value}
           onChangeText={onChange}
           required={required}
-          styleText={{ marginTop: 0 }}
-          style={{ marginTop: mt, width: width, alignItems: 'center' }}
+          styleText={{marginTop: 0}}
+          style={{marginTop: mt, width: width, alignItems: 'center'}}
           placeholder={placeholder}
           multiline={multiline}
           maxLength={maxLength}
           placeholderToLabel
-
         />
       )}
     />
   );
 };
-

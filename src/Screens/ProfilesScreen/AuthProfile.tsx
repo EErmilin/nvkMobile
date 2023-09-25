@@ -8,7 +8,7 @@ import {
   ScrollView,
   Text,
 } from 'react-native';
-import ContentLoader, { Circle, Rect } from 'react-content-loader/native';
+import ContentLoader, {Circle, Rect} from 'react-content-loader/native';
 
 import {
   BoldText,
@@ -19,10 +19,10 @@ import {
   Block,
   Button,
 } from '../../components';
-import { ArrowRight } from '../../components/SVGcomponents';
-import { TabNavigationProps } from '../../navigation/types/TabTypes';
-import { useAppSelector } from '../../redux/hooks';
-import { useTheme } from '../../Styles/Styles';
+import {ArrowRight} from '../../components/SVGcomponents';
+import {TabNavigationProps} from '../../navigation/types/TabTypes';
+import {useAppSelector} from '../../redux/hooks';
+import {useTheme} from '../../Styles/Styles';
 import Plus_icon from '../../assets/icons/Plus_icon';
 
 export const AuthProfile: React.FC<{
@@ -36,23 +36,30 @@ export const AuthProfile: React.FC<{
   editBloderPress?: any;
   navigation: TabNavigationProps<'Profile'>['navigation'];
   loading: boolean;
-}> = ({ hashtagPress, profilePress, createBloderPress, showBloderPress, editBloderPress, navigation, loading }) => {
+}> = ({
+  hashtagPress,
+  profilePress,
+  createBloderPress,
+  showBloderPress,
+  editBloderPress,
+  navigation,
+  loading,
+}) => {
   const layout = useWindowDimensions();
   const screenWidth = Dimensions.get('screen').width;
   const user = useAppSelector(state => state.user.data);
   const subscribers = useAppSelector(state => state.user.subscribers);
   const subscribes = useAppSelector(state => state.user.subscribes);
-  const { colors, Style } = useTheme();
+  const {colors, Style} = useTheme();
 
   const CreateBlogerItem = (
-    <View
-    >
+    <View>
       <Text>Стать автором</Text>
       <Plus_icon />
-
-    </View>);
+    </View>
+  );
   return (
-    <View style={{ flex: 1, backgroundColor: colors.fillPrimary }}>
+    <View style={{flex: 1, backgroundColor: colors.fillPrimary}}>
       <SafeAreaView />
       <SafeAreaView style={[Style.container]}>
         <View
@@ -76,7 +83,7 @@ export const AuthProfile: React.FC<{
                 <BoldText
                   numberOfLines={1}
                   fontSize={16}
-                  style={{ fontWeight: '700', width: screenWidth - 130 }}>
+                  style={{fontWeight: '700', width: screenWidth - 130}}>
                   {user?.firstname ?? ''}
                 </BoldText>
               ) : (
@@ -100,11 +107,11 @@ export const AuthProfile: React.FC<{
                   alignItems: 'center',
                   marginTop: 16,
                 }}>
-                <View style={{ marginRight: 15 }}>
+                <View style={{marginRight: 15}}>
                   {!loading || user ? (
                     <BoldText
                       fontSize={16}
-                      style={{ fontWeight: '700', marginBottom: 3 }}>
+                      style={{fontWeight: '700', marginBottom: 3}}>
                       {subscribers.toString()}
                     </BoldText>
                   ) : (
@@ -119,7 +126,7 @@ export const AuthProfile: React.FC<{
 
                   <RegularText
                     fontSize={12}
-                    style={{ color: colors.textSecondary }}>
+                    style={{color: colors.textSecondary}}>
                     Подписчиков
                   </RegularText>
                 </View>
@@ -127,7 +134,7 @@ export const AuthProfile: React.FC<{
                   {!loading || user ? (
                     <BoldText
                       fontSize={16}
-                      style={{ fontWeight: '700', marginBottom: 3 }}>
+                      style={{fontWeight: '700', marginBottom: 3}}>
                       {subscribes.toString()}
                     </BoldText>
                   ) : (
@@ -142,7 +149,7 @@ export const AuthProfile: React.FC<{
 
                   <RegularText
                     fontSize={12}
-                    style={{ color: colors.textSecondary }}>
+                    style={{color: colors.textSecondary}}>
                     Подписки
                   </RegularText>
                 </View>
@@ -165,21 +172,24 @@ export const AuthProfile: React.FC<{
               flex: 1,
               backgroundColor: colors.bgSecondary,
               marginTop: 20,
-              paddingBottom: 20
+              paddingBottom: 20,
             }}
             showsVerticalScrollIndicator={false}>
             <Block>
               <BoldText
                 fontSize={16}
-                style={{ fontWeight: '700', marginBottom: 20 }}>
+                style={{fontWeight: '700', marginBottom: 20}}>
                 Профиль
               </BoldText>
-              <View style={{ flex: 1 }}>
+              <View style={{flex: 1}}>
                 <NavLink text="Мои хештеги" onPress={hashtagPress} />
                 <Separator mt={15} mb={15} />
                 <NavLink text="Редактировать профиль" onPress={profilePress} />
                 <Separator mt={15} mb={15} />
-                <NavLink text="Ред-ать данные блогера" onPress={editBloderPress} />
+                <NavLink
+                  text="Редактировать данные блогера"
+                  onPress={editBloderPress}
+                />
                 <Separator mt={15} mb={15} />
                 <NavLink text="Посмотреть блогера" onPress={showBloderPress} />
               </View>
@@ -187,10 +197,10 @@ export const AuthProfile: React.FC<{
             <Block>
               <BoldText
                 fontSize={16}
-                style={{ fontWeight: '700', marginBottom: 20 }}>
+                style={{fontWeight: '700', marginBottom: 20}}>
                 Еще
               </BoldText>
-              <View style={{ flex: 1 }}>
+              <View style={{flex: 1}}>
                 <NavLink
                   text="Техподдержка"
                   onPress={() => {
@@ -215,7 +225,7 @@ export const AuthProfile: React.FC<{
             </Block>
           </ScrollView>
           <Button
-            title='Стать блогером'
+            title="Стать блогером"
             icon={<Plus_icon />}
             mt={15}
             style={{
@@ -225,15 +235,11 @@ export const AuthProfile: React.FC<{
             }}
             onPress={createBloderPress}
           />
-
         </View>
       </SafeAreaView>
     </View>
   );
 };
-
-
-
 
 interface INavLinkProps {
   onPress: () => void;
@@ -241,8 +247,8 @@ interface INavLinkProps {
 }
 
 const NavLink = (props: INavLinkProps) => {
-  const { onPress, text } = props;
-  const { colors } = useTheme();
+  const {onPress, text} = props;
+  const {colors} = useTheme();
   return (
     <TouchableOpacity
       onPress={onPress}

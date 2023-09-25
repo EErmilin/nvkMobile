@@ -204,7 +204,11 @@ export const CurrentSeriesScreen: FC<
             <Animated.View
               style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
               <BoldText fontSize={16}>{item.reviews_nbk.toString()}</BoldText>
-              <ArrowRight />
+              <ArrowRight
+                onPress={() =>
+                  navigation.navigate('Reviews', {name: item.name})
+                }
+              />
             </Animated.View>
           </Animated.View>
           <ScrollView horizontal>

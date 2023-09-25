@@ -86,6 +86,7 @@ export const InputText: React.FC<InputProps> = props => {
     required = false,
     errorState,
   } = props;
+
   const animValue = React.useRef(
     new Animated.Value(value !== '' ? ANIM_VALUE : 0),
   ).current;
@@ -140,7 +141,7 @@ export const InputText: React.FC<InputProps> = props => {
       ]}
       onFocus={handleFocus}
       onBlur={handleBlur}>
-      <View>
+      <View style={{flex: 1}}>
         {(label || (placeholderToLabel && value && value.length > 0)) && (
           <Animated.Text
             style={[
@@ -155,14 +156,22 @@ export const InputText: React.FC<InputProps> = props => {
                 }),
                 top: animValue.interpolate({
                   inputRange: [ANIM_VALUE, 16],
-                  outputRange: [8, Platform.OS === 'ios' ? 20 : 16],
+                  outputRange: [8, Platform.OS === 'ios' ? 18 : 16],
                 }),
               },
               styleLabel,
             ]}>
             {label}
             {placeholder}
-            {required ? <Text style={{color: colors.danger}}>*</Text> : <></>}
+            {required ? (
+              <Text
+                style={{
+                  color: colors.danger,
+                }}>
+                {' '}
+                *
+              </Text>
+            ) : null}
           </Animated.Text>
         )}
         <MaskInput
@@ -175,7 +184,7 @@ export const InputText: React.FC<InputProps> = props => {
           allowFontScaling={allowFontScalling}
           style={[
             styles.text,
-            {color: colors.textPrimary, flex: 1},
+            {color: colors.textPrimary},
             styleText,
             comment && {marginTop: 0},
           ]}
@@ -210,7 +219,6 @@ const styles = StyleSheet.create({
   main: {
     borderRadius: 18,
     minHeight: 60,
-    fontSize: 14,
     fontFamily: 'NotoSans-Medium',
     justifyContent: 'space-between',
     flexDirection: 'row',
@@ -221,10 +229,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   label: {
-    flex: 1,
-    fontSize: 12,
+    fontSize: 10,
     fontFamily: 'NotoSans-Regular',
     left: 20,
     textAlignVertical: 'center',
+    marginHorizontal: 4,
   },
 });
