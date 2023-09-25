@@ -12,8 +12,10 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Keyboard,
+  Platform,
 } from 'react-native';
 import Animated, {useSharedValue, withTiming} from 'react-native-reanimated';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {colors} from '../Styles/Styles';
 import BoldText from './BoldText';
 import {Rating} from './Rating';
@@ -36,7 +38,8 @@ interface IProps {
 }
 
 const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
-  const modalRef = useRef();
+  const modalRef = useRef(null);
+  const insets = useSafeAreaInsets();
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   const translateYR = useSharedValue(0);
@@ -89,11 +92,19 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
-      () => handleKeyboardVisibility(true),
+      () => {
+        if (Platform.OS === 'android') {
+          handleKeyboardVisibility(false);
+        }
+      },
     );
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
-      () => handleKeyboardVisibility(false),
+      () => {
+        if (Platform.OS === 'android') {
+          handleKeyboardVisibility(false);
+        }
+      },
     );
 
     return () => {
@@ -106,6 +117,10 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
     <Animated.View
       style={[
         styles.container,
+        {
+          paddingTop: Platform.OS === 'ios' ? insets.top : 0,
+          paddingBottom: Platform.OS === 'ios' ? insets.top : 0,
+        },
         {
           transform: [{translateY: translateYR}],
         },

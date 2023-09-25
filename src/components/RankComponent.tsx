@@ -30,7 +30,6 @@ const RankComponent = ({
   activeReview,
 }: Props) => {
   //animated
-
   const translateButton = useSharedValue(0);
 
   //
@@ -58,10 +57,12 @@ const RankComponent = ({
   }, [activeReview]);
 
   useEffect(() => {
+    let endHeight: number;
+
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       event => {
-        const endHeight = event.endCoordinates?.height;
+        endHeight = event.endCoordinates?.height;
         if (endHeight) {
           translateButton.value = withTiming(
             translateButton.value + endHeight,
@@ -76,13 +77,7 @@ const RankComponent = ({
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       event => {
-        const endHeight = event.endCoordinates?.height;
-        translateButton.value = withTiming(
-          (translateButton.value = endHeight),
-          {
-            duration: 200,
-          },
-        );
+        translateButton.value = withTiming(translateButton.value - endHeight);
       },
     );
 
