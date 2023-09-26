@@ -7,17 +7,19 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Keyboard,
+  Platform,
 } from 'react-native';
 import Animated, {useSharedValue, withTiming} from 'react-native-reanimated';
 import {colors} from '../Styles/Styles';
 import BoldText from './BoldText';
 import {Button} from './Button';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 interface Props {
   style?: boolean;
   activeReview: number | null | undefined;
-  publishReviewHandler: () => void;
   setActiveReview?: Dispatch<SetStateAction<number | null>>;
+  publishReviewHandler?: (rank: number, comment: string) => void;
 }
 
 const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
@@ -31,7 +33,7 @@ const RankComponent = ({
 }: Props) => {
   //animated
   const translateButton = useSharedValue(0);
-
+  const insets = useSafeAreaInsets();
   //
 
   const [active, setActive] = useState<number>();
@@ -56,16 +58,17 @@ const RankComponent = ({
     }
   }, [activeReview]);
 
+  //KEYBOARD
   useEffect(() => {
     let endHeight: number;
-
+    //show keyboard event
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       event => {
         endHeight = event.endCoordinates?.height;
         if (endHeight) {
           translateButton.value = withTiming(
-            translateButton.value + endHeight,
+            translateButton.value - endHeight,
             {
               duration: 200,
             },
@@ -73,11 +76,11 @@ const RankComponent = ({
         }
       },
     );
-
+    //hide keyboard
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       event => {
-        translateButton.value = withTiming(translateButton.value - endHeight);
+        translateButton.value = withTiming(translateButton.value + endHeight);
       },
     );
 
@@ -141,8 +144,9 @@ const RankComponent = ({
             <Animated.View
               style={{
                 position: 'absolute',
-                bottom: translateButton,
+                bottom: Platform.OS === 'ios' ? insets.bottom : 15,
                 width: '100%',
+                transform: [{translateY: translateButton}],
               }}>
               <Button title="Опубликовать" onPress={publishReviewHandler} />
             </Animated.View>

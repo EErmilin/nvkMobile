@@ -10,7 +10,6 @@ import {
   StyleSheet,
   Image,
   Dimensions,
-  KeyboardAvoidingView,
   Keyboard,
   Platform,
 } from 'react-native';
@@ -65,19 +64,19 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
     }
   };
 
+  //translate bottom sheet platform  android
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleKeyboardVisibility = (
     isKeyboardVisible: boolean | React.SetStateAction<boolean>,
   ) => {
-    setKeyboardVisible(isKeyboardVisible);
     if (isKeyboardVisible) {
-      translateYR.value = withTiming(translateYR.value + height / 3, {
-        duration: 100,
-      });
+      if (Platform.OS === 'android') {
+        translateYR.value = withTiming(translateYR.value + height / 3);
+      }
     } else {
-      translateYR.value = withTiming(translateYR.value - height / 3, {
-        duration: 100,
-      });
+      if (Platform.OS === 'android') {
+        translateYR.value = withTiming(translateYR.value - height / 3);
+      }
     }
   };
 
@@ -90,20 +89,18 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
 
   // keyboard listener
   useEffect(() => {
+    //show keyboard
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
-        if (Platform.OS === 'android') {
-          handleKeyboardVisibility(false);
-        }
+        handleKeyboardVisibility(true);
       },
     );
+    //hide keyboard
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
-        if (Platform.OS === 'android') {
-          handleKeyboardVisibility(false);
-        }
+        handleKeyboardVisibility(false);
       },
     );
 
@@ -111,7 +108,7 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
     };
-  }, [handleKeyboardVisibility]);
+  }, [handleKeyboardVisibility, keyboardVisible]);
 
   return (
     <Animated.View
@@ -119,77 +116,75 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
         styles.container,
         {
           paddingTop: Platform.OS === 'ios' ? insets.top : 0,
-          paddingBottom: Platform.OS === 'ios' ? insets.top : 0,
+          paddingBottom: Platform.OS === 'ios' ? insets.bottom : 0,
         },
         {
           transform: [{translateY: translateYR}],
         },
       ]}
       ref={modalRef}>
-      <KeyboardAvoidingView>
-        <View>
-          <View style={styles.drag} />
-          <BoldText fontSize={18} style={{textAlign: 'center'}}>
-            Оценить
-          </BoldText>
-          <View style={styles.movieInfo}>
-            {/* mock */}
-            {name === 'film' && (
-              <Image
-                source={{
-                  uri: 'https://avatars.mds.yandex.net/get-kinopoisk-image/1777765/6fa09de3-4afd-4155-a6b9-4149be130ccd/3840x',
-                }}
-                style={styles.poster}
-              />
-            )}
-            {name === 'serial' && (
-              <Image
-                source={{
-                  uri: 'https://nvk-online.ru/new/movie/html/wp-content/uploads/2019/12/st1.jpg',
-                }}
-                style={styles.poster}
-              />
-            )}
+      <View>
+        <View style={styles.drag} />
+        <BoldText fontSize={18} style={{textAlign: 'center'}}>
+          Оценить
+        </BoldText>
+        <View style={styles.movieInfo}>
+          {/* mock */}
+          {name === 'film' && (
+            <Image
+              source={{
+                uri: 'https://avatars.mds.yandex.net/get-kinopoisk-image/1777765/6fa09de3-4afd-4155-a6b9-4149be130ccd/3840x',
+              }}
+              style={styles.poster}
+            />
+          )}
+          {name === 'serial' && (
+            <Image
+              source={{
+                uri: 'https://nvk-online.ru/new/movie/html/wp-content/uploads/2019/12/st1.jpg',
+              }}
+              style={styles.poster}
+            />
+          )}
 
-            {name === 'cartoon' ? (
-              <Image
-                source={{
-                  uri: 'https://kartinkof.club/uploads/posts/2022-09/1662203681_1-kartinkof-club-p-novie-i-krasivie-kartinki-masha-i-medved-1.jpg',
-                }}
-                style={styles.poster}
-              />
-            ) : null}
-            <View>
-              <View style={{alignSelf: 'flex-start'}}>
-                <Rating isStar />
-              </View>
+          {name === 'cartoon' ? (
+            <Image
+              source={{
+                uri: 'https://kartinkof.club/uploads/posts/2022-09/1662203681_1-kartinkof-club-p-novie-i-krasivie-kartinki-masha-i-medved-1.jpg',
+              }}
+              style={styles.poster}
+            />
+          ) : null}
+          <View>
+            <View style={{alignSelf: 'flex-start'}}>
+              <Rating isStar />
+            </View>
 
-              <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-                <BoldText fontSize={18}>
-                  {(name === 'film' && 'Пугало') ||
-                    (name === 'cartoon' && 'Маша и медведь') ||
-                    (name === 'serial' && 'Дьулаан дьыала')}
-                </BoldText>
-                <MediumText
-                  style={{
-                    paddingVertical: 2,
-                    color: colors.secondaryGray,
-                    fontSize: 13,
-                    marginLeft: 6,
-                  }}>
-                  2020
-                </MediumText>
-              </View>
+            <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+              <BoldText fontSize={18}>
+                {(name === 'film' && 'Пугало') ||
+                  (name === 'cartoon' && 'Маша и медведь') ||
+                  (name === 'serial' && 'Дьулаан дьыала')}
+              </BoldText>
+              <MediumText
+                style={{
+                  paddingVertical: 2,
+                  color: colors.secondaryGray,
+                  fontSize: 13,
+                  marginLeft: 6,
+                }}>
+                2020
+              </MediumText>
             </View>
           </View>
-
-          <BoldText fontSize={18}>Как Вам фильм?</BoldText>
-          <RankComponent
-            publishReviewHandler={publishReviewHandler}
-            activeReview={activeReview}
-          />
         </View>
-      </KeyboardAvoidingView>
+
+        <BoldText fontSize={18}>Как Вам фильм?</BoldText>
+        <RankComponent
+          publishReviewHandler={publishReviewHandler}
+          activeReview={activeReview}
+        />
+      </View>
     </Animated.View>
   );
 });
