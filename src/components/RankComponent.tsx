@@ -144,7 +144,7 @@ const RankComponent = ({
             <Animated.View
               style={{
                 position: 'absolute',
-                bottom: Platform.OS === 'ios' ? insets.bottom : 15,
+                bottom: Platform.OS === 'ios' ? insets.bottom || 15 : 15,
                 width: '100%',
                 transform: [{translateY: translateButton}],
               }}>

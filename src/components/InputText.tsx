@@ -86,7 +86,6 @@ export const InputText: React.FC<InputProps> = props => {
     required = false,
     errorState,
   } = props;
-
   const animValue = React.useRef(
     new Animated.Value(value !== '' ? ANIM_VALUE : 0),
   ).current;
@@ -156,7 +155,10 @@ export const InputText: React.FC<InputProps> = props => {
                 }),
                 top: animValue.interpolate({
                   inputRange: [ANIM_VALUE, 16],
-                  outputRange: [8, Platform.OS === 'ios' ? 18 : 16],
+                  outputRange: [
+                    Platform.OS === 'ios' ? 0 : 8,
+                    Platform.OS === 'ios' ? 18 : 16,
+                  ],
                 }),
               },
               styleLabel,
@@ -226,7 +228,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginTop: 18,
-    marginLeft: 20,
+    marginLeft: Platform.OS === 'ios' ? 24 : 20,
   },
   label: {
     fontSize: 10,
