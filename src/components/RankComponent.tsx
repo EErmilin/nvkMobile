@@ -5,9 +5,9 @@ import {
   ScrollView,
   View,
   TextInput,
-  KeyboardAvoidingView,
   Keyboard,
   Platform,
+  Dimensions,
 } from 'react-native';
 import Animated, {useSharedValue, withTiming} from 'react-native-reanimated';
 import {colors} from '../Styles/Styles';
@@ -19,13 +19,18 @@ interface Props {
   style?: boolean;
   activeReview: number | null | undefined;
   setActiveReview?: Dispatch<SetStateAction<number | null>>;
-  publishReviewHandler?: (rank: number, comment: string) => void;
+  publishReviewHandler: (
+    rank: number | null,
+    comment: string | null,
+  ) => void | undefined;
 }
 
 const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
+const height = Dimensions.get('window').height;
+
 const RankComponent = ({
-  style, //
+  style,
   publishReviewHandler,
   // from review
   setActiveReview,
@@ -35,16 +40,20 @@ const RankComponent = ({
   const translateButton = useSharedValue(0);
   const insets = useSafeAreaInsets();
   //
-
   const [active, setActive] = useState<number>();
-  const [rankActive, setRankActive] = useState<number>();
-  //
+  const [rankActive, setRankActive] = useState<number | null>(null);
 
   //rank movie handler
   const rankToMovieHandle = (indexChecked: number) => {
     setActive(indexChecked);
     setRankActive(rankNumber[indexChecked]);
   };
+  //submit review
+  const onSubmit = () => {
+    publishReviewHandler(rankActive, 'ok');
+    Keyboard.dismiss();
+  };
+
   //to review screen
   useEffect(() => {
     if (setActiveReview && active) {
@@ -60,27 +69,30 @@ const RankComponent = ({
 
   //KEYBOARD
   useEffect(() => {
-    let endHeight: number;
     //show keyboard event
+    let keyboardEndCoordinates: number;
+
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       event => {
-        endHeight = event.endCoordinates?.height;
-        if (endHeight) {
-          translateButton.value = withTiming(
-            translateButton.value - endHeight,
-            {
-              duration: 200,
-            },
-          );
-        }
+        keyboardEndCoordinates = event.endCoordinates.height;
+        console.log('___');
+        translateButton.value = withTiming(
+          translateButton.value - keyboardEndCoordinates,
+          {
+            duration: 200,
+          },
+        );
       },
     );
     //hide keyboard
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
-      event => {
-        translateButton.value = withTiming(translateButton.value + endHeight);
+      () => {
+        console.log('+++');
+        translateButton.value = withTiming(
+          translateButton.value + keyboardEndCoordinates,
+        );
       },
     );
 
@@ -120,8 +132,11 @@ const RankComponent = ({
       {!style ? (
         <>
           {/* Comment text */}
-
-          <View style={{marginTop: 16, flex: 1}}>
+          <View
+            style={{
+              marginTop: 16,
+              flex: 1,
+            }}>
             <TextInput
               multiline
               style={[
@@ -136,21 +151,19 @@ const RankComponent = ({
                 //   color: colors.textPrimary,
                 // },
               ]}
-              placeholder="Ваш комментарий"
+              placeholder="Отзыв. (минимум 50 символов)"
             />
           </View>
           {/* publish */}
-          <KeyboardAvoidingView enabled={true}>
-            <Animated.View
-              style={{
-                position: 'absolute',
-                bottom: Platform.OS === 'ios' ? insets.bottom || 15 : 15,
-                width: '100%',
-                transform: [{translateY: translateButton}],
-              }}>
-              <Button title="Опубликовать" onPress={publishReviewHandler} />
-            </Animated.View>
-          </KeyboardAvoidingView>
+          <Animated.View
+            style={{
+              position: 'absolute',
+              bottom: Platform.OS === 'ios' ? insets.bottom || 15 : 15,
+              width: '100%',
+              transform: [{translateY: translateButton}],
+            }}>
+            <Button title="Опубликовать" onPress={onSubmit} />
+          </Animated.View>
         </>
       ) : null}
     </View>
@@ -169,7 +182,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   inputText: {
-    minHeight: 100,
+    height: Platform.OS === 'ios' ? height / 7 : 100,
     borderRadius: 20,
     textAlignVertical: 'top',
     borderWidth: 1,

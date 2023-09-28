@@ -12,8 +12,15 @@ import {
   Dimensions,
   Keyboard,
   Platform,
+  Pressable,
 } from 'react-native';
-import Animated, {useSharedValue, withTiming} from 'react-native-reanimated';
+import Animated, {
+  useSharedValue,
+  withTiming,
+  withSpring,
+  runOnJS,
+} from 'react-native-reanimated';
+import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {colors} from '../Styles/Styles';
 import BoldText from './BoldText';
@@ -23,6 +30,7 @@ import RankComponent from './RankComponent';
 import {useDispatch} from 'react-redux';
 import {setOpen} from '../redux/slices/bottomSheetSlice';
 import MediumText from './MediumText';
+import {boolean} from 'yup';
 
 const {width, height} = Dimensions.get('window');
 
@@ -39,9 +47,14 @@ interface IProps {
 const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
   const modalRef = useRef(null);
   const insets = useSafeAreaInsets();
+  //state
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
+  //shared Value
   const translateYR = useSharedValue(0);
+  const scrollContentY = useSharedValue(0);
+  const pressed = useSharedValue(false);
+
   const dispatch = useDispatch();
   //open BottomSheet
   useImperativeHandle<unknown, BottomSheetHandle>(ref, () => ({
@@ -56,6 +69,7 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
   }));
   //leave Comment and close bottomSheet
   const publishReviewHandler = (rank: number, comment: string) => {
+    console.log(rank, comment);
     if (ref) {
       dispatch(setOpen(true));
       translateYR.value = withTiming(translateYR.value + height, {
@@ -63,25 +77,59 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
       });
     }
   };
+  //reset header state onPanGestureHandler
+  const resetHeaderState = (isTrue: boolean) => {
+    dispatch(setOpen(isTrue));
+  };
+
+  //pan gesture handler
+  const pan = Gesture.Pan()
+    .onBegin(() => {
+      pressed.value = true;
+    })
+    .onChange(event => {
+      if (event.translationY > 0) {
+        translateYR.value = withTiming(
+          translateYR.value + Math.floor(event.translationY),
+        );
+      }
+    })
+    .onFinalize(event => {
+      if (event.velocityY > 600) {
+        console.log(event.velocityY);
+        translateYR.value = withTiming(0, {duration: 300}, () => {
+          runOnJS(resetHeaderState)(true);
+        });
+      } else {
+        if (event.translationY !== 0) {
+          translateYR.value = withTiming(-height);
+        }
+      }
+      pressed.value = false;
+    });
 
   //translate bottom sheet platform  android
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleKeyboardVisibility = (
     isKeyboardVisible: boolean | React.SetStateAction<boolean>,
   ) => {
     if (isKeyboardVisible) {
       if (Platform.OS === 'android') {
-        translateYR.value = withTiming(translateYR.value + height / 3);
+        // setKeyboardVisible(true);
+        translateYR.value = withTiming(translateYR.value + height / 4);
       }
     } else {
       if (Platform.OS === 'android') {
-        translateYR.value = withTiming(translateYR.value - height / 3);
+        // setKeyboardVisible(false);
+        translateYR.value = withTiming(translateYR.value - height / 4);
       }
     }
   };
 
   //reset state
   useEffect(() => {
+    console.log('++');
     return () => {
       dispatch(setOpen(true));
     };
@@ -94,6 +142,9 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
       'keyboardDidShow',
       () => {
         handleKeyboardVisibility(true);
+        if (Platform.OS === 'ios') {
+          scrollContentY.value = withTiming(scrollContentY.value + -height / 5);
+        }
       },
     );
     //hide keyboard
@@ -101,91 +152,101 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
       'keyboardDidHide',
       () => {
         handleKeyboardVisibility(false);
+        if (Platform.OS === 'ios') {
+          scrollContentY.value = withTiming(scrollContentY.value - -height / 5);
+        }
       },
     );
-
     return () => {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
     };
-  }, [handleKeyboardVisibility, keyboardVisible]);
+  }, [handleKeyboardVisibility, scrollContentY]);
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          paddingTop: Platform.OS === 'ios' ? insets.top : 0,
-          paddingBottom: Platform.OS === 'ios' ? insets.bottom : 0,
-        },
-        {
-          transform: [{translateY: translateYR}],
-        },
-      ]}
-      ref={modalRef}>
-      <View>
-        <View style={styles.drag} />
-        <BoldText fontSize={18} style={{textAlign: 'center'}}>
-          Оценить
-        </BoldText>
-        <View style={styles.movieInfo}>
-          {/* mock */}
-          {name === 'film' && (
-            <Image
-              source={{
-                uri: 'https://avatars.mds.yandex.net/get-kinopoisk-image/1777765/6fa09de3-4afd-4155-a6b9-4149be130ccd/3840x',
-              }}
-              style={styles.poster}
-            />
-          )}
-          {name === 'serial' && (
-            <Image
-              source={{
-                uri: 'https://nvk-online.ru/new/movie/html/wp-content/uploads/2019/12/st1.jpg',
-              }}
-              style={styles.poster}
-            />
-          )}
+    <GestureDetector gesture={pan}>
+      <Animated.View
+        style={[
+          styles.container,
+          {
+            paddingTop: Platform.OS === 'ios' ? insets.top : 12,
+            paddingBottom: Platform.OS === 'ios' ? insets.bottom : 12,
+          },
+          {
+            transform: [{translateY: translateYR}],
+          },
+        ]}
+        ref={modalRef}>
+        <Animated.View
+          style={[
+            styles.contentContainer,
+            Platform.OS === 'ios' ? {marginTop: scrollContentY} : null,
+          ]}>
+          <Pressable onPress={() => Keyboard.dismiss()}>
+            <View style={styles.drag} />
+            <BoldText fontSize={18} style={{textAlign: 'center'}}>
+              Оценить
+            </BoldText>
+            <View style={styles.movieInfo}>
+              {/* mock */}
+              {name === 'film' && (
+                <Image
+                  source={{
+                    uri: 'https://avatars.mds.yandex.net/get-kinopoisk-image/1777765/6fa09de3-4afd-4155-a6b9-4149be130ccd/3840x',
+                  }}
+                  style={styles.poster}
+                />
+              )}
+              {name === 'serial' && (
+                <Image
+                  source={{
+                    uri: 'https://nvk-online.ru/new/movie/html/wp-content/uploads/2019/12/st1.jpg',
+                  }}
+                  style={styles.poster}
+                />
+              )}
 
-          {name === 'cartoon' ? (
-            <Image
-              source={{
-                uri: 'https://kartinkof.club/uploads/posts/2022-09/1662203681_1-kartinkof-club-p-novie-i-krasivie-kartinki-masha-i-medved-1.jpg',
-              }}
-              style={styles.poster}
-            />
-          ) : null}
-          <View>
-            <View style={{alignSelf: 'flex-start'}}>
-              <Rating isStar />
+              {name === 'cartoon' ? (
+                <Image
+                  source={{
+                    uri: 'https://kartinkof.club/uploads/posts/2022-09/1662203681_1-kartinkof-club-p-novie-i-krasivie-kartinki-masha-i-medved-1.jpg',
+                  }}
+                  style={styles.poster}
+                />
+              ) : null}
+              <View>
+                <View style={{alignSelf: 'flex-start'}}>
+                  <Rating isStar />
+                </View>
+
+                <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+                  <BoldText fontSize={18}>
+                    {(name === 'film' && 'Пугало') ||
+                      (name === 'cartoon' && 'Маша и медведь') ||
+                      (name === 'serial' && 'Дьулаан дьыала')}
+                  </BoldText>
+                  <MediumText
+                    style={{
+                      paddingVertical: 2,
+                      color: colors.secondaryGray,
+                      fontSize: 13,
+                      marginLeft: 6,
+                    }}>
+                    2020
+                  </MediumText>
+                </View>
+              </View>
             </View>
 
-            <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-              <BoldText fontSize={18}>
-                {(name === 'film' && 'Пугало') ||
-                  (name === 'cartoon' && 'Маша и медведь') ||
-                  (name === 'serial' && 'Дьулаан дьыала')}
-              </BoldText>
-              <MediumText
-                style={{
-                  paddingVertical: 2,
-                  color: colors.secondaryGray,
-                  fontSize: 13,
-                  marginLeft: 6,
-                }}>
-                2020
-              </MediumText>
-            </View>
-          </View>
-        </View>
-
-        <BoldText fontSize={18}>Как Вам фильм?</BoldText>
-        <RankComponent
-          publishReviewHandler={publishReviewHandler}
-          activeReview={activeReview}
-        />
-      </View>
-    </Animated.View>
+            <BoldText fontSize={18}>Как Вам фильм?</BoldText>
+            <RankComponent
+              publishReviewHandler={publishReviewHandler}
+              activeReview={activeReview}
+            />
+          </Pressable>
+        </Animated.View>
+      </Animated.View>
+    </GestureDetector>
   );
 });
 
@@ -201,8 +262,13 @@ const styles = StyleSheet.create({
     bottom: -height,
     zIndex: 200,
     paddingHorizontal: 12,
-    paddingVertical: 12,
+    // paddingVertical: 12,
+    overflow: 'hidden',
   },
+  contentContainer: {
+    flex: 1,
+  },
+
   drag: {
     width: 50,
     height: 4,
