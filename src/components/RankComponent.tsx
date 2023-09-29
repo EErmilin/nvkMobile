@@ -76,20 +76,20 @@ const RankComponent = ({
       'keyboardDidShow',
       event => {
         keyboardEndCoordinates = event.endCoordinates.height;
-        console.log('___');
-        translateButton.value = withTiming(
-          translateButton.value - keyboardEndCoordinates,
-          {
-            duration: 200,
-          },
-        );
+        if (translateButton.value === 0) {
+          translateButton.value = withTiming(
+            translateButton.value - keyboardEndCoordinates,
+            {
+              duration: 200,
+            },
+          );
+        }
       },
     );
     //hide keyboard
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
-        console.log('+++');
         translateButton.value = withTiming(
           translateButton.value + keyboardEndCoordinates,
         );

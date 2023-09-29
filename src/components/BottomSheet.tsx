@@ -17,7 +17,6 @@ import {
 import Animated, {
   useSharedValue,
   withTiming,
-  withSpring,
   runOnJS,
 } from 'react-native-reanimated';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
@@ -30,7 +29,6 @@ import RankComponent from './RankComponent';
 import {useDispatch} from 'react-redux';
 import {setOpen} from '../redux/slices/bottomSheetSlice';
 import MediumText from './MediumText';
-import {boolean} from 'yup';
 
 const {width, height} = Dimensions.get('window');
 
@@ -96,7 +94,6 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
     })
     .onFinalize(event => {
       if (event.velocityY > 600) {
-        console.log(event.velocityY);
         translateYR.value = withTiming(0, {duration: 300}, () => {
           runOnJS(resetHeaderState)(true);
         });
@@ -109,7 +106,6 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
     });
 
   //translate bottom sheet platform  android
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleKeyboardVisibility = (
     isKeyboardVisible: boolean | React.SetStateAction<boolean>,
@@ -129,7 +125,6 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
 
   //reset state
   useEffect(() => {
-    console.log('++');
     return () => {
       dispatch(setOpen(true));
     };
@@ -142,7 +137,7 @@ const BottomSheet = forwardRef(({name, activeReview}: IProps, ref) => {
       'keyboardDidShow',
       () => {
         handleKeyboardVisibility(true);
-        if (Platform.OS === 'ios') {
+        if (Platform.OS === 'ios' && scrollContentY.value === 0) {
           scrollContentY.value = withTiming(scrollContentY.value + -height / 5);
         }
       },

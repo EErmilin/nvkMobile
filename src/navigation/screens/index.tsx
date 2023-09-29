@@ -97,6 +97,7 @@ import EditBlogger from '../../Screens/BlogerScreens/EditBloger';
 import ReviewsScreen from '../../Screens/ ReviewsScreen/ReviewsScreen';
 import {useSelector} from 'react-redux';
 import NewsComments from '../../Screens/NewsScreen/NewsCommets';
+import FilterScreen from '../../Screens/FilterScreen/FilterScreen';
 
 LogBox.ignoreAllLogs();
 
@@ -783,6 +784,14 @@ const StackNavigation = () => {
           }}
           name="Comments"
           component={NewsComments}
+        />
+        <Stack.Screen
+          options={{
+            headerTitle: 'Фильтры',
+            headerShown: isOpen,
+          }}
+          name="Filter"
+          component={FilterScreen}
         />
       </Stack.Navigator>
       {flag ? <MusicTrackView insets={insets.bottom} /> : <></>}
