@@ -20,6 +20,7 @@ import {ArrowDownIcon} from '../../components/SVGcomponents/ArrowDownIcon';
 import ContentLoader from 'react-content-loader';
 import {Rect} from 'react-native-svg';
 import {LayoutVideoItem} from '../../components/LayoutVideoItem';
+import SortDropDown from '../../components/SortDropDown';
 
 interface Props {
   id: number;
@@ -35,6 +36,8 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
   const length = Math.ceil((screenWidth - 30) / (140 + 10));
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
+  const [sortVisible, setSortVisible] = useState(false);
+  const [sortOption, setSortOption] = useState('По просмотрам');
   //mock data
   const films: Props[] = [
     {id: 1, name: 'film1', price: 199, rating: 5.5},
@@ -43,6 +46,10 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
 
   const getFilms = () => {
     // dispatch()
+  };
+
+  const showSortModalHandle = () => {
+    setSortVisible(prevState => !prevState);
   };
 
   useEffect(() => {
@@ -94,13 +101,22 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
             <BoldText fontSize={16}>Фильтры</BoldText>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <View style={styles.btn}>
-            <ArrowsIcon color={colors.colorMain} />
-            <BoldText fontSize={16}>По просмотру</BoldText>
-            <ArrowDownIcon color={colors.colorMain} />
-          </View>
-        </TouchableOpacity>
+        <View style={{position: 'relative'}}>
+          <TouchableOpacity onPress={showSortModalHandle}>
+            <View style={styles.btn}>
+              <ArrowsIcon color={colors.colorMain} />
+              <BoldText fontSize={16}>{sortOption}</BoldText>
+              <ArrowDownIcon color={colors.colorMain} />
+            </View>
+          </TouchableOpacity>
+          {sortVisible ? (
+            <SortDropDown
+              sortOption={sortOption}
+              setSortOption={setSortOption}
+              setSortVisible={setSortVisible}
+            />
+          ) : null}
+        </View>
       </Containter>
       <ScrollView>
         {films.length && (
@@ -169,6 +185,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    zIndex: 1,
   },
   btn: {
     alignItems: 'center',
@@ -182,6 +199,7 @@ const styles = StyleSheet.create({
   items: {
     flex: 1,
     marginBottom: 20,
+    zIndex: 1,
   },
   itemContainer: {
     paddingHorizontal: 15,

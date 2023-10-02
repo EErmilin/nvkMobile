@@ -6,11 +6,12 @@ import {TouchableOpacity} from 'react-native';
 import {colors} from '../Styles/Styles';
 
 interface FilterRenderItemProps {
-  item: string;
+  item: string | number;
   index: number;
+  isRatio: boolean;
 }
 
-const FilterRenderItem = ({item, index}: FilterRenderItemProps) => {
+const FilterRenderItem = ({item, index, isRatio}: FilterRenderItemProps) => {
   const [isChecked, setIsChecked] = useState(false);
 
   const toggleCheckboxHandler = () => {
@@ -19,12 +20,29 @@ const FilterRenderItem = ({item, index}: FilterRenderItemProps) => {
 
   return (
     <View style={styles.container}>
-      <BoldText style={{marginTop: index === 0 ? 10 : 0}}>{item}</BoldText>
-      <TouchableOpacity
-        onPress={toggleCheckboxHandler}
-        style={[styles.checkbox, !isChecked ? styles.inActive : null]}>
-        {isChecked && <CheckedInput />}
-      </TouchableOpacity>
+      <BoldText style={{marginTop: index === 0 ? 10 : 0}}>
+        {item.toString()}
+      </BoldText>
+      {isRatio ? (
+        <TouchableOpacity onPress={toggleCheckboxHandler}>
+          {!isChecked ? (
+            <View style={styles.ratio} />
+          ) : (
+            <View style={styles.ratioActive}>
+              <View style={styles.ratioInner} />
+            </View>
+          )}
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={toggleCheckboxHandler}
+          style={[
+            styles.checkbox,
+            !isChecked ? styles.inActiveCheckBox : null,
+          ]}>
+          {isChecked && <CheckedInput />}
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -46,7 +64,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 8,
   },
-  inActive: {
+  inActiveCheckBox: {
     backgroundColor: colors.bluishGray,
+  },
+  ratio: {
+    width: 28,
+    height: 28,
+    backgroundColor: colors.bluishGray,
+    borderRadius: 14,
+  },
+  ratioActive: {
+    width: 28,
+    height: 28,
+    backgroundColor: colors.orange,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ratioInner: {
+    backgroundColor: colors.white,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
 });

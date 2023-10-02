@@ -14,12 +14,15 @@ const {width} = Dimensions.get('window');
 
 interface FilterOptionsProps {
   title: string;
-  handlePage: (pageId: string) => void | undefined;
+  handlePage?: ((pageId: string | undefined) => void) | undefined;
 }
 
 const FilterOptions = ({title, handlePage}: FilterOptionsProps) => {
   const handlePageId = () => {
-    handlePage('genres');
+    if (title !== undefined && title !== 'Рейтинг Кинопоиск') {
+      handlePage!(title);
+    }
+    return;
   };
 
   return (
@@ -30,7 +33,7 @@ const FilterOptions = ({title, handlePage}: FilterOptionsProps) => {
       <BoldText>{title}</BoldText>
       <View style={styles.checkedFilterContainer}>
         <Text style={styles.checkedFilterText}>Все</Text>
-        <ArrowRight />
+        {title !== 'Рейтинг Кинопоиск' ? <ArrowRight /> : null}
       </View>
     </TouchableOpacity>
   );
