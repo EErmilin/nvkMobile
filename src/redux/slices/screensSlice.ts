@@ -10,17 +10,26 @@ import {removeFavorite} from '../thunks/favorite/RemoveFavorite';
 import {fetchFavorite} from '../thunks/favorite/GetFavorites';
 import {deleteProfile} from '../thunks/user/DeleteProfile';
 import {updateHashtag, updateUser} from '../thunks/user/UpdateUser';
+import { getFilm, getFilms } from '../thunks/screens/getFilms/GetFilms';
 
 const initialState: IScreenState = {
   broadcasts: [],
   musics: null,
   podcasts: [],
+  movies: [],
+  movie: null,
 };
 
 const screensSlice = createSlice({
   name: 'screens',
   initialState,
   reducers: {
+    setScreenMovies: (state, action) => {
+      state.movies = action.payload;
+    },
+    setScreenMovie: (state, action) => {
+      state.movie = action.payload;
+    },
     setScreenBroadcasts: (state, action) => {
       state.broadcasts = action.payload;
     },
@@ -37,6 +46,12 @@ const screensSlice = createSlice({
     },
   },
   extraReducers: builder => {
+    builder.addCase(getFilms.fulfilled, (state, action) => {
+      state.movies = action.payload;
+    });
+    builder.addCase(getFilm.fulfilled, (state, action) => {
+      state.movie = action.payload;
+    });
     builder.addCase(getBroadcasts.fulfilled, (state, action) => {
       state.broadcasts = action.payload;
     });
@@ -101,6 +116,6 @@ const screensSlice = createSlice({
   },
 });
 
-export const {setScreenBroadcasts, setScreenMusics, clearScreensState} =
+export const {setScreenBroadcasts, setScreenMusics, clearScreensState, setScreenMovies} =
   screensSlice.actions;
 export default screensSlice.reducer;

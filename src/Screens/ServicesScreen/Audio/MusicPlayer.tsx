@@ -19,7 +19,6 @@ import {PlayCircle} from '../../../components/SVGcomponents/media/PlayCircle';
 import {Heart} from '../../../components/SVGcomponents/Heart';
 import TrackPlayer, {
   State,
-  useActiveTrack,
   usePlaybackState,
   useProgress,
 } from 'react-native-track-player';
@@ -48,7 +47,7 @@ export const MusicPlayer: React.FC<RootNavigationProps<'MusicPlayer'>> = ({
   const {StatusBarManager} = NativeModules;
   const musicContext = React.useContext(MusicPlayerContext);
   const user = useAppSelector(state => state.user.data);
-  const activeTrack = useActiveTrack();
+  const activeTrack = null;
   const addMusic = async () => {
     try {
       const albumPlaying = await TrackPlayer.getQueue();

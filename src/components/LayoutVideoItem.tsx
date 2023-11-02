@@ -14,16 +14,16 @@ export const LayoutVideoItem = ({item, height, heightImage}: Props) => {
   return (
     <View style={[styles.container, {height: height}]}>
       <ImageBackground
-        source={{uri: item.image}}
+        source={{uri: item.image?.url ?? null}}
         resizeMode={'cover'}
         style={[styles.image, {height: heightImage}]}>
-        <View style={styles.rating}>
+{/*        <View style={styles.rating}>
           <Rating rating={item.rating} isStar={false} />
-        </View>
+  </View>*/}
       </ImageBackground>
-      <BoldText fontSize={16}>{item.name}</BoldText>
+      <BoldText fontSize={16}>{item?.name}</BoldText>
       {item.price ? (
-        <RegularText style={{color: colors.orange}}>{item.price}</RegularText>
+        <RegularText style={{color: colors.orange}}>{item?.price}</RegularText>
       ) : (
         <RegularText style={{color: colors.secondaryGray}}>
           Бесплатно

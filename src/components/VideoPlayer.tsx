@@ -429,9 +429,9 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
             automaticallyWaitsToMinimizeStalling
             preferredForwardBufferDuration={500}
             fullscreen={Platform.OS === 'android' ? fullscreen : false}
-            // paused={
-            //   paused || contextNavBar.videoPlayerOption.video !== undefined
-            // }
+             paused={
+               paused || contextNavBar.videoPlayerOption.video !== undefined
+             }
             repeat={true}
             onReadyForDisplay={() => {
               setLoading(false);

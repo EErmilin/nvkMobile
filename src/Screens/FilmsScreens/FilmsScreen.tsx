@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {RootNavigationProps} from '../../navigation/types/RootStackTypes';
 import {useTheme} from '../../Styles/Styles';
-import {useAppDispatch} from '../../redux/hooks';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import Toast from 'react-native-toast-message';
 import {BoldText, Containter, SearchComponent} from '../../components';
 import {FilterIcon} from '../../components/SVGcomponents/FilterIcon';
@@ -21,6 +21,8 @@ import ContentLoader from 'react-content-loader';
 import {Rect} from 'react-native-svg';
 import {LayoutVideoItem} from '../../components/LayoutVideoItem';
 import SortDropDown from '../../components/SortDropDown';
+import { getFilms } from '../../redux/thunks/screens/getFilms/GetFilms';
+import { setScreenMovies } from '../../redux/slices/screensSlice';
 
 interface Props {
   id: number;
@@ -38,33 +40,38 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
   const [search, setSearch] = useState('');
   const [sortVisible, setSortVisible] = useState(false);
   const [sortOption, setSortOption] = useState('По просмотрам');
+  const moviesRedux = useAppSelector(state => state.screens.movies);
+ 
   //mock data
   const films: Props[] = [
     {id: 1, name: 'film1', price: 199, rating: 5.5},
     {id: 2, name: 'film2', price: null, rating: 7.8},
   ];
 
-  const getFilms = () => {
-    // dispatch()
-  };
+
 
   const showSortModalHandle = () => {
     setSortVisible(prevState => !prevState);
   };
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setIsLoading(true);
-        await getFilms();
-      } catch (e) {
-        Toast.show({type: 'error', text1: 'Что-то пошло не так'});
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, []);
+  const update = React.useCallback(async () => {
+    try {
+      setIsLoading(true);
+    const response =  await dispatch(getFilms({search:search }));
+    } catch (e) {
+      Toast.show({type: 'error', text1: 'Что-то пошло не так'});
+    } finally {
+      setIsLoading(false);
+    }
+  }, [dispatch, search]);
 
+  React.useEffect(() => {
+    (async () => {
+      await update();
+    })();
+  }, [update]);
+
+if(!moviesRedux.length)return
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -78,7 +85,7 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
           onRefresh={async () => {
             try {
               setIsLoading(true);
-              await getFilms();
+              await dispatch(getFilms({search:search }));
             } catch (e) {
               console.log(e);
             } finally {
@@ -119,9 +126,9 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
         </View>
       </Containter>
       <ScrollView>
-        {films.length && (
+        {moviesRedux.length && (
           <FlatList
-            data={films}
+            data={moviesRedux}
             style={styles.items}
             contentContainerStyle={styles.itemContainer}
             keyExtractor={(item, index) => index.toString()}
@@ -131,7 +138,7 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
                   navigation.navigate('Film', {
                     id: item.id,
                     title: item.name,
-                    rating: item.rating,
+                   // rating: item.rating,
                   })
                 }>
                 <LayoutVideoItem item={item} height={282} heightImage={230} />
