@@ -416,8 +416,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
           <Video
             ref={refVideo}
             style={[styleScreen.fullscreen, style]}
-            // source={{uri: modalSetting.quality}}
-            source={{ uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" }}
+             source={{uri: urls.url}}
             rate={modalSetting.speed}
             resizeMode="contain"
             onPlaybackRateChange={async res => {
