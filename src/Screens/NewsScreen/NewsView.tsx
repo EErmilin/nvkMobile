@@ -9,9 +9,11 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Platform,
+  Text,
+  Pressable,
 } from 'react-native';
 import {Containter} from '../../components/Container';
-import {useTheme} from '../../Styles/Styles';
+import {colors, useTheme} from '../../Styles/Styles';
 import {RootNavigationTabProps} from '../../navigation/types/RootStackTypes';
 import BoldText from '../../components/BoldText';
 import MediumText from '../../components/MediumText';
@@ -22,7 +24,7 @@ import {EmptyImage} from '../../components/EmptyImage';
 import {getDate} from '../../helpers/getDate';
 import {VideoPost} from '../../components/VideoPost';
 import {IPost} from '../../models/Post';
-import {Avatar} from '../../components';
+import {Avatar, InputText} from '../../components';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ArrowLeft} from '../../components/SVGcomponents';
 import {getUpdateClient} from '../../requests/updateHeaders';
@@ -34,8 +36,36 @@ import {setLogged} from '../../redux/slices/authSlice';
 // @ts-ignore
 import AppMetrica from 'react-native-appmetrica-next';
 import DeviceInfo from 'react-native-device-info';
+import NewsCommentCard from '../../components/NewsCommentCard';
+import SendMessage_icon from '../../assets/icons/SendMessage_icon';
 
 const REGULAR_HASTAG = /#[0-9A-Za-zА-Яа-яё]+/g;
+//mock
+const comments = [
+  {
+    image:
+      'https://cojo.ru/wp-content/uploads/2022/12/mariia-zavgorodniaia-3.webp',
+    name: 'Татьяна Рожина',
+    comment:
+      'Идейные соображения высшего порядка, а также новая модель организационной.',
+    createdAt: '12.09.2023',
+  },
+  {
+    image:
+      'https://meragor.com/files/styles//ava_800_800_wm/sfztn_boy_avatar_1.jpg',
+    name: 'Антон Воробьёв',
+    comment: 'Брово!!',
+    createdAt: '12.09.2023',
+  },
+  {
+    image:
+      'https://n1s2.hsmedia.ru/20/cc/9a/20cc9ac5bad1a9fff282a2ed6f741f42/807x807_0xc0a839a2_8097722801509115373.jpeg',
+    name: 'Mark Starostin',
+    comment:
+      'Приятно, граждане, наблюдать, как элементы политического процесса объединены в целые кластеры себе подобных. Также как повышение уровня гражданского сознания не даёт нам иного выбора, кроме определения соответствующих условий активизации.',
+    createdAt: '12.09.2023',
+  },
+];
 
 export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
   const {route, navigation} = props;
@@ -322,6 +352,45 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
             {postView?.author?.lastname ?? ''}
           </BoldText>
         </View>
+
+        {/* COMMENTS */}
+        <View style={styles.commentContainer}>
+          <View style={styles.commentsHeader}>
+            <BoldText style={{color: colors.textPrimary}}>
+              Комметарии (12)
+            </BoldText>
+            <Pressable
+              hitSlop={10}
+              onPress={() => navigation.navigate('Comments')}>
+              <MediumText style={{color: colors.orange}}>
+                <Text>Показать все</Text>
+              </MediumText>
+            </Pressable>
+          </View>
+          {/* INPUT */}
+          <View style={styles.leaveComment}>
+            <InputText
+              placeholder="Написать комментарий"
+              style={{alignItems: 'center', marginBottom: 20, flex: 1}}
+              comment
+            />
+            <TouchableOpacity style={styles.send}>
+              <SendMessage_icon />
+            </TouchableOpacity>
+          </View>
+
+          {/* CommentCard */}
+
+          <View>
+            <FlatList
+              data={comments}
+              renderItem={({item}) => {
+                return <NewsCommentCard commentItem={item} />;
+              }}
+              ItemSeparatorComponent={DevideCommentsCard}
+            />
+          </View>
+        </View>
       </Containter>
     </ScrollView>
   );
@@ -401,6 +470,19 @@ const RenderContent = ({post}: {post: IPost}) => {
   }
 };
 
+const DevideCommentsCard = () => {
+  return (
+    <View
+      style={{
+        height: 1,
+        width: '100%',
+        backgroundColor: colors.borderGray,
+        marginVertical: 20,
+      }}
+    />
+  );
+};
+
 const styles = StyleSheet.create({
   main: {
     flex: 1,
@@ -415,5 +497,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.45)',
+  },
+  commentContainer: {
+    backgroundColor: colors.white,
+    borderRadius: 20,
+    width: '100%',
+  },
+  commentsHeader: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  leaveComment: {
+    flexDirection: 'row',
+  },
+  send: {
+    width: 55,
+    aspectRatio: 1,
+    backgroundColor: colors.orange,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 30,
+    marginLeft: 10,
   },
 });

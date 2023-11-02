@@ -1,4 +1,4 @@
-import {IBroadcast} from '../../models/Broadcast';
+import { IBroadcast } from '../../models/Broadcast';
 import {
   IAlbum,
   IArtist,
@@ -9,6 +9,8 @@ import {
 
 export interface IScreenState {
   broadcasts: IBroadcast[];
+  movies: any;
+  movie: any;
   musics: {
     albums: IAlbum[] | null;
     playlists: IPlaylist[] | null;

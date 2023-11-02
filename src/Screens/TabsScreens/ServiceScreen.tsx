@@ -107,9 +107,11 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
           <Currentcies />
         </ScrollView>
         <ScrollView
-          horizontal
           keyboardShouldPersistTaps={'always'}
-          contentContainerStyle={{paddingLeft: 15, marginBottom: 15}}
+          contentContainerStyle={{
+            paddingLeft: 15,
+            marginBottom: 15,
+          }}
           showsHorizontalScrollIndicator={false}
           style={{flexGrow: 0}}>
           {Platform.OS === 'ios' ? (
@@ -160,10 +162,90 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
           ) : (
             <></>
           )}
-          <ServiceItem
+
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            {/* Column 1 */}
+            <View>
+              <ServiceItem
+                size="small"
+                navName="Podcast"
+                source={require('../../assets/images/podcast_logo.png')}
+                mr={2}
+                navigation={navigation}
+              />
+              <ServiceItem
+                size="small"
+                navName="ServicesScreen"
+                source={require('../../assets/images/services_logo.png')}
+                mr={2}
+                navigation={navigation}
+                mt={10}
+              />
+              <ServiceItem
+                size="small"
+                navName="Broadcasts"
+                source={require('../../assets/images/tvBroadcast.png')}
+                mr={2}
+                navigation={navigation}
+                mt={10}
+              />
+            </View>
+            {/* Column 2 */}
+            <View>
+              <ServiceItem
+                size="small"
+                navName="Music"
+                source={require('../../assets/images/musicIcon.png')}
+                mr={2}
+                navigation={navigation}
+              />
+              <ServiceItem
+                size="small"
+                navName="Series"
+                source={require('../../assets/images/series_logo.png')}
+                mr={2}
+                navigation={navigation}
+                mt={10}
+              />
+            </View>
+            {/* Column 3 */}
+            <View>
+              <ServiceItem
+                size="small"
+                navName="Cartoons"
+                source={require('../../assets/images/cartoons_logo.png')}
+                mr={2}
+                navigation={navigation}
+              />
+              <ServiceItem
+                size="small"
+                navName="Films"
+                source={require('../../assets/images/films_logo.png')}
+                mr={2}
+                navigation={navigation}
+                mt={10}
+              />
+            </View>
+          </View>
+
+          {/* <ServiceItem
             size="small"
             navName="Podcast"
             source={require('../../assets/images/podcast_logo.png')}
+            mr={2}
+            navigation={navigation}
+          />
+          <ServiceItem
+            size="small"
+            navName="Music"
+            source={require('../../assets/images/musicIcon.png')}
+            mr={2}
+            navigation={navigation}
+          />
+          <ServiceItem
+            size="small"
+            navName="Cartoons"
+            source={require('../../assets/images/cartoons_logo.png')}
             mr={2}
             navigation={navigation}
           />
@@ -174,6 +256,21 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
             mr={2}
             navigation={navigation}
           />
+
+          <ServiceItem
+            size="small"
+            navName="Series"
+            source={require('../../assets/images/series_logo.png')}
+            mr={2}
+            navigation={navigation}
+          />
+          <ServiceItem
+            size="small"
+            navName="Films"
+            source={require('../../assets/images/films_logo.png')}
+            mr={2}
+            navigation={navigation}
+          /> */}
         </ScrollView>
         <View
           style={{
@@ -328,9 +425,13 @@ interface IServiceItem {
     | 'Broadcasts'
     | 'RadioScreen'
     | 'ViewLive'
+    | 'Films'
+    | 'Series'
+    | 'Cartoons'
     | 'Podcast';
   source: any;
   mr?: number;
+  mt?: number;
   navigation: TabNavigationProps<'Services'>['navigation'];
   navParams?: {
     live?: string;
@@ -344,12 +445,14 @@ interface IServiceItem {
 }
 
 const ServiceItem = (props: IServiceItem) => {
-  const {source, size, mr = 1, navigation, navName, navParams} = props;
+  const {source, size, mr = 1, mt, navigation, navName, navParams} = props;
   const screenWidth = useWindowDimensions().width;
+
   return (
     <TouchableOpacity
       style={{
         marginRight: mr ? 15 : 0,
+        marginTop: mt ? 10 : 0,
       }}
       onPress={() => {
         switch (navName) {
@@ -357,6 +460,9 @@ const ServiceItem = (props: IServiceItem) => {
           case 'Music':
           case 'Podcast':
           case 'ServicesScreen':
+          case 'Series':
+          case 'Films':
+          case 'Cartoons':
             navigation.navigate(navName);
             break;
           case 'RadioScreen':

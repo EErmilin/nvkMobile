@@ -1,5 +1,5 @@
 import React from 'react';
-import {colors} from '../Styles/Styles';
+import { colors } from '../Styles/Styles';
 import {
   Platform,
   View,
@@ -10,19 +10,20 @@ import {
   StatusBar,
   Animated,
 } from 'react-native';
-import {StyleProp, ViewStyle} from 'react-native';
+import { StyleProp, ViewStyle } from 'react-native';
 import Video from 'react-native-video';
-import {VideoPlayerContext} from '../contexts/videoContext';
+import { VideoPlayerContext } from '../contexts/videoContext';
 import MediumText from './MediumText';
-import {Gesture, GestureDetector} from 'react-native-gesture-handler';
-import {runOnJS} from 'react-native-reanimated';
-import {useNavigation} from '@react-navigation/native';
-import {ActivityIndicator, useWindowDimensions, ScrollView} from 'react-native';
-import {IHlsBroadcast} from '../models/Broadcast';
-import {SkipRightVideo} from './SVGcomponents/media/SkipRightVideo';
-import {SkipLeftVideo} from './SVGcomponents/media/SkipLeftVideo';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { runOnJS } from 'react-native-reanimated';
+import { useNavigation } from '@react-navigation/native';
+import { ActivityIndicator, useWindowDimensions, ScrollView } from 'react-native';
+import { IHlsBroadcast } from '../models/Broadcast';
+import { SkipRightVideo } from './SVGcomponents/media/SkipRightVideo';
+import { SkipLeftVideo } from './SVGcomponents/media/SkipLeftVideo';
 import Orientation from 'react-native-orientation-locker';
 import TrackPlayer from 'react-native-track-player';
+
 import CompositeAnimation = Animated.CompositeAnimation;
 import {
   BackButton,
@@ -52,14 +53,15 @@ const BUTTON_SIZE = 24;
 const BOTTOM = 54;
 
 export const VideoPlayer = (props: VideoPlayerProps) => {
-  const {videoName, urls, style, live, scrollRef} = props;
+  const { videoName, urls, style, live, scrollRef } = props;
+
   const refVideo = React.useRef<Video>(null);
   const animValueLeft = React.useRef(new Animated.Value(0)).current;
   const animValueRight = React.useRef(new Animated.Value(0)).current;
   const contextNavBar = React.useContext(VideoPlayerContext);
   const SCREEN_HEIGHT = Dimensions.get('screen').height;
   const SCREEN_WIDTH = useWindowDimensions().width;
-  const {StatusBarManager} = NativeModules;
+  const { StatusBarManager } = NativeModules;
   const navigationOption = useNavigation();
   const [loading, setLoading] = React.useState(true);
   const [paused, setPaused] = React.useState(live ? false : true);
@@ -103,6 +105,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
     setPaused(pausedMemo);
   };
 
+
   React.useEffect(() => {
     if (opacityAnimation.current) {
       opacityAnimation.current.stop();
@@ -138,13 +141,13 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
     Orientation.unlockAllOrientations();
     StatusBar.setHidden(true);
     if (refVideo.current) {
-      navigationOption.setOptions({headerShown: false});
+      navigationOption.setOptions({ headerShown: false });
       Platform.OS === 'android' && refVideo.current.presentFullscreenPlayer();
       contextNavBar.setVideoPlayerOption({
         fullscreen: true,
       });
       setFullscreen(true);
-      scrollRef?.current?.scrollTo({y: 0});
+      scrollRef?.current?.scrollTo({ y: 0 });
     }
   }, [contextNavBar, navigationOption, scrollRef]);
 
@@ -152,7 +155,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
     Orientation.lockToPortrait();
     StatusBar.setHidden(false);
     if (refVideo.current) {
-      navigationOption.setOptions({headerShown: true});
+      navigationOption.setOptions({ headerShown: true });
       refVideo.current.dismissFullscreenPlayer();
       contextNavBar.setVideoPlayerOption({
         ...contextNavBar.videoPlayerOption,
@@ -177,7 +180,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
   React.useEffect(() => {
     const backAction = () => {
       if (fullscreen) {
-        navigationOption.setOptions({headerShown: true});
+        navigationOption.setOptions({ headerShown: true });
         handleDisFullScreen();
         setFullscreen(false);
       } else {
@@ -216,7 +219,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
   const doubleTapRight = Gesture.Tap() // функция для перемотки вперед
     .maxDuration(250)
     .numberOfTaps(2)
-    .hitSlop({left: -SCREEN_WIDTH / 2 - 50})
+    .hitSlop({ left: -SCREEN_WIDTH / 2 - 50 })
     .onStart(() => {
       runOnJS(handleRightDoubleTap)();
     });
@@ -241,7 +244,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
   const doubleTapLeft = Gesture.Tap() // функция для перемотки назад
     .maxDuration(250)
     .numberOfTaps(2)
-    .hitSlop({right: -SCREEN_WIDTH / 2 - 50})
+    .hitSlop({ right: -SCREEN_WIDTH / 2 - 50 })
     .onStart(() => {
       runOnJS(hanleLeftDoubleTap)();
     });
@@ -263,110 +266,110 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
   const styleScreen = StyleSheet.create({
     fullscreen: fullscreen
       ? {
-          position: 'absolute',
-          height: SCREEN_HEIGHT,
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1,
-        }
+        position: 'absolute',
+        height: SCREEN_HEIGHT,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1,
+      }
       : {
-          zIndex: 1,
-          width: SCREEN_WIDTH,
-          height: (SCREEN_WIDTH / 16) * 9,
-        },
+        zIndex: 1,
+        width: SCREEN_WIDTH,
+        height: (SCREEN_WIDTH / 16) * 9,
+      },
   });
 
   //стиль при портретном состоянии
   const styleButtonPortrait =
     SCREEN_HEIGHT >= SCREEN_WIDTH
       ? StyleSheet.create({
-          fullscreenButton: {bottom: PADDING, right: PADDING},
-          notFullScreenButton: {bottom: BOTTOM, right: PADDING},
-          chromecast: fullscreen
-            ? {
-                top:
-                  Platform.OS === 'ios'
-                    ? StatusBarManager.HEIGHT + PADDING
-                    : PADDING,
-                right: PADDING,
-              }
-            : {top: PADDING, left: PADDING},
-          settingButton: !fullscreen
-            ? {
-                top: PADDING,
-                right: PADDING,
-              }
-            : {
-                bottom: BOTTOM,
-                left: PADDING,
-              },
-          backButton: {
+        fullscreenButton: { bottom: PADDING, right: PADDING },
+        notFullScreenButton: { bottom: BOTTOM, right: PADDING },
+        chromecast: fullscreen
+          ? {
             top:
               Platform.OS === 'ios'
                 ? StatusBarManager.HEIGHT + PADDING
                 : PADDING,
+            right: PADDING,
+          }
+          : { top: PADDING, left: PADDING },
+        settingButton: !fullscreen
+          ? {
+            top: PADDING,
+            right: PADDING,
+          }
+          : {
+            bottom: BOTTOM,
             left: PADDING,
           },
-          progressBar: fullscreen
-            ? {
-                bottom: BOTTOM + BUTTON_SIZE + 25,
-                left: PADDING + 4,
-                width: SCREEN_WIDTH - 25 - 5 - 52 - PADDING - 4,
-              }
-            : {
-                bottom: 10,
-                left: PADDING + 5,
-                width: SCREEN_WIDTH - BUTTON_SIZE - 25 - 10 - 52 - PADDING - 10,
-              },
-        })
+        backButton: {
+          top:
+            Platform.OS === 'ios'
+              ? StatusBarManager.HEIGHT + PADDING
+              : PADDING,
+          left: PADDING,
+        },
+        progressBar: fullscreen
+          ? {
+            bottom: BOTTOM + BUTTON_SIZE + 25,
+            left: PADDING + 4,
+            width: SCREEN_WIDTH - 25 - 5 - 52 - PADDING - 4,
+          }
+          : {
+            bottom: 10,
+            left: PADDING + 5,
+            width: SCREEN_WIDTH - BUTTON_SIZE - 25 - 10 - 52 - PADDING - 10,
+          },
+      })
       : StyleSheet.create({
-          fullscreenButton: {
-            bottom: PADDING,
-            right: PADDING + StatusBarManager.HEIGHT,
-          },
-          notFullScreenButton: {
-            bottom: 24,
-            right: PADDING + StatusBarManager.HEIGHT,
-          },
-          chromecast: fullscreen
-            ? {
-                top: PADDING,
-                right: StatusBarManager.HEIGHT + PADDING,
-              }
-            : {top: PADDING, left: PADDING + StatusBarManager.HEIGHT},
-          settingButton: !fullscreen
-            ? {
-                top: PADDING,
-                right: StatusBarManager.HEIGHT + PADDING,
-              }
-            : {
-                bottom: 24,
-                left: StatusBarManager.HEIGHT + PADDING,
-              },
-          backButton: {
+        fullscreenButton: {
+          bottom: PADDING,
+          right: PADDING + StatusBarManager.HEIGHT,
+        },
+        notFullScreenButton: {
+          bottom: 24,
+          right: PADDING + StatusBarManager.HEIGHT,
+        },
+        chromecast: fullscreen
+          ? {
             top: PADDING,
+            right: StatusBarManager.HEIGHT + PADDING,
+          }
+          : { top: PADDING, left: PADDING + StatusBarManager.HEIGHT },
+        settingButton: !fullscreen
+          ? {
+            top: PADDING,
+            right: StatusBarManager.HEIGHT + PADDING,
+          }
+          : {
+            bottom: 24,
             left: StatusBarManager.HEIGHT + PADDING,
           },
-          progressBar: fullscreen
-            ? {
-                bottom: 20 + BUTTON_SIZE + 20,
-                left: StatusBarManager.HEIGHT + PADDING,
-                right: StatusBarManager.HEIGHT + 2 * PADDING + 52,
-              }
-            : {
-                bottom: 10,
-                left: PADDING + 5 + StatusBarManager.HEIGHT,
-                width:
-                  SCREEN_WIDTH -
-                  BUTTON_SIZE -
-                  25 -
-                  20 -
-                  52 -
-                  2 * PADDING -
-                  2 * StatusBarManager.HEIGHT,
-              },
-        });
+        backButton: {
+          top: PADDING,
+          left: StatusBarManager.HEIGHT + PADDING,
+        },
+        progressBar: fullscreen
+          ? {
+            bottom: 20 + BUTTON_SIZE + 20,
+            left: StatusBarManager.HEIGHT + PADDING,
+            right: StatusBarManager.HEIGHT + 2 * PADDING + 52,
+          }
+          : {
+            bottom: 10,
+            left: PADDING + 5 + StatusBarManager.HEIGHT,
+            width:
+              SCREEN_WIDTH -
+              BUTTON_SIZE -
+              25 -
+              20 -
+              52 -
+              2 * PADDING -
+              2 * StatusBarManager.HEIGHT,
+          },
+      });
 
   if (!urls.url) {
     return (
@@ -387,7 +390,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
             height: 50,
             alignItems: 'center',
             justifyContent: 'center',
-            transform: [{translateX: -50 / 2}, {translateY: -50 / 2}],
+            transform: [{ translateX: -50 / 2 }, { translateY: -50 / 2 }],
           }}>
           <ActivityIndicator size={'large'} color={colors.orange} />
         </View>
@@ -413,7 +416,8 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
           <Video
             ref={refVideo}
             style={[styleScreen.fullscreen, style]}
-            source={{uri: modalSetting.quality}}
+            // source={{uri: modalSetting.quality}}
+            source={{ uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" }}
             rate={modalSetting.speed}
             resizeMode="contain"
             onPlaybackRateChange={async res => {
@@ -425,9 +429,9 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
             automaticallyWaitsToMinimizeStalling
             preferredForwardBufferDuration={500}
             fullscreen={Platform.OS === 'android' ? fullscreen : false}
-            paused={
-              paused || contextNavBar.videoPlayerOption.video !== undefined
-            }
+             paused={
+               paused || contextNavBar.videoPlayerOption.video !== undefined
+             }
             repeat={true}
             onReadyForDisplay={() => {
               setLoading(false);
@@ -436,7 +440,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
               setLoading(true);
               refVideo.current?.seek(progress, -50);
             }}
-            onProgress={({currentTime, playableDuration}) => {
+            onProgress={({ currentTime, playableDuration }) => {
               setProgress(currentTime);
               setBuffer(playableDuration);
             }}
@@ -449,6 +453,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
             }}
             posterResizeMode="cover"
             playWhenInactive
+            pictureInPicture
             playInBackground={false}
           />
           <Animated.View
@@ -479,7 +484,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
               <SettingButton
                 style={styleButtonPortrait.settingButton}
                 onPress={() => {
-                  setModalSetting({...modalSetting, visible: true});
+                  setModalSetting({ ...modalSetting, visible: true });
                 }}
               />
             </GestureDetector>
@@ -558,12 +563,12 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
               position: 'absolute',
               top: '50%',
               zIndex: 1,
-              transform: [{translateX: -24 / 2}, {translateY: -24 / 2}],
+              transform: [{ translateX: -24 / 2 }, { translateY: -24 / 2 }],
               alignItems: 'center',
               justifyContent: 'center',
             }}>
             <SkipLeftVideo />
-            <MediumText fontSize={12} style={{color: colors.white}}>
+            <MediumText fontSize={12} style={{ color: colors.white }}>
               - 15 сек
             </MediumText>
           </Animated.View>
@@ -574,12 +579,12 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
               position: 'absolute',
               top: '50%',
               zIndex: 1,
-              transform: [{translateX: -24 / 2}, {translateY: -24 / 2}],
+              transform: [{ translateX: -24 / 2 }, { translateY: -24 / 2 }],
               alignItems: 'center',
               justifyContent: 'center',
             }}>
             <SkipRightVideo />
-            <MediumText fontSize={12} style={{color: colors.white}}>
+            <MediumText fontSize={12} style={{ color: colors.white }}>
               + 15 сек
             </MediumText>
           </Animated.View>
@@ -607,7 +612,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
                 height: 50,
                 alignItems: 'center',
                 justifyContent: 'center',
-                transform: [{translateX: -50 / 2}, {translateY: -50 / 2}],
+                transform: [{ translateX: -50 / 2 }, { translateY: -50 / 2 }],
               }}>
               <ActivityIndicator size={'large'} color={colors.orange} />
             </View>

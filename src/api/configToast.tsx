@@ -1,7 +1,8 @@
-import {View, useWindowDimensions} from 'react-native';
-import {themeColors} from '../Styles/Styles';
-import {MediumText} from '../components';
-import {Success, Error} from '../components/SVGcomponents';
+import { View, useWindowDimensions } from 'react-native';
+import { themeColors } from '../Styles/Styles';
+import { MediumText } from '../components';
+import { Success, Error } from '../components/SVGcomponents';
+import PipHandler, { usePipModeListener } from 'react-native-pip-android';
 
 export const toastConfig = {
   success: (props: {
@@ -22,8 +23,12 @@ const CustomToast = (props: {
   text2?: string;
   type: 'success' | 'error';
 }) => {
-  const {color, text1, type, text2} = props;
+  const { color, text1, type, text2 } = props;
   const screenWidth = useWindowDimensions().width;
+  const inPipMode = usePipModeListener();
+
+  if (inPipMode)
+    return <></>
 
   return (
     <View
@@ -38,7 +43,7 @@ const CustomToast = (props: {
       }}>
       {type === 'success' ? <Success /> : <Error />}
 
-      <MediumText style={{marginLeft: 10, color: themeColors.dark.white}}>
+      <MediumText style={{ marginLeft: 10, color: themeColors.dark.white }}>
         {text1}
         {text2 ? '\n' : ''}
         {text2}

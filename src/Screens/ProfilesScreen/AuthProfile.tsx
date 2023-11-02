@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Dimensions,
+  ScrollView,
+  Text,
 } from 'react-native';
 import ContentLoader, {Circle, Rect} from 'react-content-loader/native';
 
@@ -15,21 +17,34 @@ import {
   Avatar,
   Separator,
   Block,
+  Button,
 } from '../../components';
 import {ArrowRight} from '../../components/SVGcomponents';
 import {TabNavigationProps} from '../../navigation/types/TabTypes';
 import {useAppSelector} from '../../redux/hooks';
 import {useTheme} from '../../Styles/Styles';
+import Plus_icon from '../../assets/icons/Plus_icon';
 
 export const AuthProfile: React.FC<{
   hashtagPress?: any;
   profilePress?: any;
+  createBloderPress?: any;
   passwordPress?: any;
   techPress?: any;
   settingPress?: any;
+  showBloderPress?: any;
+  editBloderPress?: any;
   navigation: TabNavigationProps<'Profile'>['navigation'];
   loading: boolean;
-}> = ({hashtagPress, profilePress, navigation, loading}) => {
+}> = ({
+  hashtagPress,
+  profilePress,
+  createBloderPress,
+  showBloderPress,
+  editBloderPress,
+  navigation,
+  loading,
+}) => {
   const layout = useWindowDimensions();
   const screenWidth = Dimensions.get('screen').width;
   const user = useAppSelector(state => state.user.data);
@@ -37,6 +52,12 @@ export const AuthProfile: React.FC<{
   const subscribes = useAppSelector(state => state.user.subscribes);
   const {colors, Style} = useTheme();
 
+  const CreateBlogerItem = (
+    <View>
+      <Text>Стать автором</Text>
+      <Plus_icon />
+    </View>
+  );
   return (
     <View style={{flex: 1, backgroundColor: colors.fillPrimary}}>
       <SafeAreaView />
@@ -44,7 +65,7 @@ export const AuthProfile: React.FC<{
         <View
           style={{
             flex: 1,
-            paddingBottom: 129,
+            paddingBottom: 79,
             backgroundColor: colors.bgSecondary,
           }}>
           <View
@@ -146,13 +167,15 @@ export const AuthProfile: React.FC<{
               </ContentLoader>
             )}
           </View>
-          <View
+          <ScrollView
             style={{
               flex: 1,
               backgroundColor: colors.bgSecondary,
               marginTop: 20,
-            }}>
-            <Block style={{height: 160}}>
+              paddingBottom: 20,
+            }}
+            showsVerticalScrollIndicator={false}>
+            <Block>
               <BoldText
                 fontSize={16}
                 style={{fontWeight: '700', marginBottom: 20}}>
@@ -162,9 +185,16 @@ export const AuthProfile: React.FC<{
                 <NavLink text="Мои хештеги" onPress={hashtagPress} />
                 <Separator mt={15} mb={15} />
                 <NavLink text="Редактировать профиль" onPress={profilePress} />
+                <Separator mt={15} mb={15} />
+                <NavLink
+                  text="Редактировать данные блогера"
+                  onPress={editBloderPress}
+                />
+                <Separator mt={15} mb={15} />
+                <NavLink text="Посмотреть блогера" onPress={showBloderPress} />
               </View>
             </Block>
-            <Block style={{height: 214}}>
+            <Block>
               <BoldText
                 fontSize={16}
                 style={{fontWeight: '700', marginBottom: 20}}>
@@ -193,7 +223,18 @@ export const AuthProfile: React.FC<{
                 />
               </View>
             </Block>
-          </View>
+          </ScrollView>
+          <Button
+            title="Стать блогером"
+            icon={<Plus_icon />}
+            mt={15}
+            style={{
+              marginBottom: 14,
+              marginHorizontal: 15,
+              height: 40,
+            }}
+            onPress={createBloderPress}
+          />
         </View>
       </SafeAreaView>
     </View>
@@ -212,7 +253,8 @@ const NavLink = (props: INavLinkProps) => {
     <TouchableOpacity
       onPress={onPress}
       style={{
-        flex: 1,
+        height: 24,
+        width: '100%',
         justifyContent: 'space-between',
         flexDirection: 'row',
         alignItems: 'center',

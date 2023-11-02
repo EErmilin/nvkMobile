@@ -12,6 +12,7 @@ import com.facebook.react.defaults.DefaultReactActivityDelegate;
 import com.google.android.gms.cast.framework.CastContext;
 
 import org.devio.rn.splashscreen.SplashScreen;
+import com.reactnativepipandroid.PipAndroidModule;
 
 public class MainActivity extends ReactActivity {
 
@@ -35,6 +36,11 @@ public class MainActivity extends ReactActivity {
     } catch (Exception e) {
       // cast framework not supported
     }
+  }
+
+  @Override
+  public void onPictureInPictureModeChanged (boolean isInPictureInPictureMode, Configuration newConfig) {
+    PipAndroidModule.pipModeChanged(isInPictureInPictureMode);
   }
 
   /**

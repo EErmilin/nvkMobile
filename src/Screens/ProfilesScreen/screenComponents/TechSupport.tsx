@@ -57,6 +57,8 @@ export const TechSupport: React.FC<
     };
   }, []);
 
+  console.log(name);
+
   return (
     <KeyboardAvoidingView
       style={{flex: 1, backgroundColor: colors.fillPrimary}}

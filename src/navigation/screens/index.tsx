@@ -1,6 +1,8 @@
 import * as React from 'react';
+import {useState} from 'react';
 import {
   Appearance,
+  LogBox,
   PermissionsAndroid,
   Platform,
   StatusBar,
@@ -80,12 +82,30 @@ import {VALIDATE_TOKEN} from '../../gql/mutation/auth/ValidateToken';
 import {logout} from '../../redux/thunks/auth/Logout';
 import {getUpdateClient} from '../../requests/updateHeaders';
 import {toastConfig} from '../../api/configToast';
+import {FilmsScreen} from '../../Screens/FilmsScreens/FilmsScreen';
+import {FilmScreen} from '../../Screens/FilmsScreens/FilmScreen';
+import {Rating} from '../../components/Rating';
+import {SeriesScreen} from '../../Screens/SeriesScreen/SeriesScreen';
+import {AllSeriesScreen} from '../../Screens/SeriesScreen/AllSeriesScreen';
+import {CurrentSeriesScreen} from '../../Screens/SeriesScreen/CurrentSeriesScreen';
+import {CartoonsScreen} from '../../Screens/CartoonsScreen/CartoonsScreen';
+import {CartoonScreen} from '../../Screens/CartoonsScreen/CartoonScreen';
+import {ChildrenModeModal} from '../../components/ChildrenModeModal';
+import CreateBloger from '../../Screens/BlogerScreens/CreateBloger';
+import BlogerProfile from '../../Screens/BlogerScreens/BlogerProfile';
+import EditBlogger from '../../Screens/BlogerScreens/EditBloger';
+import ReviewsScreen from '../../Screens/ ReviewsScreen/ReviewsScreen';
+import {useSelector} from 'react-redux';
+import NewsComments from '../../Screens/NewsScreen/NewsCommets';
+import FilterScreen from '../../Screens/FilterScreen/FilterScreen';
+
+LogBox.ignoreAllLogs();
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const events = [
   Event.PlaybackState,
   Event.PlaybackError,
-  Event.PlaybackActiveTrackChanged,
+  // Event.PlaybackActiveTrackChanged,
 ];
 
 export const AppNavigation = () => {
@@ -196,10 +216,16 @@ const StackNavigation = () => {
   const navigation = useNavigation();
   const routes = useNavigationState(state => state?.routes);
   const [flag, setFlag] = React.useState(false);
+  const [isChildrenMode, setIsChildrenMode] = React.useState(false);
+  const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const {isOpen} = useSelector(state => state.bottomSheet);
+
   const insets = useSafeAreaInsets();
   const userId = useAppSelector(state => state.user.data?.id);
   // const client = useApolloClient();
   const dispatch = useAppDispatch();
+
+  //BOTTOM SHEET
 
   React.useEffect(() => {
     if (routes?.length) {
@@ -281,6 +307,14 @@ const StackNavigation = () => {
       </BoldText>
     );
   }
+
+  const onChildrenMode = () => {
+    if (!isChildrenMode) {
+      setIsChildrenMode(true);
+    } else {
+      setBottomSheetVisible(true);
+    }
+  };
 
   const notification = React.useCallback(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -386,6 +420,21 @@ const StackNavigation = () => {
             title: 'Мои хэштеги',
           })}
         />
+        {/* <Stack.Screen
+          name="CreateBloger"
+          component={CreateBloger}
+          options={() => ({
+            title: 'Стать блогером',
+          })}
+        /> */}
+        {/* <Stack.Screen
+          name="BlogerProfile"
+          component={BlogerProfile}
+          options={{
+            title: '',
+            headerTitle,
+          }}
+        /> */}
         <Stack.Screen
           name="PrivacyPolicy"
           component={PrivacyPolicy}
@@ -625,8 +674,132 @@ const StackNavigation = () => {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="Films"
+          component={FilmsScreen}
+          options={{
+            title: 'Фильмы',
+            headerStyle: {backgroundColor: colors.fillPrimary},
+          }}
+        />
+        <Stack.Screen
+          name="Film"
+          component={FilmScreen}
+          options={({route}) => ({
+            title: route.params.title,
+            headerRight: () => <Rating rating={route.params.rating} isStar />,
+            headerStyle: {backgroundColor: colors.fillPrimary},
+            headerShown: isOpen,
+          })}
+        />
+        <Stack.Screen
+          name="Series"
+          component={SeriesScreen}
+          options={{
+            title: 'Сериалы',
+            headerStyle: {backgroundColor: colors.fillPrimary},
+          }}
+        />
+        <Stack.Screen
+          name="AllSeries"
+          component={AllSeriesScreen}
+          options={({route}) => ({
+            title: route.params.title,
+            headerStyle: {backgroundColor: colors.fillPrimary},
+          })}
+        />
+        <Stack.Screen
+          name="CurrentSeries"
+          component={CurrentSeriesScreen}
+          options={({route}) => ({
+            title: route.params.title,
+            headerRight: () => <Rating rating={route.params.rating} isStar />,
+            headerStyle: {backgroundColor: colors.fillPrimary},
+            headerShown: isOpen,
+          })}
+        />
+        <Stack.Screen
+          name="Cartoons"
+          component={CartoonsScreen}
+          options={{
+            title: 'Мультсериалы',
+            headerLeft: () => (isChildrenMode ? null : headerLeft()),
+            headerRight: () => (
+              <TouchableOpacity onPress={onChildrenMode}>
+                <Rating disabled={isChildrenMode} rating={'Детский'} lock />
+              </TouchableOpacity>
+            ),
+            headerStyle: {backgroundColor: colors.fillPrimary},
+          }}
+        />
+        <Stack.Screen
+          name="Cartoon"
+          component={CartoonScreen}
+          options={({route}) => ({
+            title: route.params.title,
+            headerLeft: () => (isChildrenMode ? null : headerLeft()),
+            headerRight: () => (
+              <TouchableOpacity onPress={onChildrenMode}>
+                <Rating disabled={isChildrenMode} rating={'Детский'} lock />
+              </TouchableOpacity>
+            ),
+            headerStyle: {backgroundColor: colors.fillPrimary},
+            headerShown: isOpen,
+          })}
+        />
+        <Stack.Screen
+          name="CreateBloger"
+          component={CreateBloger}
+          options={() => ({
+            title: 'Стать блогером',
+          })}
+        />
+        <Stack.Screen
+          name="EditBloger"
+          component={EditBlogger}
+          options={() => ({
+            title: 'Редактировать',
+          })}
+        />
+        <Stack.Screen
+          name="BlogerProfile"
+          component={BlogerProfile}
+          options={{
+            title: '',
+            headerTitle,
+          }}
+        />
+        {/* ReviewsScreen */}
+        <Stack.Screen
+          options={({route}) => ({
+            headerTitle: `Все отзывы ${route.params.name}`,
+            headerShown: isOpen,
+          })}
+          name="Reviews"
+          component={ReviewsScreen}
+        />
+        <Stack.Screen
+          options={{
+            headerTitle: 'Все комментарии',
+          }}
+          name="Comments"
+          component={NewsComments}
+        />
+        <Stack.Screen
+          options={{
+            headerTitle: 'Фильтры',
+            headerShown: isOpen,
+          }}
+          name="Filter"
+          component={FilterScreen}
+        />
       </Stack.Navigator>
       {flag ? <MusicTrackView insets={insets.bottom} /> : <></>}
+      <ChildrenModeModal
+        isBottomSheetVisible={isBottomSheetVisible}
+        setIsChildrenMode={setIsChildrenMode}
+        setBottomSheetVisible={setBottomSheetVisible}
+      />
     </View>
   );
 };

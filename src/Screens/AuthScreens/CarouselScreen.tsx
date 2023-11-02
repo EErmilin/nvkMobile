@@ -19,11 +19,12 @@ import {useTheme} from '../../Styles/Styles';
 
 const styles = StyleSheet.create({
   image: {
-    height: 375,
     width: '100%',
   },
   content: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   button: {
     width: 80,
@@ -35,6 +36,7 @@ const styles = StyleSheet.create({
   },
   carousel: {
     marginTop: 10,
+    backgroundColor: 'blue',
   },
 });
 export const CarouselScreen: React.FC<
@@ -79,7 +81,7 @@ export const CarouselScreen: React.FC<
           loop
           width={screenWidth}
           style={{flex: 1}}
-          autoPlay
+          // autoPlay
           data={data}
           autoPlayInterval={remoteConfig()
             .getValue('onBoard_carousel_interval')
@@ -92,6 +94,7 @@ export const CarouselScreen: React.FC<
             <View
               style={{
                 flex: 1,
+                alignItems: 'center',
               }}>
               <Image
                 resizeMode="contain"
@@ -111,34 +114,34 @@ export const CarouselScreen: React.FC<
             </View>
           )}
         />
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: 18,
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 18,
+        }}>
+        <CarouselPagination
+          style={{marginLeft: 15}}
+          length={3}
+          currentX={currentX}
+        />
+        <TouchableOpacity
+          style={[styles.button, {backgroundColor: colors.colorMain}]}
+          onPress={() => {
+            dispatch(setCarousel(false));
+            navigation.navigate('PhoneInputScr');
           }}>
-          <CarouselPagination
-            style={{marginLeft: 15}}
-            length={3}
-            currentX={currentX}
-          />
-          <TouchableOpacity
-            style={[styles.button, {backgroundColor: colors.colorMain}]}
-            onPress={() => {
-              dispatch(setCarousel(false));
-              navigation.navigate('PhoneInputScr');
-            }}>
-            <BoldText
-              style={{
-                fontWeight: '600',
-                color: theme === 'dark' ? colors.black : colors.white,
-              }}
-              fontSize={14}>
-              Войти
-            </BoldText>
-          </TouchableOpacity>
-        </View>
+          <BoldText
+            style={{
+              fontWeight: '600',
+              color: theme === 'dark' ? colors.black : colors.white,
+            }}
+            fontSize={14}>
+            Войти
+          </BoldText>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

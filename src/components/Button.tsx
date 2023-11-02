@@ -13,6 +13,8 @@ import BoldText from './BoldText';
 interface ButtonProps {
   title?: string;
   style?: ViewStyle | ViewStyle[];
+  item?: React.JSX.Element;
+  mt?: number | string;
   value?: any;
   onPress?: any;
   disabled?: boolean;
@@ -27,6 +29,8 @@ interface ButtonProps {
 export const Button: React.FC<ButtonProps> = ({
   title,
   style,
+  mt,
+  item,
   onPress,
   disabled = false,
   icon,
@@ -37,32 +41,41 @@ export const Button: React.FC<ButtonProps> = ({
   ref,
 }) => {
   const {colors, theme, Style} = useTheme();
+
   return (
     <TouchableOpacity
       ref={ref}
-      style={[disabled === true ? Style.disabledButton : Style.button, style]}
+      style={[
+        disabled === true ? Style.disabledButton : Style.button,
+        style,
+        {marginTop: mt},
+      ]}
       onPress={onPress}
       disabled={disabled}>
+      {item}
+
       {loading ? (
         <ActivityIndicator color={loadingColor} size={loadingSize} />
       ) : icon ? (
         <>
-          <BoldText
-            fontSize={14}
-            style={[
-              {
-                paddingBottom: Platform.OS === 'android' ? 3 : 0,
-                marginRight: 10,
-                color: disabled
-                  ? colors.textSecondary
-                  : theme === 'dark'
-                  ? colors.black
-                  : colors.white,
-              },
-              textStyle,
-            ]}>
-            {title}
-          </BoldText>
+          {title && (
+            <BoldText
+              fontSize={14}
+              style={[
+                {
+                  paddingBottom: Platform.OS === 'android' ? 3 : 0,
+                  marginRight: 10,
+                  color: disabled
+                    ? colors.textSecondary
+                    : theme === 'dark'
+                    ? colors.black
+                    : colors.white,
+                },
+                textStyle,
+              ]}>
+              {title}
+            </BoldText>
+          )}
           <View>{icon}</View>
         </>
       ) : (
