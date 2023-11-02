@@ -85,7 +85,7 @@ if(!moviesRedux.length)return
           onRefresh={async () => {
             try {
               setIsLoading(true);
-              await dispatch(getFilms({search:search }));
+              await dispatch(getFilms({take: 10 }));
             } catch (e) {
               console.log(e);
             } finally {

@@ -121,7 +121,7 @@ export const ViewLive: React.FC<RootNavigationProps<'ViewLive'>> = props => {
   }, []);
 
 
-
+if(!data)return
   return (
     <View style={{ flex: 1, backgroundColor: colors.bgSecondary }}>
       {data?.url ? (

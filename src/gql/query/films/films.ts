@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 export const GET_MOVIES = gql`
 query Movies($take: Int) {
-  movies( take: $take) {
+  movies(take: $take) {
   id
     name
     image {
