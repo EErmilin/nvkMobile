@@ -18,7 +18,7 @@ import WebView from 'react-native-webview';
 import {ArrowRight} from '../../components/SVGcomponents';
 import {Review} from '../../components/Review';
 import MediumText from '../../components/MediumText';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import BottomSheet from '../../components/BottomSheet';
 
 //mock data
@@ -68,17 +68,25 @@ export const CurrentSeriesScreen: FC<
   const {colors} = useTheme();
   const navigation = useNavigation();
   const bottomSheetRef = React.useRef(null);
+  const routes = useRoute();
+  const {serialData, url, content} = routes.params;
 
   const openModal = () => {
     bottomSheetRef?.current?.open();
   };
 
+  console.log(url);
   return (
     <SafeAreaView style={styles.container}>
       <BottomSheet name={'serial'} ref={bottomSheetRef} />
       <ScrollView>
         {data.length ? (
-          <VideoPlayer urls={{url: '', hls: []}} />
+          <VideoPlayer
+            urls={{
+              url: url,
+              hls: [],
+            }}
+          />
         ) : (
           <ActivityIndicator color={colors.colorMain} size={'large'} />
         )}
@@ -88,9 +96,9 @@ export const CurrentSeriesScreen: FC<
               style={{justifyContent: 'space-between', flexDirection: 'row'}}>
               <Animated.View
                 style={{gap: 5, flexDirection: 'row', alignItems: 'center'}}>
-                <BoldText fontSize={18}>{item.name}</BoldText>
+                <BoldText fontSize={18}>{serialData?.series.name}</BoldText>
                 <RegularText style={{color: colors.textSecondary}}>
-                  {item.age}
+                  {serialData?.series.age} +
                 </RegularText>
               </Animated.View>
               <TouchableOpacity>
@@ -99,22 +107,23 @@ export const CurrentSeriesScreen: FC<
                 </Animated.View>
               </TouchableOpacity>
             </Animated.View>
-            <MediumText>{`${item.season} сезон. ${item.series} серия`}</MediumText>
+            <MediumText>{`${serialData.name} ${item.series} серия`}</MediumText>
 
             <Animated.View
               style={{gap: 10, flexDirection: 'row', alignItems: 'center'}}>
               <ClockIcon color={colors.colorMain} />
-              <RegularText>{item.time}</RegularText>
+              <RegularText>{serialData?.series.duration} минут</RegularText>
               <RegularText style={{color: colors.colorMain}}>/</RegularText>
-              <RegularText>{item.genre}</RegularText>
+              <RegularText>{serialData?.series.genre}</RegularText>
             </Animated.View>
             <Animated.View>
               <RegularText style={{color: colors.textSecondary}}>
-                {item.year} / {item.country} / {item.views}
+                {serialData?.series.date} / {serialData?.series.country} /{' '}
+                {item.views}
               </RegularText>
             </Animated.View>
           </Animated.View>
-          <Animated.View style={{flexDirection: 'row', gap: 15}}>
+          {/* <Animated.View style={{flexDirection: 'row', gap: 15}}>
             <TouchableOpacity style={styles.btn}>
               <MediumText style={styles.textColor}>Смотреть</MediumText>
               <MediumText style={styles.textColor} fontSize={12}>
@@ -132,7 +141,7 @@ export const CurrentSeriesScreen: FC<
               </MediumText>
               <ViewedIcon color={colors.colorMain} />
             </TouchableOpacity>
-          </Animated.View>
+          </Animated.View> */}
           <Animated.View
             style={{
               borderBottomColor: colors.borderPrimary,
@@ -141,10 +150,10 @@ export const CurrentSeriesScreen: FC<
           />
           <Animated.View style={{gap: 20}}>
             <BoldText fontSize={16}>О сериале</BoldText>
-            <MediumText>{item.description}</MediumText>
+            <MediumText>{content}</MediumText>
           </Animated.View>
           <Animated.View>
-            <BoldText fontSize={16}>Трейлер</BoldText>
+            {/* <BoldText fontSize={16}>Трейлер</BoldText> */}
             {/*<WebView*/}
             {/*    style={{flex: 1}}*/}
             {/*    javaScriptEnabled={true}*/}
@@ -155,14 +164,16 @@ export const CurrentSeriesScreen: FC<
             {/*    // source={{ uri: "https://www.youtube.com/embed/-ZZPOXn6_9w" }}*/}
             {/*/>*/}
           </Animated.View>
-          <Animated.View>
+          {/* <Animated.View>
             <BoldText fontSize={16}>{item.name}</BoldText>
             <MediumText>1 february 2021</MediumText>
-          </Animated.View>
+          </Animated.View> */}
           <Animated.View style={styles.flexBetween}>
             <MediumText>Языки</MediumText>
             <TouchableOpacity style={styles.smallBtn}>
-              <MediumText style={styles.textColor}>Якуцкий</MediumText>
+              <MediumText style={styles.textColor}>
+                {serialData?.series.language}
+              </MediumText>
             </TouchableOpacity>
           </Animated.View>
           <Animated.View
@@ -171,12 +182,12 @@ export const CurrentSeriesScreen: FC<
               borderBottomWidth: StyleSheet.hairlineWidth,
             }}
           />
-          <Animated.View style={styles.flexBetween}>
+          {/* <Animated.View style={styles.flexBetween}>
             <MediumText>Субтитры</MediumText>
             <TouchableOpacity style={styles.smallBtn}>
               <MediumText style={styles.textColor}>Русские</MediumText>
             </TouchableOpacity>
-          </Animated.View>
+          </Animated.View> */}
           <Animated.View style={styles.box}>
             <Animated.View style={styles.flexBetween}>
               <Animated.View style={{flexDirection: 'row', gap: 15}}>

@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  ActivityIndicator,
   Button,
   FlatList,
   RefreshControl,
@@ -11,7 +12,7 @@ import {
 } from 'react-native';
 import {RootNavigationProps} from '../../navigation/types/RootStackTypes';
 import {colors, useTheme} from '../../Styles/Styles';
-import {useAppDispatch} from '../../redux/hooks';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {FC, useEffect, useState} from 'react';
 import Toast from 'react-native-toast-message';
 import {BoldText, Containter, SearchComponent} from '../../components';
@@ -22,6 +23,7 @@ import ContentLoader from 'react-content-loader';
 import {Rect} from 'react-native-svg';
 import {LayoutVideoItem} from '../../components/LayoutVideoItem';
 import SortDropDown from '../../components/SortDropDown';
+import {getCartoons} from '../../redux/thunks/screens/cartoons/GetCartoons';
 
 interface Props {
   id: number;
@@ -41,32 +43,51 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
   const [search, setSearch] = useState('');
   const [sortVisible, setSortVisible] = useState(false);
   const [sortOption, setSortOption] = useState('По просмотрам');
-  //mock data
-  const cartoons: Props[] = [
-    {id: 1, name: 'cartoon1', price: 199, rating: 6.5},
-    {id: 2, name: 'cartoon2', price: null, rating: 1.8},
-  ];
 
-  const getCartoons = () => {
-    // dispatch()
-  };
+  const cartoons = useAppSelector(state => state.screens.cartoons);
+
+  const update = React.useCallback(async () => {
+    try {
+      setIsLoading(true);
+      await dispatch(getCartoons({take: 10, orderBy: {date: 'desc'}}));
+      setIsLoading(false);
+    } catch (e) {
+      console.log(e);
+    }
+  }, [dispatch]);
 
   const showSortModalHandle = () => {
     setSortVisible(prevState => !prevState);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     (async () => {
-      try {
-        setIsLoading(true);
-        await getCartoons();
-      } catch (e) {
-        Toast.show({type: 'error', text1: 'Что-то пошло не так'});
-      } finally {
-        setIsLoading(false);
-      }
+      await update();
     })();
-  }, []);
+  }, [update]);
+
+  // const getCartoons = () => {
+  //   // dispatch()
+  // };
+
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       await getCartoons();
+  //     } catch (e) {
+  //       Toast.show({type: 'error', text1: 'Что-то пошло не так'});
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   })();
+  // }, []);
+
+  if (cartoons.length === 0) {
+    return <ActivityIndicator />;
+  }
+
+  console.log(cartoons);
 
   return (
     <ScrollView
@@ -81,7 +102,7 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
           onRefresh={async () => {
             try {
               setIsLoading(true);
-              await getCartoons();
+              await update();
             } catch (e) {
               console.log(e);
             } finally {
@@ -122,7 +143,7 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
         </View>
       </Containter>
       <ScrollView>
-        {cartoons.length && (
+        {cartoons.length > 0 && (
           <FlatList
             data={cartoons}
             style={styles.items}
@@ -131,9 +152,10 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
             renderItem={({item}) => (
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate('Cartoon', {
-                    id: item.id,
-                    title: item.name,
+                  navigation.navigate('CartoonSeasons', {
+                    id: item?.id,
+                    title: item?.name,
+                    content: item?.content,
                   })
                 }>
                 <LayoutVideoItem item={item} height={144} heightImage={110} />

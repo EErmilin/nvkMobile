@@ -18,8 +18,9 @@ import WebView from 'react-native-webview';
 import {ArrowRight} from '../../components/SVGcomponents';
 import {Review} from '../../components/Review';
 import MediumText from '../../components/MediumText';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import BottomSheet from '../../components/BottomSheet';
+import {useSelector} from 'react-redux';
 
 //mock data
 const data = [1];
@@ -65,10 +66,13 @@ const item = {
 export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
   const {colors} = useTheme();
   const navigation = useNavigation();
+  const routes = useRoute();
   const bottomSheetRef = React.useRef();
-
+  const cartoons = useSelector(state => state.screens.cartoons);
   //   const {reviewSheet} = useSelector(state => state.bottomSheet);
+  const {content, url} = routes.params;
 
+  console.log(url);
   const openModal = () => {
     bottomSheetRef?.current?.open();
   };
@@ -78,7 +82,7 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
       <BottomSheet name={'cartoon'} ref={bottomSheetRef} />
       <ScrollView>
         {data.length ? (
-          <VideoPlayer urls={{url: '', hls: []}} />
+          <VideoPlayer urls={{url: url.indexM3u8Url, hls: []}} />
         ) : (
           <ActivityIndicator color={colors.colorMain} size={'large'} />
         )}
@@ -88,9 +92,9 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
               style={{justifyContent: 'space-between', flexDirection: 'row'}}>
               <Animated.View
                 style={{gap: 5, flexDirection: 'row', alignItems: 'center'}}>
-                <BoldText fontSize={18}>{item.name}</BoldText>
+                <BoldText fontSize={18}>{cartoons[0].name}</BoldText>
                 <RegularText style={{color: colors.textSecondary}}>
-                  {item.age}
+                  {`${cartoons[0].age}+`}
                 </RegularText>
               </Animated.View>
               <TouchableOpacity>
@@ -104,17 +108,17 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
             <Animated.View
               style={{gap: 10, flexDirection: 'row', alignItems: 'center'}}>
               <ClockIcon color={colors.colorMain} />
-              <RegularText>{item.time}</RegularText>
+              <RegularText>{`${cartoons[0].duration} минут`}</RegularText>
               <RegularText style={{color: colors.colorMain}}>/</RegularText>
-              <RegularText>{item.genre}</RegularText>
+              <RegularText>{cartoons[0].genre}</RegularText>
             </Animated.View>
             <Animated.View>
               <RegularText style={{color: colors.textSecondary}}>
-                {item.year} / {item.country} / {item.views}
+                {cartoons[0].date} / {cartoons[0].country} / {item.views}
               </RegularText>
             </Animated.View>
           </Animated.View>
-          <Animated.View style={{flexDirection: 'row', gap: 15}}>
+          {/* <Animated.View style={{flexDirection: 'row', gap: 15}}>
             <TouchableOpacity style={styles.btn}>
               <MediumText style={styles.textColor}>Смотреть</MediumText>
               <MediumText style={styles.textColor} fontSize={12}>
@@ -132,7 +136,7 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
               </MediumText>
               <ViewedIcon color={colors.colorMain} />
             </TouchableOpacity>
-          </Animated.View>
+          </Animated.View> */}
           <Animated.View
             style={{
               borderBottomColor: colors.borderPrimary,
@@ -141,10 +145,10 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
           />
           <Animated.View style={{gap: 20}}>
             <BoldText fontSize={16}>О мультсериале</BoldText>
-            <MediumText>{item.description}</MediumText>
+            <MediumText>{content}</MediumText>
           </Animated.View>
           <Animated.View>
-            <BoldText fontSize={16}>Трейлер</BoldText>
+            {/* <BoldText fontSize={16}>Трейлер</BoldText> */}
             {/*<WebView*/}
             {/*    style={{flex: 1}}*/}
             {/*    javaScriptEnabled={true}*/}
@@ -155,14 +159,16 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
             {/*    // source={{ uri: "https://www.youtube.com/embed/-ZZPOXn6_9w" }}*/}
             {/*/>*/}
           </Animated.View>
-          <Animated.View>
+          {/* <Animated.View>
             <BoldText fontSize={16}>{item.name}</BoldText>
             <MediumText>1 february 2021</MediumText>
-          </Animated.View>
+          </Animated.View> */}
           <Animated.View style={styles.flexBetween}>
             <MediumText>Языки</MediumText>
             <TouchableOpacity style={styles.smallBtn}>
-              <MediumText style={styles.textColor}>Якуцкий</MediumText>
+              <MediumText style={styles.textColor}>
+                {cartoons[0].language}
+              </MediumText>
             </TouchableOpacity>
           </Animated.View>
           <Animated.View
@@ -171,12 +177,12 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
               borderBottomWidth: StyleSheet.hairlineWidth,
             }}
           />
-          <Animated.View style={styles.flexBetween}>
+          {/* <Animated.View style={styles.flexBetween}>
             <MediumText>Субтитры</MediumText>
             <TouchableOpacity style={styles.smallBtn}>
               <MediumText style={styles.textColor}>Русские</MediumText>
             </TouchableOpacity>
-          </Animated.View>
+          </Animated.View> */}
           <Animated.View style={styles.box}>
             <Animated.View style={styles.flexBetween}>
               <Animated.View style={{flexDirection: 'row', gap: 15}}>

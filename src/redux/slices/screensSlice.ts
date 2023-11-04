@@ -1,3 +1,4 @@
+import {seasons} from './../../gql/query/series/Series';
 import {createSlice} from '@reduxjs/toolkit';
 import {IScreenState} from '../types/ScreensTypes';
 
@@ -11,11 +12,16 @@ import {fetchFavorite} from '../thunks/favorite/GetFavorites';
 import {deleteProfile} from '../thunks/user/DeleteProfile';
 import {updateHashtag, updateUser} from '../thunks/user/UpdateUser';
 import { getFilm, getFilms } from '../thunks/screens/getFilms/GetFilms';
+import {getSeasons, getSeries} from '../thunks/screens/getSeries/GetSeries';
+import {getCartoons} from '../thunks/screens/cartoons/GetCartoons';
 
 const initialState: IScreenState = {
   broadcasts: [],
   musics: null,
   podcasts: [],
+  serials: [],
+  seasons: [],
+  cartoons: [],
   movies: [],
   movie: null,
 };
@@ -32,6 +38,9 @@ const screensSlice = createSlice({
     },
     setScreenBroadcasts: (state, action) => {
       state.broadcasts = action.payload;
+    },
+    setScreenSerials: (state, action) => {
+      state.serials = action.payload;
     },
     setScreenMusics: (state, action) => {
       state.musics = action.payload;
@@ -61,6 +70,19 @@ const screensSlice = createSlice({
     builder.addCase(getPodcasts.fulfilled, (state, action) => {
       state.podcasts = action.payload;
     });
+    builder.addCase(getSeries.fulfilled, (state, action) => {
+      state.serials = action.payload;
+    });
+
+    builder.addCase(getSeasons.fulfilled, (state, action) => {
+      state.seasons = action.payload;
+    });
+
+    builder.addCase(getCartoons.fulfilled, (state, action) => {
+      // console.log('arrr', action.payload);
+      state.cartoons = action.payload;
+    });
+
     builder.addCase(logout.rejected, state => {
       state.broadcasts = [];
       state.musics;
@@ -116,6 +138,11 @@ const screensSlice = createSlice({
   },
 });
 
-export const {setScreenBroadcasts, setScreenMusics, clearScreensState, setScreenMovies} =
-  screensSlice.actions;
+export const {
+  setScreenBroadcasts,
+  setScreenMusics,
+  clearScreensState,
+  setScreenSerials,
+  setScreenMovies
+} = screensSlice.actions;
 export default screensSlice.reducer;

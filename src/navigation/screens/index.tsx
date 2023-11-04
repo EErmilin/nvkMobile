@@ -98,6 +98,7 @@ import ReviewsScreen from '../../Screens/ ReviewsScreen/ReviewsScreen';
 import {useSelector} from 'react-redux';
 import NewsComments from '../../Screens/NewsScreen/NewsCommets';
 import FilterScreen from '../../Screens/FilterScreen/FilterScreen';
+import {CartoonsSeasons} from '../../Screens/CartoonsScreen/CartoonsSeasons';
 
 LogBox.ignoreAllLogs();
 
@@ -731,6 +732,21 @@ const StackNavigation = () => {
             ),
             headerStyle: {backgroundColor: colors.fillPrimary},
           }}
+        />
+        <Stack.Screen
+          name="CartoonSeasons"
+          component={CartoonsSeasons}
+          options={({route}) => ({
+            title: route.params.title,
+            headerLeft: () => (isChildrenMode ? null : headerLeft()),
+            headerRight: () => (
+              <TouchableOpacity onPress={onChildrenMode}>
+                <Rating disabled={isChildrenMode} rating={'Детский'} lock />
+              </TouchableOpacity>
+            ),
+            headerStyle: {backgroundColor: colors.fillPrimary},
+            headerShown: isOpen,
+          })}
         />
         <Stack.Screen
           name="Cartoon"

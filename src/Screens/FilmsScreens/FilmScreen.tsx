@@ -66,7 +66,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
       <BottomSheet name={'film'} ref={bottomSheetRef} />
       <ScrollView>
         {filmRedux ? (
-          <VideoPlayer urls={{url: filmRedux?.media.indexM3u8Url, hls: []}} />
+          <VideoPlayer urls={{url: filmRedux?.media?.indexM3u8Url, hls: []}} />
         ) : (
           <ActivityIndicator color={colors.colorMain} size={'large'} />
         )}
@@ -91,7 +91,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
             <Animated.View
               style={{gap: 10, flexDirection: 'row', alignItems: 'center'}}>
               <ClockIcon color={colors.colorMain} />
-              <RegularText>{filmRedux?.duration}</RegularText>
+              <RegularText>{filmRedux?.duration} минут</RegularText>
               <RegularText style={{color: colors.colorMain}}>/</RegularText>
               <RegularText>{filmRedux?.genre}</RegularText>
             </Animated.View>
