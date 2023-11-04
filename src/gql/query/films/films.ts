@@ -5,6 +5,7 @@ query Movies($take: Int) {
   movies(take: $take) {
   id
     name
+    
     image {
       url
     }

@@ -68,6 +68,7 @@ export const AllSeriesScreen: FC<RootNavigationProps<'AllSeries'>> = ({
     return <ActivityIndicator />;
   }
 
+
   return (
     <SafeAreaView style={styles.container}>
       <Containter>
