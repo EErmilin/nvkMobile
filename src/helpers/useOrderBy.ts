@@ -6,10 +6,10 @@ import {IFilterOrderBy} from '../redux/types/FilterTypes';
 type Sort = {[key: string]: 'asc' | 'desc'};
 
 const orders: Record<IFilterOrderBy, Sort> = {
-  UPDATES: {},
+  UPDATES: {updatedAt: 'desc'},
   NEW: {date: 'desc'},
   VIEWS: {views: 'desc'},
-  KINOPOISK: {kinoPoisk: 'desc'},
+  KINOPOISK: {ratingKinopoisk: 'desc'},
 };
 
 export function useOrderBy(type: FilterType) {
