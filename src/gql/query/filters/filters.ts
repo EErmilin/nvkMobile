@@ -6,6 +6,18 @@ export type GetFilter = {
   filters: {name: string}[];
 };
 
+export type MainFilter = {
+  age?: string[] | null;
+  country?: string[] | null;
+  genre?: string[] | null;
+  language?: string[] | null;
+  year?: number[] | null;
+  kinopoiskRating?: {
+    from?: number | null;
+    to?: number | null;
+  };
+};
+
 export type GetFilterVariables = {
   type: FilterType;
 };

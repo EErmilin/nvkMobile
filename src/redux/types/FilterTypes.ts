@@ -3,8 +3,8 @@ import {FilterType} from '../../gql/query/filters/filters';
 export type IFilter = {
   filters: Record<string, string[]>;
   rating: {
-    from: number | null;
-    to: number | null;
+    from?: number | null;
+    to?: number | null;
   };
 };
 

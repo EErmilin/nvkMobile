@@ -23,6 +23,7 @@ import {Rect} from 'react-native-svg';
 import {LayoutVideoItem} from '../../components/LayoutVideoItem';
 import {getSeries} from '../../redux/thunks/screens/getSeries/GetSeries';
 import SortDropDown from '../../components/SortDropDown';
+import {useFilter} from '../../helpers/useFilter';
 
 interface Props {
   id: number;
@@ -44,20 +45,27 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
   const [sortVisible, setSortVisible] = useState(false);
   const [sortOption, setSortOption] = useState('По просмотрам');
 
-  // const series: Props[] = [
-  //   {id: 1, name: 'series1', rating: 5.5},
-  //   {id: 2, name: 'series2', rating: 7.8},
-  // ];
+  const mainFilter = useFilter('SERIES');
 
   const update = React.useCallback(async () => {
     try {
       setIsLoading(true);
-      await dispatch(getSeries({take: 10, orderBy: {date: 'desc'}}));
-      setIsLoading(false);
+      await dispatch(
+        getSeries({
+          take: 10,
+          search,
+          orderBy: {date: 'desc'},
+          where: {
+            mainFilter,
+          },
+        }),
+      );
     } catch (e) {
       console.log(e);
+    } finally {
+      setIsLoading(false);
     }
-  }, [dispatch]);
+  }, [dispatch, search, mainFilter]);
 
   const showSortModalHandle = () => {
     setSortVisible(prevState => !prevState);
@@ -69,10 +77,6 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
     })();
   }, [update]);
 
-  if (serials.length === 0) {
-    <ActivityIndicator />;
-  }
-
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -83,16 +87,7 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
           colors={[colors.colorMain]}
           tintColor={colors.colorMain}
           refreshing={isLoading}
-          onRefresh={async () => {
-            try {
-              setIsLoading(true);
-              // await getSeriesRequest();
-            } catch (e) {
-              console.log(e);
-            } finally {
-              setIsLoading(false);
-            }
-          }}
+          onRefresh={update}
         />
       }>
       <SearchComponent
@@ -134,6 +129,11 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
         </View>
       </Containter>
       <ScrollView>
+        {serials?.length === 0 && !isLoading && (
+          <Containter>
+            <BoldText>Не найдено</BoldText>
+          </Containter>
+        )}
         {serials?.length > 0 && (
           <FlatList
             data={serials}

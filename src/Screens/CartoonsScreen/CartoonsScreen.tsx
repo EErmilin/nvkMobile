@@ -24,6 +24,7 @@ import {Rect} from 'react-native-svg';
 import {LayoutVideoItem} from '../../components/LayoutVideoItem';
 import SortDropDown from '../../components/SortDropDown';
 import {getCartoons} from '../../redux/thunks/screens/cartoons/GetCartoons';
+import {useFilter} from '../../helpers/useFilter';
 
 interface Props {
   id: number;
@@ -45,16 +46,27 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
   const [sortOption, setSortOption] = useState('По просмотрам');
 
   const cartoons = useAppSelector(state => state.screens.cartoons);
+  const mainFilter = useFilter('ANIMATION');
 
   const update = React.useCallback(async () => {
     try {
       setIsLoading(true);
-      await dispatch(getCartoons({take: 10, orderBy: {date: 'desc'}}));
-      setIsLoading(false);
+      await dispatch(
+        getCartoons({
+          take: 10,
+          search,
+          orderBy: {date: 'desc'},
+          where: {
+            mainFilter,
+          },
+        }),
+      );
     } catch (e) {
       console.log(e);
+    } finally {
+      setIsLoading(false);
     }
-  }, [dispatch]);
+  }, [dispatch, search, mainFilter]);
 
   const showSortModalHandle = () => {
     setSortVisible(prevState => !prevState);
@@ -83,11 +95,9 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
   //   })();
   // }, []);
 
-  if (cartoons.length === 0) {
-    return <ActivityIndicator />;
-  }
-
-  console.log(cartoons);
+  // if (cartoons.length === 0) {
+  //   return <ActivityIndicator />;
+  // }
 
   return (
     <ScrollView
@@ -99,16 +109,7 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
           colors={[colors.colorMain]}
           tintColor={colors.colorMain}
           refreshing={isLoading}
-          onRefresh={async () => {
-            try {
-              setIsLoading(true);
-              await update();
-            } catch (e) {
-              console.log(e);
-            } finally {
-              setIsLoading(false);
-            }
-          }}
+          onRefresh={update}
         />
       }>
       <SearchComponent
@@ -148,6 +149,11 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
         </View>
       </Containter>
       <ScrollView>
+        {cartoons.length === 0 && !isLoading && (
+          <Containter>
+            <BoldText>Не найдено</BoldText>
+          </Containter>
+        )}
         {cartoons.length > 0 && (
           <FlatList
             data={cartoons}

@@ -23,6 +23,7 @@ import {LayoutVideoItem} from '../../components/LayoutVideoItem';
 import SortDropDown from '../../components/SortDropDown';
 import {getFilms} from '../../redux/thunks/screens/getFilms/GetFilms';
 import {setScreenMovies} from '../../redux/slices/screensSlice';
+import {useFilter} from '../../helpers/useFilter';
 
 interface Props {
   id: number;
@@ -42,26 +43,21 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
   const [sortOption, setSortOption] = useState('По просмотрам');
   const moviesRedux = useAppSelector(state => state.screens.movies);
 
-  //mock data
-  const films: Props[] = [
-    {id: 1, name: 'film1', price: 199, rating: 5.5},
-    {id: 2, name: 'film2', price: null, rating: 7.8},
-  ];
-
   const showSortModalHandle = () => {
     setSortVisible(prevState => !prevState);
   };
 
+  const mainFilter = useFilter('MOVIE');
   const update = React.useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await dispatch(getFilms({search: search}));
+      await dispatch(getFilms({search: search, take: 10, where: {mainFilter}}));
     } catch (e) {
       Toast.show({type: 'error', text1: 'Что-то пошло не так'});
     } finally {
       setIsLoading(false);
     }
-  }, [dispatch, search]);
+  }, [dispatch, search, mainFilter]);
 
   React.useEffect(() => {
     (async () => {
@@ -69,9 +65,6 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
     })();
   }, [update]);
 
-  if (!moviesRedux.length) {
-    return;
-  }
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -82,16 +75,7 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
           colors={[colors.colorMain]}
           tintColor={colors.colorMain}
           refreshing={isLoading}
-          onRefresh={async () => {
-            try {
-              setIsLoading(true);
-              await dispatch(getFilms({take: 10}));
-            } catch (e) {
-              console.log(e);
-            } finally {
-              setIsLoading(false);
-            }
-          }}
+          onRefresh={update}
         />
       }>
       <SearchComponent
@@ -131,7 +115,13 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
         </View>
       </Containter>
       <ScrollView>
-        {moviesRedux.length && (
+        {moviesRedux.length === 0 && !isLoading && (
+          <Containter>
+            <BoldText>Не найдено</BoldText>
+          </Containter>
+        )}
+
+        {moviesRedux.length > 0 && (
           <FlatList
             data={moviesRedux}
             style={styles.items}

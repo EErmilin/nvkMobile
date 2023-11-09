@@ -1,8 +1,12 @@
 import {gql} from '@apollo/client';
 
 export const GET_CARTOONS = gql`
-  query Animations($take: Int, $orderBy: AnimationOrderByWithRelationInput) {
-    animations(take: $take, orderBy: $orderBy) {
+  query Animations(
+    $take: Int
+    $orderBy: AnimationOrderByWithRelationInput
+    $where: AnimationWhereInput
+  ) {
+    animations(take: $take, orderBy: $orderBy, where: $where) {
       age
       content
       country
