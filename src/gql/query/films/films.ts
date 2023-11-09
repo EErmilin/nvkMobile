@@ -1,8 +1,12 @@
 import {gql} from '@apollo/client';
 
 export const GET_MOVIES = gql`
-  query Movies($take: Int, $search: String, $where: MovieWhereInput,
-    orderBy: MovieOrderByWithRelationInput) {
+  query Movies(
+    $take: Int
+    $search: String
+    $where: MovieWhereInput
+    $orderBy: MovieOrderByWithRelationInput
+  ) {
     movies(take: $take, search: $search, where: $where, orderBy: $orderBy) {
       id
       name
