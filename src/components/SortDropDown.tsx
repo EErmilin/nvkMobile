@@ -3,17 +3,26 @@ import {Platform, Pressable, StyleSheet, View} from 'react-native';
 import MediumText from './MediumText';
 import {colors} from '../Styles/Styles';
 import BoldText from './BoldText';
+import {IFilterOrderBy} from '../redux/types/FilterTypes';
 
-const sortOptions = [
-  'По обновлению',
-  'По новизне',
-  'По просмотрам',
-  'По Кинопоиску',
-];
+export const sortOptions: Record<IFilterOrderBy, string> = {
+  UPDATES: 'По обновлению',
+  NEW: 'По новизне',
+  VIEWS: 'По просмотрам',
+  KINOPOISK: 'По Кинопоиску',
+};
+
+const options = Object.entries(sortOptions).map(
+  ([value, text]) =>
+    ({value, text} as {
+      value: IFilterOrderBy;
+      text: string;
+    }),
+);
 
 interface SortDropDownProps {
-  sortOption: string;
-  setSortOption: React.Dispatch<React.SetStateAction<string>>;
+  sortOption: IFilterOrderBy;
+  setSortOption: (value: IFilterOrderBy) => void;
   setSortVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -22,7 +31,7 @@ const SortDropDown = ({
   setSortOption,
   setSortVisible,
 }: SortDropDownProps) => {
-  const onSortHandle = (sortItem: string) => {
+  const onSortHandle = (sortItem: IFilterOrderBy) => {
     if (sortItem) {
       setSortOption(sortItem);
       setSortVisible(false);
@@ -39,13 +48,15 @@ const SortDropDown = ({
         }}
       />
       <View style={styles.option}>
-        {sortOptions.map(item => {
+        {options.map(item => {
           return (
-            <Pressable onPress={() => onSortHandle(item.toString())}>
-              {sortOption === item ? (
-                <BoldText>{item}</BoldText>
+            <Pressable onPress={() => onSortHandle(item.value)}>
+              {sortOption === item.value ? (
+                <BoldText>{item.text}</BoldText>
               ) : (
-                <MediumText style={{color: colors.gray}}>{item}</MediumText>
+                <MediumText style={{color: colors.gray}}>
+                  {item.text}
+                </MediumText>
               )}
             </Pressable>
           );

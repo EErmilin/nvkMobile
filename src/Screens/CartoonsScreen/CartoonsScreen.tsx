@@ -22,9 +22,11 @@ import {ArrowDownIcon} from '../../components/SVGcomponents/ArrowDownIcon';
 import ContentLoader from 'react-content-loader';
 import {Rect} from 'react-native-svg';
 import {LayoutVideoItem} from '../../components/LayoutVideoItem';
-import SortDropDown from '../../components/SortDropDown';
+import SortDropDown, {sortOptions} from '../../components/SortDropDown';
 import {getCartoons} from '../../redux/thunks/screens/cartoons/GetCartoons';
 import {useFilter} from '../../helpers/useFilter';
+import {useOrderBy} from '../../helpers/useOrderBy';
+import {setOrderBy} from '../../redux/slices/filterSlice';
 
 interface Props {
   id: number;
@@ -43,10 +45,10 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [sortVisible, setSortVisible] = useState(false);
-  const [sortOption, setSortOption] = useState('По просмотрам');
 
   const cartoons = useAppSelector(state => state.screens.cartoons);
   const mainFilter = useFilter('ANIMATION');
+  const [sortOption, orderBy] = useOrderBy('ANIMATION');
 
   const update = React.useCallback(async () => {
     try {
@@ -55,7 +57,7 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
         getCartoons({
           take: 10,
           search,
-          orderBy: {date: 'desc'},
+          orderBy,
           where: {
             mainFilter,
           },
@@ -66,7 +68,7 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [dispatch, search, mainFilter]);
+  }, [dispatch, search, mainFilter, orderBy]);
 
   const showSortModalHandle = () => {
     setSortVisible(prevState => !prevState);
@@ -135,14 +137,21 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
           <TouchableOpacity onPress={showSortModalHandle}>
             <View style={styles.btn}>
               <ArrowsIcon color={colors.colorMain} />
-              <BoldText fontSize={16}>{sortOption}</BoldText>
+              <BoldText fontSize={16}>{sortOptions[sortOption]}</BoldText>
               <ArrowDownIcon color={colors.colorMain} />
             </View>
           </TouchableOpacity>
           {sortVisible ? (
             <SortDropDown
               sortOption={sortOption}
-              setSortOption={setSortOption}
+              setSortOption={orderBy =>
+                dispatch(
+                  setOrderBy({
+                    type: 'ANIMATION',
+                    orderBy,
+                  }),
+                )
+              }
               setSortVisible={setSortVisible}
             />
           ) : null}

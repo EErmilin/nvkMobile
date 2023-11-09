@@ -20,10 +20,12 @@ import {ArrowDownIcon} from '../../components/SVGcomponents/ArrowDownIcon';
 import ContentLoader from 'react-content-loader';
 import {Rect} from 'react-native-svg';
 import {LayoutVideoItem} from '../../components/LayoutVideoItem';
-import SortDropDown from '../../components/SortDropDown';
+import SortDropDown, {sortOptions} from '../../components/SortDropDown';
 import {getFilms} from '../../redux/thunks/screens/getFilms/GetFilms';
 import {setScreenMovies} from '../../redux/slices/screensSlice';
 import {useFilter} from '../../helpers/useFilter';
+import {useOrderBy} from '../../helpers/useOrderBy';
+import {setOrderBy} from '../../redux/slices/filterSlice';
 
 interface Props {
   id: number;
@@ -40,7 +42,6 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [sortVisible, setSortVisible] = useState(false);
-  const [sortOption, setSortOption] = useState('По просмотрам');
   const moviesRedux = useAppSelector(state => state.screens.movies);
 
   const showSortModalHandle = () => {
@@ -48,16 +49,19 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
   };
 
   const mainFilter = useFilter('MOVIE');
+  const [sortOption, orderBy] = useOrderBy('MOVIE');
   const update = React.useCallback(async () => {
     try {
       setIsLoading(true);
-      await dispatch(getFilms({search: search, take: 10, where: {mainFilter}}));
+      await dispatch(
+        getFilms({search: search, take: 10, orderBy, where: {mainFilter}}),
+      );
     } catch (e) {
       Toast.show({type: 'error', text1: 'Что-то пошло не так'});
     } finally {
       setIsLoading(false);
     }
-  }, [dispatch, search, mainFilter]);
+  }, [dispatch, search, mainFilter, orderBy]);
 
   React.useEffect(() => {
     (async () => {
@@ -101,14 +105,21 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
           <TouchableOpacity onPress={showSortModalHandle}>
             <View style={styles.btn}>
               <ArrowsIcon color={colors.colorMain} />
-              <BoldText fontSize={16}>{sortOption}</BoldText>
+              <BoldText fontSize={16}>{sortOptions[sortOption]}</BoldText>
               <ArrowDownIcon color={colors.colorMain} />
             </View>
           </TouchableOpacity>
           {sortVisible ? (
             <SortDropDown
               sortOption={sortOption}
-              setSortOption={setSortOption}
+              setSortOption={orderBy =>
+                dispatch(
+                  setOrderBy({
+                    type: 'MOVIE',
+                    orderBy,
+                  }),
+                )
+              }
               setSortVisible={setSortVisible}
             />
           ) : null}

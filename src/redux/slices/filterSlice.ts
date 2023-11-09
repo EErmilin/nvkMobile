@@ -1,9 +1,10 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {IFilter, IFilterState} from '../types/FilterTypes';
+import {IFilter, IFilterOrderBy, IFilterState} from '../types/FilterTypes';
 import {FilterType} from '../../gql/query/filters/filters';
 
 export const createEmptyFilter = (): IFilter => ({
   filters: {},
+  orderBy: 'VIEWS',
   rating: {
     from: null,
     to: null,
@@ -24,6 +25,19 @@ const filterSlice = createSlice({
   name: 'filter',
   initialState,
   reducers: {
+    setOrderBy(
+      state,
+      {
+        payload,
+      }: {
+        payload: {
+          type: FilterType;
+          orderBy: IFilterOrderBy;
+        };
+      },
+    ) {
+      state.filters[payload.type].orderBy = payload.orderBy;
+    },
     setFilter(
       state,
       {
@@ -56,5 +70,5 @@ const filterSlice = createSlice({
   },
 });
 
-export const {setFilter, clearFilter} = filterSlice.actions;
+export const {setFilter, clearFilter, setOrderBy} = filterSlice.actions;
 export default filterSlice.reducer;

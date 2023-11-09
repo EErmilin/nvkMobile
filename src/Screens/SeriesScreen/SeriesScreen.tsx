@@ -22,8 +22,10 @@ import ContentLoader from 'react-content-loader';
 import {Rect} from 'react-native-svg';
 import {LayoutVideoItem} from '../../components/LayoutVideoItem';
 import {getSeries} from '../../redux/thunks/screens/getSeries/GetSeries';
-import SortDropDown from '../../components/SortDropDown';
+import SortDropDown, {sortOptions} from '../../components/SortDropDown';
 import {useFilter} from '../../helpers/useFilter';
+import {useOrderBy} from '../../helpers/useOrderBy';
+import {setOrderBy} from '../../redux/slices/filterSlice';
 
 interface Props {
   id: number;
@@ -43,9 +45,9 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [sortVisible, setSortVisible] = useState(false);
-  const [sortOption, setSortOption] = useState('По просмотрам');
 
   const mainFilter = useFilter('SERIES');
+  const [sortOption, orderBy] = useOrderBy('SERIES');
 
   const update = React.useCallback(async () => {
     try {
@@ -54,7 +56,7 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
         getSeries({
           take: 10,
           search,
-          orderBy: {date: 'desc'},
+          orderBy,
           where: {
             mainFilter,
           },
@@ -65,7 +67,7 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [dispatch, search, mainFilter]);
+  }, [dispatch, search, mainFilter, orderBy]);
 
   const showSortModalHandle = () => {
     setSortVisible(prevState => !prevState);
@@ -114,14 +116,21 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
             <TouchableOpacity onPress={showSortModalHandle}>
               <View style={styles.btn}>
                 <ArrowsIcon color={colors.colorMain} />
-                <BoldText fontSize={16}>{sortOption.toString()}</BoldText>
+                <BoldText fontSize={16}>{sortOptions[sortOption]}</BoldText>
                 <ArrowDownIcon color={colors.colorMain} />
               </View>
             </TouchableOpacity>
             {sortVisible ? (
               <SortDropDown
                 sortOption={sortOption}
-                setSortOption={setSortOption}
+                setSortOption={orderBy =>
+                  dispatch(
+                    setOrderBy({
+                      type: 'SERIES',
+                      orderBy,
+                    }),
+                  )
+                }
                 setSortVisible={setSortVisible}
               />
             ) : null}
