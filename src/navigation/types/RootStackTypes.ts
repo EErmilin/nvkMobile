@@ -9,6 +9,7 @@ import {Track} from 'react-native-track-player';
 import {CompositeScreenProps} from '@react-navigation/native';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {TabParamList} from './TabTypes';
+import {FilterType} from '../../gql/query/filters/filters';
 
 export type RootStackParamList = {
   Tabs: undefined;
@@ -81,7 +82,9 @@ export type RootStackParamList = {
   Settings: undefined;
   TechSupport: undefined;
   Films: undefined;
-  Filter: undefined;
+  Filter: {
+    type: FilterType;
+  };
   Film: {
     id: number;
     title: string;

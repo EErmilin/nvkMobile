@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {FC, useRef, useState} from 'react';
 import {Dimensions, StyleSheet, View, SafeAreaView} from 'react-native';
 
 import {colors} from '../../Styles/Styles';
@@ -15,11 +15,16 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {PanGestureHandler} from 'react-native-gesture-handler';
+import {RootNavigationProps} from '../../navigation/types/RootStackTypes';
+import {clearFilter} from '../../redux/slices/filterSlice';
 
 const {width, height} = Dimensions.get('window');
 const KNOB_SIZE = 28;
 
-const FilterScreen = () => {
+const FilterScreen: FC<RootNavigationProps<'Filter'>> = ({
+  route,
+  navigation,
+}) => {
   const modalizeRef = useRef<Modalize>(null);
 
   const xKnobLeft = useSharedValue(0);
@@ -86,12 +91,32 @@ const FilterScreen = () => {
     <>
       <Containter style={{backgroundColor: colors.white, flex: 1}}>
         {/* Options */}
-        <FilterOptions title={'Жанры'} handlePage={onOpen} />
-        <FilterOptions title={'Годы'} handlePage={onOpen} />
-        <FilterOptions title={'Возраст'} handlePage={onOpen} />
-        <FilterOptions title={'Язык'} handlePage={onOpen} />
-        <FilterOptions title={'Страны'} handlePage={onOpen} />
-        <FilterOptions title={'Рейтинг Кинопоиск'} />
+        <FilterOptions
+          title={'Жанры'}
+          handlePage={onOpen}
+          type={route.params.type}
+        />
+        <FilterOptions
+          title={'Годы'}
+          handlePage={onOpen}
+          type={route.params.type}
+        />
+        <FilterOptions
+          title={'Возраст'}
+          handlePage={onOpen}
+          type={route.params.type}
+        />
+        <FilterOptions
+          title={'Язык'}
+          handlePage={onOpen}
+          type={route.params.type}
+        />
+        <FilterOptions
+          title={'Страны'}
+          handlePage={onOpen}
+          type={route.params.type}
+        />
+        <FilterOptions title={'Рейтинг Кинопоиск'} type={route.params.type} />
         {/* InputRange */}
         <View style={styles.rangeContainer}>
           <View style={styles.track} />
@@ -114,14 +139,30 @@ const FilterScreen = () => {
         </View>
         {/* Footer Buttons */}
         <View style={styles.buttonContainer}>
-          <FilterFooterButtons />
+          <FilterFooterButtons
+            onApply={() => {
+              navigation.goBack();
+            }}
+            onClear={() => {
+              dispatch(
+                clearFilter({
+                  type: route.params.type,
+                }),
+              );
+              navigation.goBack();
+            }}
+          />
         </View>
       </Containter>
       {/* Modalize */}
       <Modalize ref={modalizeRef} modalHeight={height} onClose={onClose}>
         <Containter style={{flex: 1}}>
           <SafeAreaView>
-            <FilterOption page={page} />
+            <FilterOption
+              page={page}
+              type={route.params.type}
+              onClose={() => modalizeRef.current?.close()}
+            />
           </SafeAreaView>
         </Containter>
       </Modalize>

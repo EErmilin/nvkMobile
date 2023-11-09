@@ -21,8 +21,8 @@ import ContentLoader from 'react-content-loader';
 import {Rect} from 'react-native-svg';
 import {LayoutVideoItem} from '../../components/LayoutVideoItem';
 import SortDropDown from '../../components/SortDropDown';
-import { getFilms } from '../../redux/thunks/screens/getFilms/GetFilms';
-import { setScreenMovies } from '../../redux/slices/screensSlice';
+import {getFilms} from '../../redux/thunks/screens/getFilms/GetFilms';
+import {setScreenMovies} from '../../redux/slices/screensSlice';
 
 interface Props {
   id: number;
@@ -41,14 +41,12 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
   const [sortVisible, setSortVisible] = useState(false);
   const [sortOption, setSortOption] = useState('По просмотрам');
   const moviesRedux = useAppSelector(state => state.screens.movies);
- 
+
   //mock data
   const films: Props[] = [
     {id: 1, name: 'film1', price: 199, rating: 5.5},
     {id: 2, name: 'film2', price: null, rating: 7.8},
   ];
-
-
 
   const showSortModalHandle = () => {
     setSortVisible(prevState => !prevState);
@@ -57,7 +55,7 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
   const update = React.useCallback(async () => {
     try {
       setIsLoading(true);
-    const response =  await dispatch(getFilms({search:search }));
+      const response = await dispatch(getFilms({search: search}));
     } catch (e) {
       Toast.show({type: 'error', text1: 'Что-то пошло не так'});
     } finally {
@@ -71,7 +69,9 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
     })();
   }, [update]);
 
-if(!moviesRedux.length)return
+  if (!moviesRedux.length) {
+    return;
+  }
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -85,7 +85,7 @@ if(!moviesRedux.length)return
           onRefresh={async () => {
             try {
               setIsLoading(true);
-              await dispatch(getFilms({take: 10 }));
+              await dispatch(getFilms({take: 10}));
             } catch (e) {
               console.log(e);
             } finally {
@@ -102,7 +102,12 @@ if(!moviesRedux.length)return
         placeholder={'Поиск по названию'}
       />
       <Containter style={styles.textContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Filter')}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('Filter', {
+              type: 'MOVIE',
+            })
+          }>
           <View style={styles.btn}>
             <FilterIcon color={colors.colorMain} />
             <BoldText fontSize={16}>Фильтры</BoldText>
@@ -138,7 +143,7 @@ if(!moviesRedux.length)return
                   navigation.navigate('Film', {
                     id: item.id,
                     title: item.name,
-                   // rating: item.rating,
+                    // rating: item.rating,
                   })
                 }>
                 <LayoutVideoItem item={item} height={282} heightImage={230} />

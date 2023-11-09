@@ -9,21 +9,29 @@ import {
 import {ArrowRight} from './SVGcomponents';
 import BoldText from './BoldText';
 import {colors} from '../Styles/Styles';
+import {FilterType} from '../gql/query/filters/filters';
+import {useAppSelector} from '../redux/hooks';
 
 const {width} = Dimensions.get('window');
 
 interface FilterOptionsProps {
   title: string;
+  type: FilterType;
   handlePage?: ((pageId: string | undefined) => void) | undefined;
 }
 
-const FilterOptions = ({title, handlePage}: FilterOptionsProps) => {
+const FilterOptions = ({title, handlePage, type}: FilterOptionsProps) => {
   const handlePageId = () => {
     if (title !== undefined && title !== 'Рейтинг Кинопоиск') {
       handlePage!(title);
     }
     return;
   };
+
+  const filter = useAppSelector(state => state.filter.filters[type]);
+
+  const isRating = title === 'Рейтинг Кинопоиск';
+  const text = filter?.filters?.[title]?.join(', ') || 'Все';
 
   return (
     <TouchableOpacity
@@ -32,8 +40,8 @@ const FilterOptions = ({title, handlePage}: FilterOptionsProps) => {
       onPress={handlePageId}>
       <BoldText>{title}</BoldText>
       <View style={styles.checkedFilterContainer}>
-        <Text style={styles.checkedFilterText}>Все</Text>
-        {title !== 'Рейтинг Кинопоиск' ? <ArrowRight /> : null}
+        <Text style={styles.checkedFilterText}>{text}</Text>
+        {!isRating && <ArrowRight />}
       </View>
     </TouchableOpacity>
   );

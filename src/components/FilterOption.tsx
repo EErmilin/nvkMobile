@@ -1,54 +1,83 @@
+import {DocumentNode} from '@apollo/client';
 import React, {useEffect, useState} from 'react';
 import {Dimensions, ScrollView, StyleSheet, View} from 'react-native';
-import {SearchComponent} from './SearchComponent';
-import FilterRenderItem from './FilterRenderItem';
-import FilterFooterButtons from './FilterFooterButtons';
+import {useDispatch} from 'react-redux';
+import {
+  FilterType,
+  GET_FILTER_COUNTRY,
+  GET_FILTER_GENRE,
+  GET_FILTER_LANGUAGE,
+  GetFilter,
+  GetFilterVariables,
+} from '../gql/query/filters/filters';
+import {useAppSelector} from '../redux/hooks';
+import {setFilter} from '../redux/slices/filterSlice';
+import {getUpdateClient} from '../requests/updateHeaders';
 import BoldText from './BoldText';
+import FilterFooterButtons from './FilterFooterButtons';
+import FilterRenderItem from './FilterRenderItem';
+import {SearchComponent} from './SearchComponent';
 
 const height = Dimensions.get('window').height;
-//mock
-const filters = {
-  genres: [
-    'Комедия',
-    'Приключения',
-    'Драма',
-    'Триллеры',
-    'Семейные',
-    'Фэнтези',
-    'Фантастика',
-    'Ужасы',
-  ],
-  years: [
-    2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012,
-    2011, 2010,
-  ],
-  age: ['0+', '6+', '12+', '16+', '19+'],
-  language: ['якутский', 'Русский', 'Английский'],
-  countries: ['Россия', 'Англия', 'Франция', 'Германия'],
-};
 
 interface GenresFilterOptionsProps {
   page: string;
+  type: FilterType;
+  onClose: () => void;
 }
 
-const FilterOptions = ({page}: GenresFilterOptionsProps) => {
+const documents: Record<string, DocumentNode> = {
+  Жанры: GET_FILTER_GENRE,
+  Язык: GET_FILTER_LANGUAGE,
+  Страны: GET_FILTER_COUNTRY,
+};
+
+const currentYear = new Date().getFullYear();
+const yearsArray = Array.from(
+  {length: currentYear - 2010 + 1},
+  (_, index) => 2010 + index,
+);
+
+const filterValues: Record<string, number[]> = {
+  Годы: yearsArray,
+  Возраст: [0, 6, 12, 16, 19],
+};
+
+const FilterOption = ({page, type, onClose}: GenresFilterOptionsProps) => {
   const [checkArr, setCheckArr] = useState<string[] | number[] | null>(null);
+  const {filters} = useAppSelector(state => state.filter.filters[type]);
 
   useEffect(() => {
-    if (page) {
-      if (page === 'Жанры') {
-        setCheckArr(filters.genres);
-      } else if (page === 'Годы') {
-        setCheckArr(filters.years);
-      } else if (page === 'Возраст') {
-        setCheckArr(filters.age);
-      } else if (page === 'Язык') {
-        setCheckArr(filters.language);
-      } else if (page === 'Страны') {
-        setCheckArr(filters.countries);
-      }
+    const doc = documents[page];
+    if (doc) {
+      getUpdateClient().then(async client => {
+        const {data} = await client.query<GetFilter, GetFilterVariables>({
+          query: doc,
+          variables: {
+            type,
+          },
+        });
+
+        if (data.filters) {
+          setCheckArr(data.filters.map(f => f.name));
+        }
+      });
+    } else if (filterValues[page]) {
+      setCheckArr(filterValues[page]);
     }
-  }, [page]);
+  }, [page, type]);
+
+  const dispatch = useDispatch();
+  const [selected, setSelected] = useState(() => filters[page] || []);
+
+  const apply = () => {
+    dispatch(setFilter({selected, type, page}));
+    onClose();
+  };
+  const clear = () => {
+    dispatch(setFilter({selected: [], type, page}));
+    onClose();
+  };
 
   return (
     <View style={styles.container}>
@@ -65,24 +94,34 @@ const FilterOptions = ({page}: GenresFilterOptionsProps) => {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         {checkArr?.map((item, index) => {
+          const value = item.toString();
           return (
             <FilterRenderItem
-              item={item}
+              item={value}
               index={index}
-              key={item.toString() + index.toString()}
+              key={value}
               isRatio={page === 'Жанры' ? false : true}
+              suffix={page === 'Возраст' ? '+' : undefined}
+              isChecked={selected.includes(value)}
+              onToggle={() => {
+                setSelected(sel =>
+                  sel.includes(value)
+                    ? sel.filter(i => i !== value)
+                    : [...selected, value],
+                );
+              }}
             />
           );
         })}
       </ScrollView>
       <View style={styles.buttonContainer}>
-        <FilterFooterButtons />
+        <FilterFooterButtons onApply={apply} onClear={clear} />
       </View>
     </View>
   );
 };
 
-export default FilterOptions;
+export default FilterOption;
 
 const styles = StyleSheet.create({
   container: {

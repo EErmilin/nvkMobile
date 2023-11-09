@@ -104,7 +104,12 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
       />
       <Containter style={{zIndex: 1}}>
         <View style={styles.textContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('Filter')}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('Filter', {
+                type: 'SERIES',
+              })
+            }>
             <View style={styles.btn}>
               <FilterIcon color={colors.colorMain} />
               <BoldText fontSize={16}>Фильтры</BoldText>

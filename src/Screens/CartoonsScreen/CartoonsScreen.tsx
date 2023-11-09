@@ -119,7 +119,12 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
         placeholder={'Поиск по названию'}
       />
       <Containter style={styles.textContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Filter')}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('Filter', {
+              type: 'ANIMATION',
+            })
+          }>
           <View style={styles.btn}>
             <FilterIcon color={colors.colorMain} />
             <BoldText fontSize={16}>Фильтры</BoldText>
