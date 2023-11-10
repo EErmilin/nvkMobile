@@ -14,6 +14,7 @@ import {updateHashtag, updateUser} from '../thunks/user/UpdateUser';
 import { getFilm, getFilms } from '../thunks/screens/getFilms/GetFilms';
 import {getSeasons, getSeries} from '../thunks/screens/getSeries/GetSeries';
 import {getCartoons} from '../thunks/screens/cartoons/GetCartoons';
+import { createReview } from '../thunks/review/CreateReview';
 
 const initialState: IScreenState = {
   broadcasts: [],
@@ -81,6 +82,11 @@ const screensSlice = createSlice({
     builder.addCase(getCartoons.fulfilled, (state, action) => {
       // console.log('arrr', action.payload);
       state.cartoons = action.payload;
+    });
+
+    builder.addCase(createReview.fulfilled, (state, action) => {
+      // console.log('arrr', action.payload);
+      state.review = action.payload;
     });
 
     builder.addCase(logout.rejected, state => {

@@ -15,13 +15,13 @@ export const Review = ({item, cardWidth}: any) => {
           alignItems: 'center',
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center', gap: 15}}>
-          <Avatar size={45} url={item.url} />
-          <BoldText>{item.author}</BoldText>
+          <Avatar size={45} url={item.user?.avatar?.url_256} />
+          <BoldText>{item.user?.firstname ?? 'Пользователь'}</BoldText>
         </View>
-        <Rating rating={item.rating_nbk} isStar />
+        <Rating rating={item.vote} isStar />
       </View>
       <View>
-        <MediumText>{item.reviews_nbk}</MediumText>
+        <MediumText>{item.comment}</MediumText>
       </View>
       <View style={{justifyContent: 'flex-end'}}>
         <MediumText style={{color: colors.gray}}>{item.date}</MediumText>

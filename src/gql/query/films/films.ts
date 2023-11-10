@@ -30,6 +30,7 @@ export const GET_MOVIES = gql`
 export const GET_MOVIE = gql`
   query Movie($movieId: Int!) {
     movie(id: $movieId) {
+      id
       name
       content
       media {
@@ -47,6 +48,18 @@ export const GET_MOVIE = gql`
       genre
       duration
       views
+      userVote {
+        id
+        comment
+        vote
+        user {
+          avatar {
+            url_256
+          }
+          firstname
+          lastname
+        }
+      }
     }
   }
 `;

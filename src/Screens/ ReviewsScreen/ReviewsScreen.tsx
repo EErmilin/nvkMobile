@@ -8,6 +8,9 @@ import {Review} from '../../components/Review';
 import {StarIcon} from '../../components/SVGcomponents/StarIcon';
 import {RootNavigationProps} from '../../navigation/types/RootStackTypes';
 import BottomSheet from '../../components/BottomSheet';
+import {useRoute} from '@react-navigation/native';
+import {useAppDispatch} from '../../redux/hooks';
+import {createReview} from '../../redux/thunks/review/CreateReview';
 
 //dummy data
 
@@ -53,6 +56,14 @@ const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
   // const {route, navigation} = props;
   // const {colors} = useTheme();
+  const dispatch = useAppDispatch();
+  const route = useRoute();
+  const userVote = route.params?.userVote ?? [];
+  const id = route.params?.id!;
+  const name = route.params?.name ?? '';
+  const year = route.params?.year;
+  const imageUrl = route.params?.imageUrl;
+  const idField = route.params?.idField;
 
   const bottomSheetRef = React.useRef(null);
 
@@ -74,18 +85,34 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
     };
   }, []);
 
+  const onReview = async (comment: string, vote: number) => {
+    console.log('CREATE REVIEW');
+    const data = await dispatch(
+      createReview({
+        comment,
+        vote,
+        userId: 1,
+        [idField]: id,
+      }),
+    );
+    console.log(data);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <BottomSheet
-        name={'film'}
+        name={name}
+        imageUrl={imageUrl}
+        year={year}
         ref={bottomSheetRef}
         activeReview={activeReview}
+        onReview={(comment, vote) => onReview(comment, vote)}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Containter style={{gap: 25}}>
           {isReviewedFilm ? (
             <>
-              {/*ОТзыв пользователя*/}
+              {/*Отзыв пользователя*/}
               <BoldText fontSize={16}>Ваш отзыв</BoldText>
               <Review item={item.reviews[0]} cardWidth />
             </>
@@ -115,8 +142,8 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
           <BoldText fontSize={16}>Отзывы пользователей</BoldText>
           {/* Reviews Cards */}
           <View style={{gap: 16}}>
-            {item.reviews.length ? (
-              item.reviews.map(r => (
+            {!!userVote.length ? (
+              userVote.map(r => (
                 <Review key={r.id.toString()} item={r} cardWidth />
               ))
             ) : (
