@@ -15,6 +15,9 @@ export const GET_CARTOONS = gql`
       genre
       language
       name
+      views
+      content
+      ratingKinopoisk
       animationSeasons {
         id
         name
@@ -22,6 +25,7 @@ export const GET_CARTOONS = gql`
         animationId
         createdAt
         animationEpisode {
+          number
           media {
             indexM3u8Url
           }

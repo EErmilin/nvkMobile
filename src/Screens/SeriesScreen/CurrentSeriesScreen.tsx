@@ -20,6 +20,8 @@ import {Review} from '../../components/Review';
 import MediumText from '../../components/MediumText';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import BottomSheet from '../../components/BottomSheet';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 
 //mock data
 const data = [1];
@@ -70,12 +72,17 @@ export const CurrentSeriesScreen: FC<
   const bottomSheetRef = React.useRef(null);
   const routes = useRoute();
   const {serialData, url, content} = routes.params;
+  const dispatch = useAppDispatch();
+  const reviews = useAppSelector(state => state.screens.reviews);
+  React.useEffect(() => {
+    dispatch(getReviews({where: {seriesId: serialData.series?.id}}));
+  }, []);
 
   const openModal = () => {
     bottomSheetRef?.current?.open();
   };
 
-  console.log(url);
+  console.log(serialData?.series);
   return (
     <SafeAreaView style={styles.container}>
       <BottomSheet name={'serial'} ref={bottomSheetRef} />
@@ -214,18 +221,25 @@ export const CurrentSeriesScreen: FC<
             <BoldText fontSize={16}>Отзывы</BoldText>
             <Animated.View
               style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
-              <BoldText fontSize={16}>{item.reviews_nbk.toString()}</BoldText>
+              <BoldText fontSize={16}>{reviews?.length ?? 0}</BoldText>
               <ArrowRight
                 onPress={() =>
-                  navigation.navigate('Reviews', {name: item.name})
+                  navigation.navigate('Reviews', {
+                    id: serialData?.series?.id,
+                    name: serialData?.series?.name,
+                    year: serialData?.series?.date,
+                    imageUrl: serialData?.series?.image?.url,
+                    userVote: reviews,
+                    idField: 'seriesId',
+                  })
                 }
               />
             </Animated.View>
           </Animated.View>
           <ScrollView horizontal>
             <Animated.View style={{flexDirection: 'row', gap: 16}}>
-              {item.reviews.length ? (
-                item.reviews.map(item => <Review key={item.id} item={item} />)
+              {!!reviews?.length ? (
+                reviews?.map(item => <Review key={item.id} item={item} />)
               ) : (
                 <ActivityIndicator color={colors.colorMain} size={'large'} />
               )}
@@ -233,7 +247,16 @@ export const CurrentSeriesScreen: FC<
           </ScrollView>
           <TouchableOpacity
             style={[styles.smallBtn, {borderRadius: 42}]}
-            onPress={() => navigation.navigate('Reviews', {name: item.name})}>
+            onPress={() => {
+              navigation.navigate('Reviews', {
+                id: serialData?.series?.id,
+                name: serialData?.series?.name,
+                year: serialData?.series?.date,
+                imageUrl: serialData?.series?.image?.url,
+                userVote: reviews,
+                idField: 'seriesId',
+              });
+            }}>
             <MediumText style={styles.textColor}>
               Прочитать все отзывы
             </MediumText>

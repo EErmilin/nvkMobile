@@ -15,6 +15,7 @@ import { getFilm, getFilms } from '../thunks/screens/getFilms/GetFilms';
 import {getSeasons, getSeries} from '../thunks/screens/getSeries/GetSeries';
 import {getCartoons} from '../thunks/screens/cartoons/GetCartoons';
 import { createReview } from '../thunks/review/CreateReview';
+import { getReviews } from '../thunks/screens/getReviews/GetReviews';
 
 const initialState: IScreenState = {
   broadcasts: [],
@@ -77,6 +78,10 @@ const screensSlice = createSlice({
 
     builder.addCase(getSeasons.fulfilled, (state, action) => {
       state.seasons = action.payload;
+    });
+
+    builder.addCase(getReviews.fulfilled, (state, action) => {
+      state.reviews = action.payload;
     });
 
     builder.addCase(getCartoons.fulfilled, (state, action) => {

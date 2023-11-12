@@ -102,8 +102,9 @@ export type RootStackParamList = {
   };
   Cartoons: undefined;
   Cartoon: {
-    id: number;
-    title: string;
+    cartoon: any;
+    season: any;
+    episode: any;
   };
   Reviews: {
     name: string;

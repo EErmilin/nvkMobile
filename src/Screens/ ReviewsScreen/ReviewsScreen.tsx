@@ -142,10 +142,8 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
           <BoldText fontSize={16}>Отзывы пользователей</BoldText>
           {/* Reviews Cards */}
           <View style={{gap: 16}}>
-            {!!userVote.length ? (
-              userVote.map(r => (
-                <Review key={r.id.toString()} item={r} cardWidth />
-              ))
+            {!!userVote?.length && userVote.length > 0 ? (
+              userVote?.map(r => <Review key={r.id} item={r} cardWidth />)
             ) : (
               <ActivityIndicator color={colors.white} size={'large'} />
             )}

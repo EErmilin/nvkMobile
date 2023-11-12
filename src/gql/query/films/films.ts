@@ -48,6 +48,9 @@ export const GET_MOVIE = gql`
       genre
       duration
       views
+      image {
+        url
+      }
       userVote {
         id
         comment

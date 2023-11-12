@@ -41,6 +41,7 @@ export const SEASONS = gql`
       name
       number
       series {
+        id
         name
         duration
         country
@@ -76,6 +77,7 @@ export const CURRENT_SERIAS = gql`
       name
       number
       series {
+        id
         name
         duration
         country

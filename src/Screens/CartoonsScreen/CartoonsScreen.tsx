@@ -173,9 +173,7 @@ export const CartoonsScreen: FC<RootNavigationProps<'Cartoons'>> = ({
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('CartoonSeasons', {
-                    id: item?.id,
-                    title: item?.name,
-                    content: item?.content,
+                    cartoon: item,
                   })
                 }>
                 <LayoutVideoItem item={item} height={144} heightImage={110} />
