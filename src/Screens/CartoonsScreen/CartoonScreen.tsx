@@ -182,7 +182,7 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
                     id: cartoon.id,
                     name: cartoon.name,
                     year: cartoon.date,
-                    imageUrl: cartoon.image?.url,
+                    imageUrl: cartoon.cover?.url,
                     userVote: reviews,
                     idField: 'animationId',
                   })
@@ -206,7 +206,7 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
                 id: cartoon.id,
                 name: cartoon.name,
                 year: cartoon.date,
-                imageUrl: cartoon.image?.url,
+                imageUrl: cartoon.cover?.url,
                 userVote: reviews,
                 idField: 'animationId',
               })

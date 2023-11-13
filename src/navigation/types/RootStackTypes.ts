@@ -105,6 +105,7 @@ export type RootStackParamList = {
     cartoon: any;
     season: any;
     episode: any;
+    title: string
   };
   Reviews: {
     name: string;

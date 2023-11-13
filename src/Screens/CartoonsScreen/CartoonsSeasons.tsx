@@ -54,6 +54,7 @@ export const CartoonsSeasons: FC<RootNavigationProps<'AllSeries'>> = ({
                       cartoon,
                       season: cartoon.animationSeasons[0],
                       episode: item,
+                      title: cartoon.name,
                     })
                   }>
                   <ImageBackground

@@ -737,7 +737,7 @@ const StackNavigation = () => {
           name="CartoonSeasons"
           component={CartoonsSeasons}
           options={({route}) => ({
-            title: route.params.title,
+            title: 'Сезоны',
             headerLeft: () => (isChildrenMode ? null : headerLeft()),
             headerRight: () => (
               <TouchableOpacity onPress={onChildrenMode}>
