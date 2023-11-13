@@ -23,6 +23,7 @@ import BottomSheet from '../../components/BottomSheet';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {getFilm} from '../../redux/thunks/screens/getFilms/GetFilms';
 import Toast from 'react-native-toast-message';
+import { getReviews } from '../../redux/thunks/screens/getReviews/GetReviews';
 
 //mock data
 
