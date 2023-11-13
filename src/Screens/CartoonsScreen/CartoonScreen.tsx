@@ -35,7 +35,14 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
   const dispatch = useAppDispatch();
   const reviews = useAppSelector(state => state.screens.reviews ?? []);
   React.useEffect(() => {
-    dispatch(getReviews({where: {animationId: cartoon?.id}}));
+    dispatch(
+      getReviews({
+        where: {animationId: cartoon?.id},
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    );
   }, []);
 
   // console.log(url);

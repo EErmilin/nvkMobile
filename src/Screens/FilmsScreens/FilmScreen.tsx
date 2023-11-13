@@ -35,6 +35,11 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
   console.log('props');
   console.log(filmRedux);
 
+  const reviews = useAppSelector(state => state.screens.reviews ?? []);
+  React.useEffect(() => {
+    dispatch(getReviews({where: {movieId: filmRedux?.id}}));
+  }, []);
+
   const bottomSheetRef = React.useRef();
   //
   const openModal = () => {
@@ -230,7 +235,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                     name: filmRedux.name,
                     year: filmRedux.date,
                     imageUrl: filmRedux.image?.url,
-                    userVote: filmRedux.userVote,
+                    userVote: reviews,
                     idField: 'movieId',
                   })
                 }
@@ -239,10 +244,8 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
           </Animated.View>
           <ScrollView horizontal>
             <Animated.View style={{flexDirection: 'row', gap: 16}}>
-              {!!filmRedux.userVote?.length ? (
-                filmRedux.userVote.map(item => (
-                  <Review key={item.id} item={item} />
-                ))
+              {!!reviews?.length ? (
+                reviews.map(item => <Review key={item.id} item={item} />)
               ) : (
                 <ActivityIndicator color={colors.colorMain} size={'large'} />
               )}
@@ -256,7 +259,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 name: filmRedux.name,
                 year: filmRedux.date,
                 imageUrl: filmRedux.image?.url,
-                userVote: filmRedux.userVote,
+                userVote: reviews,
                 idField: 'movieId',
               })
             }>

@@ -9,8 +9,9 @@ import {StarIcon} from '../../components/SVGcomponents/StarIcon';
 import {RootNavigationProps} from '../../navigation/types/RootStackTypes';
 import BottomSheet from '../../components/BottomSheet';
 import {useRoute} from '@react-navigation/native';
-import {useAppDispatch} from '../../redux/hooks';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {createReview} from '../../redux/thunks/review/CreateReview';
+import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 
 //dummy data
 
@@ -58,12 +59,24 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
   // const {colors} = useTheme();
   const dispatch = useAppDispatch();
   const route = useRoute();
-  const userVote = route.params?.userVote ?? [];
   const id = route.params?.id!;
   const name = route.params?.name ?? '';
   const year = route.params?.year;
   const imageUrl = route.params?.imageUrl;
   const idField = route.params?.idField;
+
+  const reviews = useAppSelector(state => state.screens.reviews ?? []);
+
+  React.useEffect(() => {
+    dispatch(
+      getReviews({
+        where: {[idField]: id},
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    );
+  }, []);
 
   const bottomSheetRef = React.useRef(null);
 
@@ -93,6 +106,14 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
         vote,
         userId: 1,
         [idField]: id,
+      }),
+    );
+    await dispatch(
+      getReviews({
+        where: {[idField]: id},
+        orderBy: {
+          createdAt: 'desc',
+        },
       }),
     );
     console.log(data);
@@ -142,8 +163,8 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
           <BoldText fontSize={16}>Отзывы пользователей</BoldText>
           {/* Reviews Cards */}
           <View style={{gap: 16}}>
-            {!!userVote?.length && userVote.length > 0 ? (
-              userVote?.map(r => <Review key={r.id} item={r} cardWidth />)
+            {reviews.length > 0 ? (
+              reviews?.map(r => <Review key={r.id} item={r} cardWidth />)
             ) : (
               <ActivityIndicator color={colors.white} size={'large'} />
             )}
