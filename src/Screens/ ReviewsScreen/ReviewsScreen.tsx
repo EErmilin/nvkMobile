@@ -12,6 +12,7 @@ import {useRoute} from '@react-navigation/native';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {createReview} from '../../redux/thunks/review/CreateReview';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
+import { setLogged } from '../../redux/slices/authSlice';
 
 //dummy data
 
@@ -65,6 +66,7 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
   const imageUrl = route.params?.imageUrl;
   const idField = route.params?.idField;
 
+  const userId = useAppSelector(state => state.user.data?.id);
   const reviews = useAppSelector(state => state.screens.reviews ?? []);
 
   React.useEffect(() => {
@@ -81,7 +83,11 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
   const bottomSheetRef = React.useRef(null);
 
   const openModal = () => {
-    bottomSheetRef?.current?.open();
+    if (!userId) {
+      dispatch(setLogged(false));
+    } else {
+      bottomSheetRef?.current?.open();
+    }
   };
 
   const [activeReview, setActiveReview] = useState<number | null>(null);
@@ -100,11 +106,12 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
 
   const onReview = async (comment: string, vote: number) => {
     console.log('CREATE REVIEW');
+    if (!userId) return;
     const data = await dispatch(
       createReview({
         comment,
         vote,
-        userId: 1,
+        userId: userId,
         [idField]: id,
       }),
     );
