@@ -87,7 +87,7 @@ const RankComponent = ({
         keyboardEndCoordinates = event.endCoordinates.height;
         if (translateButton.value === 0) {
           translateButton.value = withTiming(
-            translateButton.value - keyboardEndCoordinates,
+            translateButton.value - keyboardEndCoordinates + 80,
             {
               duration: 200,
             },
@@ -100,7 +100,7 @@ const RankComponent = ({
       'keyboardDidHide',
       () => {
         translateButton.value = withTiming(
-          translateButton.value + keyboardEndCoordinates,
+          translateButton.value + keyboardEndCoordinates - 80,
         );
       },
     );
