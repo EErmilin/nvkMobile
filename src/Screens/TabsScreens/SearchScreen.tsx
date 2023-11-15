@@ -31,6 +31,7 @@ import {
 import {useTheme} from '../../Styles/Styles';
 import {Posts} from '../SearchScreens/Posts';
 import {Tags} from '../SearchScreens/Tags';
+import {Media} from '../SearchScreens/Media';
 
 interface IRenderSceneProps extends SceneRendererProps {
   route: Route;
@@ -46,6 +47,7 @@ export const SearchScreen: React.FC<TabNavigationProps<'Search'>> = ({
   const [routes] = React.useState([
     {key: 'first', title: 'Посты'},
     {key: 'second', title: 'Хэштеги'},
+    {key: 'third', title: 'Медиа'},
   ]);
   const [search, setSearch] = React.useState(searchValue ?? '');
   const listSearch = useAppSelector(state => state.user.listSearch);
@@ -120,6 +122,15 @@ export const SearchScreen: React.FC<TabNavigationProps<'Search'>> = ({
         return (
           <Tags
             key={'TagsScreen'}
+            search={search}
+            activeScreen={index}
+            navigation={navigation}
+          />
+        );
+      case 'third':
+        return (
+          <Media
+            key={'MediaScreen'}
             search={search}
             activeScreen={index}
             navigation={navigation}

@@ -39,8 +39,11 @@ export const POSTS = gql`
       authorId
       author {
         id
-        firstname
-        lastname
+        user {
+          firstname
+          lastname
+        }
+        nickname
         avatar {
           url_512
           url_256

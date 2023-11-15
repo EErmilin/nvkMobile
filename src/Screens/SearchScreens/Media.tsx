@@ -6,6 +6,11 @@ import {
   RefreshControl,
   FlatList,
   Platform,
+  Image,
+  StyleSheet,
+  Dimensions,
+  SectionList,
+  Text,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import {ApolloError} from '@apollo/client';
@@ -23,6 +28,10 @@ import {MusicPlayerContext} from '../../contexts/musicContext';
 import {useAppSelector} from '../../redux/hooks';
 import DeviceInfo from 'react-native-device-info';
 import {PostCell} from '../../components/PostCell';
+import {GET_MOVIES} from '../../gql/query/films/films';
+import {BoldText} from '../../components';
+import {IMedia} from '../../models/Media';
+import {SEARCH_MEDIA} from '../../gql/query/search/search';
 
 const Skeleton = () => {
   const screenWidth = useWindowDimensions().width;
@@ -73,39 +82,53 @@ interface IProps {
   navigation: any; //TabNavigationProps<'Search'>['navigation'];
 }
 
-export const Posts = (props: IProps) => {
+type SectionMedia = {
+  title: string;
+  data: any[];
+};
+
+export const Media = (props: IProps) => {
+  const dimention = Dimensions.get('screen');
   const {navigation, search, activeScreen} = props;
   const screenHeight = useWindowDimensions().height;
-  const [posts, setPosts] = React.useState<IPost[]>([]);
+  const [posts, setPosts] = React.useState<IMedia[]>([]);
+  const [medias, setMedias] = React.useState<SectionMedia[]>([]);
   const screenWidth = useWindowDimensions().width;
   const [loading, setLoading] = React.useState(false);
   const {colors} = useTheme();
   const user = useAppSelector(state => state.user.data);
 
   const refresh = React.useCallback(async () => {
-    if (activeScreen === 0) {
+    if (activeScreen === 2) {
       try {
         setLoading(true);
         const client = await getUpdateClient();
         let response = await client.query({
-          query: POSTS,
+          query: SEARCH_MEDIA,
           variables: {
             search: search,
+            take: 20,
           },
         });
-        // if (search.length > 3) {
-        //   AppMetrica.reportEvent('SEARCH_POSTS', {
-        //     user: user,
-        //     search_posts: search,
-        //     date: new Date(),
-        //     date_string: new Date().toString(),
-        //     platform: Platform.OS,
-        //     device_id: !user ? DeviceInfo.getDeviceId() : undefined,
-        //     app_version: DeviceInfo.getVersion(),
-        //   });
-        // }
 
-        setPosts(response.data.posts);
+        const data: SectionMedia[] = [
+          {
+            title: 'Фильмы',
+            data: response.data.movies ?? [],
+          },
+          {
+            title: 'Мультики',
+            data: response.data.animations ?? [],
+          },
+          {
+            title: 'Сериалы',
+            data: response.data.serials ?? [],
+          },
+        ];
+
+        console.log(response.data);
+        // setPosts(response.data.animations);
+        setMedias(data);
       } catch (e) {
         console.log(e);
         if (e instanceof ApolloError) {
@@ -128,25 +151,66 @@ export const Posts = (props: IProps) => {
 
   return (
     <View style={{flex: 1, backgroundColor: colors.bgSecondary}}>
-      <FlatList
+      <SectionList
         data={posts}
-        numColumns={3}
-        contentContainerStyle={{
-          flex: posts.length > 0 ? 0 : 1,
-          flexGrow: 1,
-        }}
-        keyExtractor={item => item.id.toString()}
+        // numColumns={2}
+        sections={medias}
+        style={{paddingTop: 20, marginHorizontal: 15, marginBottom: 75}}
+        // contentContainerStyle={{
+        //   flex: !!posts?.length && posts.length > 0 ? 0 : 1,
+        //   flexGrow: 1,
+        // }}
+        // columnWrapperStyle={{
+        //   justifyContent: 'space-between',
+        //   marginBottom: 20,
+        // }}
+        keyExtractor={(item, index) => item + `${index}`}
         showsVerticalScrollIndicator={false}
-        renderItem={({item, index}) => (
-          <RenderItem
-            key={'post_' + index.toString()}
-            item={item}
-            size={(screenWidth - 2) / 3}
-            index={index}
-            length={posts.length}
-            navigation={navigation}
-          />
-        )}
+        renderSectionHeader={({section}) => {
+          if (!section.data.length) return null;
+          return (
+            <BoldText fontSize={20} style={{marginBottom: 20}}>
+              {section.title}
+            </BoldText>
+          );
+        }}
+        renderItem={({item, index, section}) => {
+          if (index !== 0) return null;
+          return (
+            <FlatList
+              keyExtractor={(item, index) => item.id}
+              numColumns={2}
+              data={section.data}
+              contentContainerStyle={{
+                flex: !!posts?.length && posts.length > 0 ? 0 : 1,
+                flexGrow: 1,
+              }}
+              columnWrapperStyle={{
+                justifyContent: 'space-between',
+                marginBottom: 20,
+              }}
+              renderItem={({item}) => {
+                return (
+                  <View key={index.toString()}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        //navigation.navigate('BroadcastView', {broadcast: item})
+                      }}
+                      style={{
+                        width: (dimention.width - 45) / 2,
+                      }}>
+                      <Image
+                        style={styles.image}
+                        source={{uri: item.image?.url_512 ?? undefined}}
+                      />
+                      <BoldText>{item.name ?? ''}</BoldText>
+                    </TouchableOpacity>
+                  </View>
+                );
+              }}
+            />
+          );
+        }}
         refreshControl={
           <RefreshControl
             colors={[colors.colorMain]}
@@ -178,36 +242,23 @@ export const Posts = (props: IProps) => {
   );
 };
 
-const RenderItem = (props: {
-  item: IPost;
-  size: number;
-  index: number;
-  navigation: TabNavigationProps<'Search'>['navigation'];
-  length: number;
-}) => {
-  const {item, navigation, index, length} = props;
-  const musicContext = React.useContext(MusicPlayerContext);
-
-  return (
-    <TouchableOpacity
-      style={{
-        marginTop: 0.5,
-        marginBottom:
-          index === length - 1
-            ? musicContext.musicPlayerOption.music !== null
-              ? 120
-              : 70
-            : index % 3 === 0
-            ? 0
-            : 0.5,
-        marginRight: index % 3 === 2 ? 0 : 0.5,
-        marginLeft: index % 3 === 0 ? 0 : 0.5,
-      }}
-      activeOpacity={0.3}
-      onPress={() => {
-        navigation.navigate('NewsView', {post: item});
-      }}>
-      <PostCell post={item} />
-    </TouchableOpacity>
-  );
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  image: {
+    flex: 1,
+    height: 110,
+    marginBottom: 5,
+    borderRadius: 15,
+    backgroundColor: '#eee',
+  },
+  search: {
+    marginTop: 15,
+    marginBottom: 20,
+  },
+  columnWrapperStyle: {
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+});

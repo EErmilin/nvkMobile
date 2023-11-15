@@ -10,9 +10,9 @@ export const GET_MOVIES = gql`
     movies(take: $take, search: $search, where: $where, orderBy: $orderBy) {
       id
       name
-
       image {
         url
+        url_512
       }
       rating {
         id
