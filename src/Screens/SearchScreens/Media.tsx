@@ -84,6 +84,7 @@ interface IProps {
 
 type SectionMedia = {
   title: string;
+  type: 'Film' | 'movies';
   data: any[];
 };
 
@@ -114,6 +115,7 @@ export const Media = (props: IProps) => {
         const data: SectionMedia[] = [
           {
             title: 'Фильмы',
+            type: 'Film',
             data: response.data.movies ?? [],
           },
           {
@@ -174,7 +176,7 @@ export const Media = (props: IProps) => {
             </BoldText>
           );
         }}
-        renderItem={({item, index, section}) => {
+        renderItem={({index, section}) => {
           if (index !== 0) return null;
           return (
             <FlatList
@@ -194,7 +196,11 @@ export const Media = (props: IProps) => {
                   <View key={index.toString()}>
                     <TouchableOpacity
                       onPress={() => {
-                        //navigation.navigate('BroadcastView', {broadcast: item})
+                        navigation.navigate(item.type, {
+                          id: item.id,
+                          title: item.name,
+                          // rating: item.rating,
+                        });
                       }}
                       style={{
                         width: (dimention.width - 45) / 2,
