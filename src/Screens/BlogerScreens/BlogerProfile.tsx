@@ -33,7 +33,7 @@ import {getPosts} from '../../redux/thunks/post/GetPosts';
 
 const {width} = Dimensions.get('screen');
 
-const PhotoRoute = () => {
+const PhotoRoute = ({onTap}: {onTap: (post: IPost) => void}) => {
   const posts =
     useAppSelector(state => state.screens.authorData)?.author?.posts ?? [];
   return (
@@ -43,7 +43,9 @@ const PhotoRoute = () => {
           <BlogerContent_Photo
             key={`s_${index}`}
             post={element}
-            onPress={() => {}}
+            onPress={() => {
+              onTap(element);
+            }}
           />
         ))}
       </View>
@@ -81,7 +83,10 @@ const AudioRoute = () => (
 
 const initialLayout = {width: Dimensions.get('window').width};
 
-const BlogerProfile: FC<RootNavigationProps<'BlogerProfile'>> = ({route}) => {
+const BlogerProfile: FC<RootNavigationProps<'BlogerProfile'>> = ({
+  route,
+  navigation,
+}) => {
   const authorId = route?.params?.id;
   const dispatch = useAppDispatch();
   const showSocialRef = useRef<ShowSocialModalizeHandle>();
@@ -103,7 +108,10 @@ const BlogerProfile: FC<RootNavigationProps<'BlogerProfile'>> = ({route}) => {
   ]);
 
   const renderScene = SceneMap({
-    photo: PhotoRoute,
+    photo: () =>
+      PhotoRoute({
+        onTap: post => navigation.navigate('NewsView', {post: post}),
+      }),
     // video: VideoRoute,
     // audio: AudioRoute,
   });
