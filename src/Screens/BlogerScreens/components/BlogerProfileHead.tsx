@@ -82,6 +82,10 @@ type TSocialInfo = {
 
 const SocialInfo = ({openSocial}: TSocialInfo) => {
   const authorData = useAppSelector(state => state.screens.authorData);
+  const isSubscribe = useMemo(
+    () => authorData?.authorIsSubscribe.isSubscribe,
+    [authorData],
+  );
   const isVisibleSoc = useMemo(
     () =>
       !!authorData?.author?.vk ||
@@ -99,7 +103,10 @@ const SocialInfo = ({openSocial}: TSocialInfo) => {
 
   return (
     <View style={styles.social_wraper}>
-      <Button title="Подписаться" style={styles.social_subscribeButton} />
+      <Button
+        title={isSubscribe ? 'Отписаться' : 'Подписаться'}
+        style={styles.social_subscribeButton}
+      />
 
       {isVisibleSoc && (
         <Button

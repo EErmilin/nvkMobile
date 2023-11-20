@@ -3,6 +3,10 @@ import {IPost} from './Post';
 export interface IAuthorData {
   author: IAuthor;
   authorAggregate: IAuthorAggregate;
+  authorIsSubscribe: IAuthorIsSubscribe;
+}
+export interface IAuthorIsSubscribe {
+  isSubscribe: boolean;
 }
 
 export interface IAuthor {

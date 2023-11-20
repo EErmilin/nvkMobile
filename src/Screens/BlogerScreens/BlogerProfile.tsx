@@ -86,6 +86,7 @@ const BlogerProfile: FC<RootNavigationProps<'BlogerProfile'>> = ({route}) => {
   const dispatch = useAppDispatch();
   const showSocialRef = useRef<ShowSocialModalizeHandle>();
   const authorData = useAppSelector(state => state.screens.authorData);
+  const userId = useAppSelector(state => state.user.data?.id);
 
   const openSocial = () => {
     showSocialRef.current?.open();
@@ -108,7 +109,7 @@ const BlogerProfile: FC<RootNavigationProps<'BlogerProfile'>> = ({route}) => {
   });
 
   useEffect(() => {
-    dispatch(getAuthor({id: authorId})).then(e => {
+    dispatch(getAuthor({id: authorId, userId: userId})).then(e => {
       // setData(e.payload as IAuthor);
       console.log(e);
     });

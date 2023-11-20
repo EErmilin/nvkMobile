@@ -123,8 +123,8 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
           <BoldText
             numberOfLines={1}
             style={{marginLeft: 15, width: screenWidth / 2}}>
-            {route.params.post.author?.firstname ?? ''}{' '}
-            {route.params.post.author?.lastname ?? ''}
+            {route.params.post.author?.user?.firstname ?? ''}{' '}
+            {route.params.post.author?.user?.lastname ?? ''}
           </BoldText>
         </TouchableOpacity>
       </View>
@@ -135,8 +135,8 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
     insets.top,
     navigation,
     route.params.post.author?.avatar?.url_512,
-    route.params.post.author?.firstname,
-    route.params.post.author?.lastname,
+    route.params.post.author?.user?.firstname,
+    route.params.post.author?.user?.lastname,
     screenWidth,
   ]);
 
@@ -348,8 +348,8 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
         <Divider style={{marginTop: 5}} />
         <View style={{marginTop: 20, gap: 10, marginBottom: 40}}>
           <BoldText style={{color: colors.textPrimary}}>
-            Автор: {postView?.author?.firstname ?? ''}{' '}
-            {postView?.author?.lastname ?? ''}
+            Автор: {postView?.author?.user?.firstname ?? ''}{' '}
+            {postView?.author?.user?.lastname ?? ''}
           </BoldText>
         </View>
 

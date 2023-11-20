@@ -7,8 +7,11 @@ export interface IPost {
   published: boolean;
   images: IPostImage[];
   author: {
-    firstname: string;
-    lastname: string;
+    nickname: string;
+    user: {
+      firstname: string;
+      lastname: string;
+    };
     avatar: {
       url_512: string;
       url_256: string;

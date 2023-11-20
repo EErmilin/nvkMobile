@@ -1,11 +1,14 @@
 import {gql} from '@apollo/client';
 
 export const AUTHOR = gql`
-  query GetAuthor($id: Int!) {
+  query GetAuthor($id: Int!, $userId: Int) {
     authorAggregate(authorId: $id) {
       subsCount
       postsCount
       followsCount
+    }
+    authorIsSubscribe(authorId: $id, userId: $userId) {
+      isSubscribe
     }
     author(id: $id) {
       id
@@ -58,6 +61,30 @@ export const AUTHOR = gql`
             url_1536
           }
         }
+      }
+    }
+  }
+`;
+
+export const AUTHOR_SUBSCRIBE = gql`
+  mutation Subscribe($authorId: Int!, $userId: Int!, $isSubscribe: Boolean!) {
+    authorSubscribe(
+      authorId: $authorId
+      userId: $userId
+      isSubscribe: $isSubscribe
+    ) {
+      isSubscribe
+    }
+  }
+`;
+
+export const AUTHOR_SUBSCRIPTIONS = gql`
+  query GetSubscriptions {
+    items: authorSubscriptions(userId: $userId) {
+      id
+      nickname
+      avatar {
+        url: url_512
       }
     }
   }

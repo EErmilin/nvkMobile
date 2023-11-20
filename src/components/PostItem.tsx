@@ -72,8 +72,8 @@ export const PostItem = ({
             url={post.author?.avatar?.url_256}
             style={{marginRight: 15}}
           />
-          <BoldText fontSize={12}>{`${post.author.firstname ?? ''} ${
-            post.author.lastname ?? ''
+          <BoldText fontSize={12}>{`${post.author?.user?.firstname ?? ''} ${
+            post.author?.user?.lastname ?? ''
           }`}</BoldText>
         </View>
       </View>
