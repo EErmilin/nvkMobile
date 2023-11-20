@@ -11,11 +11,12 @@ import {removeFavorite} from '../thunks/favorite/RemoveFavorite';
 import {fetchFavorite} from '../thunks/favorite/GetFavorites';
 import {deleteProfile} from '../thunks/user/DeleteProfile';
 import {updateHashtag, updateUser} from '../thunks/user/UpdateUser';
-import { getFilm, getFilms } from '../thunks/screens/getFilms/GetFilms';
+import {getFilm, getFilms} from '../thunks/screens/getFilms/GetFilms';
 import {getSeasons, getSeries} from '../thunks/screens/getSeries/GetSeries';
 import {getCartoons} from '../thunks/screens/cartoons/GetCartoons';
-import { createReview } from '../thunks/review/CreateReview';
-import { getReviews } from '../thunks/screens/getReviews/GetReviews';
+import {createReview} from '../thunks/review/CreateReview';
+import {getReviews} from '../thunks/screens/getReviews/GetReviews';
+import {getAuthor} from '../thunks/author/GetAuthor';
 
 const initialState: IScreenState = {
   broadcasts: [],
@@ -94,6 +95,11 @@ const screensSlice = createSlice({
       state.review = action.payload;
     });
 
+    builder.addCase(getAuthor.fulfilled, (state, action) => {
+      console.log('getAuthor', action.payload);
+      state.authorData = action.payload;
+    });
+
     builder.addCase(logout.rejected, state => {
       state.broadcasts = [];
       state.musics;
@@ -154,6 +160,6 @@ export const {
   setScreenMusics,
   clearScreensState,
   setScreenSerials,
-  setScreenMovies
+  setScreenMovies,
 } = screensSlice.actions;
 export default screensSlice.reducer;

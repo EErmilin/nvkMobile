@@ -11,6 +11,9 @@ export interface IGetPostArg {
     title?: string;
     published?: boolean;
     content?: string;
+    authorId?: {
+      equals?: number;
+    };
   };
   search?: string;
   cursor?: {

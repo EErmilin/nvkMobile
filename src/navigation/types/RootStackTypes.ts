@@ -17,7 +17,6 @@ export type RootStackParamList = {
   HashtagScreen: undefined;
   CreateBloger: undefined;
   EditBloger: undefined;
-  BlogerProfile: undefined;
   NewsView: {post: IPost};
   Horoscope: undefined;
   Broadcasts: undefined;
@@ -90,6 +89,9 @@ export type RootStackParamList = {
     title: string;
     rating: number;
   };
+  BlogerProfile: {
+    id: number;
+  };
   Series: undefined;
   CurrentSeries: {
     id: number;
@@ -105,7 +107,7 @@ export type RootStackParamList = {
     cartoon: any;
     season: any;
     episode: any;
-    title: string
+    title: string;
   };
   Reviews: {
     name: string;
