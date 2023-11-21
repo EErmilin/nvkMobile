@@ -21,6 +21,7 @@ export const AUTHOR = gql`
       telegram
       odnoklassniki
       youtube
+      websites
 
       posts {
         title
@@ -84,6 +85,7 @@ export const ME_AUTHOR = gql`
       telegram
       odnoklassniki
       youtube
+      websites
     }
   }
 `;
@@ -108,6 +110,22 @@ export const AUTHOR_SUBSCRIPTIONS = gql`
       avatar {
         url: url_512
       }
+    }
+  }
+`;
+
+export const AUTHOR_CREATE = gql`
+  mutation AuthorCreate($createAuthorInput: CreateAuthorInput!) {
+    item: createAuthor(createAuthorInput: $createAuthorInput) {
+      id
+    }
+  }
+`;
+
+export const AUTHOR_UPDATE = gql`
+  mutation AuthorUpdate($updateAuthorInput: UpdateAuthorInput!) {
+    item: updateAuthor(updateAuthorInput: $updateAuthorInput) {
+      id
     }
   }
 `;

@@ -23,8 +23,10 @@ import Telegram_Icon from '../../assets/icons/Telegram_Icon';
 import YouTube_Icon from '../../assets/icons/YouTube_Icon';
 import Odnoklassniki_icon from '../../assets/icons/Odnoklassniki_icon';
 import {TEST_BLOGER_DATA} from './components/tmpData';
-import {useAppSelector} from '../../redux/hooks';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import PlusWithCircle_icon from '../../assets/icons/PlusWithCircle_icon';
+import {authorCreate, authorUpdate} from '../../redux/thunks/author/GetAuthor';
+import {useNavigation} from '@react-navigation/native';
 
 const {width} = Dimensions.get('screen');
 
@@ -39,17 +41,31 @@ const INITIAL_VALUES = {
 };
 
 type TFormProps = {
-  type?: string;
+  type?: 'Edit' | undefined;
 };
 
 const CreateBloger: React.FC<TFormProps> = ({type}) => {
+  const nav = useNavigation();
+  const dispatch = useAppDispatch();
+  const currentAuthor = useAppSelector(state => state.user.author)?.author;
   const {
     control,
     handleSubmit,
     formState: {errors},
     setValue,
   } = useForm({
-    defaultValues: type === 'Edit' ? TEST_BLOGER_DATA : INITIAL_VALUES,
+    defaultValues:
+      type === 'Edit'
+        ? {
+            nik: currentAuthor?.nickname,
+            about: currentAuthor?.description,
+            odnoklassniki: currentAuthor?.odnoklassniki,
+            youTube: currentAuthor?.youtube,
+            vk: currentAuthor?.vk,
+            telegram: currentAuthor?.telegram,
+            sites: currentAuthor?.websites,
+          }
+        : INITIAL_VALUES,
   });
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const {fields, append, remove} = useFieldArray({
@@ -58,14 +74,34 @@ const CreateBloger: React.FC<TFormProps> = ({type}) => {
     name: 'sites',
   });
 
-  useEffect(() => {
-    if (fields.length === 0) {
-      append('');
+  const handleSubmitForm = async (data: any) => {
+    if (type === 'Edit' && !!currentAuthor) {
+      const res = await dispatch(
+        authorUpdate({
+          id: currentAuthor.id,
+          nickname: data.nik,
+          description: data.about,
+          odnoklassniki: data.odnoklassniki,
+          telegram: data.telegram,
+          vk: data.vk,
+          youtube: data.youTube,
+          websites: data.sites,
+        }),
+      );
+    } else {
+      await dispatch(
+        authorCreate({
+          nickname: data.nik,
+          description: data.about,
+          odnoklassniki: data.odnoklassniki,
+          telegram: data.telegram,
+          vk: data.vk,
+          youtube: data.youTube,
+          websites: data.sites,
+        }),
+      );
     }
-  }, []);
-
-  const handleSubmitForm = async (fields: any) => {
-    console.log(fields);
+    nav.goBack();
   };
 
   useEffect(() => {

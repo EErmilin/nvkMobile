@@ -231,17 +231,19 @@ export const AuthProfile: React.FC<{
               </View>
             </Block>
           </ScrollView>
-          <Button
-            title="Стать блогером"
-            icon={<Plus_icon />}
-            mt={15}
-            style={{
-              marginBottom: 14,
-              marginHorizontal: 15,
-              height: 40,
-            }}
-            onPress={createBloderPress}
-          />
+          {!user?.author && (
+            <Button
+              title="Стать блогером"
+              icon={<Plus_icon />}
+              mt={15}
+              style={{
+                marginBottom: 14,
+                marginHorizontal: 15,
+                height: 40,
+              }}
+              onPress={createBloderPress}
+            />
+          )}
         </View>
       </SafeAreaView>
     </View>

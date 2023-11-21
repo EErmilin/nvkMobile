@@ -2,11 +2,13 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 
 import {
   AUTHOR,
+  AUTHOR_CREATE,
   AUTHOR_SUBSCRIBE,
   AUTHOR_SUBSCRIPTIONS,
+  AUTHOR_UPDATE,
   ME_AUTHOR,
 } from '../../../gql/query/author/Author';
-import {IAuthor, IAuthorData} from '../../../models/Author';
+import {IAuthor, IAuthorData, IAuthorInput} from '../../../models/Author';
 import {getUpdateClient} from '../../../requests/updateHeaders';
 import {
   IGetAuthorArg,
@@ -61,3 +63,27 @@ export const getAuthorSubscriptions = createAsyncThunk<
   });
   return response.data.items as IAuthor[];
 });
+
+export const authorCreate = createAsyncThunk<any, IAuthorInput>(
+  'author-create/fetch',
+  async data => {
+    let client = await getUpdateClient();
+    let response = await client.mutate({
+      mutation: AUTHOR_CREATE,
+      variables: data,
+    });
+    return response.data?.item;
+  },
+);
+
+export const authorUpdate = createAsyncThunk<any, IAuthorInput>(
+  'author-update/fetch',
+  async data => {
+    let client = await getUpdateClient();
+    let response = await client.mutate({
+      mutation: AUTHOR_UPDATE,
+      variables: data,
+    });
+    return response.data?.item;
+  },
+);

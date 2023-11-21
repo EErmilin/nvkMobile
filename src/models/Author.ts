@@ -20,6 +20,7 @@ export interface IAuthor {
   telegram?: string;
   odnoklassniki?: string;
   youtube?: string;
+  websites?: string[];
   posts: IPost[];
 }
 
@@ -27,4 +28,15 @@ export interface IAuthorAggregate {
   postsCount: number;
   subsCount: number;
   followsCount: number;
+}
+
+export interface IAuthorInput {
+  id?: number;
+  nickname?: string;
+  description?: string;
+  vk?: string;
+  telegram?: string;
+  odnoklassniki?: string;
+  youtube?: string;
+  websites?: string[];
 }
