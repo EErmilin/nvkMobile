@@ -26,6 +26,7 @@ import {useTheme} from '../../Styles/Styles';
 import Plus_icon from '../../assets/icons/Plus_icon';
 
 export const AuthProfile: React.FC<{
+  subscriptionsPress?: any;
   hashtagPress?: any;
   profilePress?: any;
   createBloderPress?: any;
@@ -37,6 +38,7 @@ export const AuthProfile: React.FC<{
   navigation: TabNavigationProps<'Profile'>['navigation'];
   loading: boolean;
 }> = ({
+  subscriptionsPress,
   hashtagPress,
   profilePress,
   createBloderPress,
@@ -48,8 +50,11 @@ export const AuthProfile: React.FC<{
   const layout = useWindowDimensions();
   const screenWidth = Dimensions.get('screen').width;
   const user = useAppSelector(state => state.user.data);
-  const subscribers = useAppSelector(state => state.user.subscribers);
-  const subscribes = useAppSelector(state => state.user.subscribes);
+  const subscribers =
+    useAppSelector(state => state.user.author)?.authorAggregate?.subsCount ?? 0;
+  const subscribes =
+    useAppSelector(state => state.user.author)?.authorAggregate?.followsCount ??
+    0;
   const {colors, Style} = useTheme();
 
   const CreateBlogerItem = (
@@ -182,6 +187,8 @@ export const AuthProfile: React.FC<{
                 Профиль
               </BoldText>
               <View style={{flex: 1}}>
+                <NavLink text="Мои подписки" onPress={subscriptionsPress} />
+                <Separator mt={15} mb={15} />
                 <NavLink text="Мои хештеги" onPress={hashtagPress} />
                 <Separator mt={15} mb={15} />
                 <NavLink text="Редактировать профиль" onPress={profilePress} />

@@ -66,6 +66,28 @@ export const AUTHOR = gql`
   }
 `;
 
+export const ME_AUTHOR = gql`
+  query GetAuthor($id: Int!) {
+    authorAggregate(authorId: $id) {
+      subsCount
+      postsCount
+      followsCount
+    }
+    author(id: $id) {
+      id
+      nickname
+      avatar {
+        url: url_512
+      }
+      description
+      vk
+      telegram
+      odnoklassniki
+      youtube
+    }
+  }
+`;
+
 export const AUTHOR_SUBSCRIBE = gql`
   mutation Subscribe($authorId: Int!, $userId: Int!, $isSubscribe: Boolean!) {
     authorSubscribe(
@@ -79,7 +101,7 @@ export const AUTHOR_SUBSCRIBE = gql`
 `;
 
 export const AUTHOR_SUBSCRIPTIONS = gql`
-  query GetSubscriptions {
+  query GetSubscriptions($userId: Int!) {
     items: authorSubscriptions(userId: $userId) {
       id
       nickname

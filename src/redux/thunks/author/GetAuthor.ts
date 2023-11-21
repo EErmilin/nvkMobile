@@ -4,6 +4,7 @@ import {
   AUTHOR,
   AUTHOR_SUBSCRIBE,
   AUTHOR_SUBSCRIPTIONS,
+  ME_AUTHOR,
 } from '../../../gql/query/author/Author';
 import {IAuthor, IAuthorData} from '../../../models/Author';
 import {getUpdateClient} from '../../../requests/updateHeaders';
@@ -19,6 +20,18 @@ export const getAuthor = createAsyncThunk<IAuthorData, IGetAuthorArg>(
     let client = await getUpdateClient();
     let response = await client.query({
       query: AUTHOR,
+      variables: data,
+    });
+    return response.data as IAuthorData;
+  },
+);
+
+export const getMeAuthor = createAsyncThunk<IAuthorData, IGetAuthorArg>(
+  'me-author/fetch',
+  async data => {
+    let client = await getUpdateClient();
+    let response = await client.query({
+      query: ME_AUTHOR,
       variables: data,
     });
     return response.data as IAuthorData;

@@ -1,20 +1,25 @@
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 // @ts-ignore
 import AppMetrica from 'react-native-appmetrica-next';
 
-import { UserTypes } from '../types/UserTypes';
-import { createUser } from '../thunks/user/CreateUser';
-import { loginUser } from '../thunks/auth/Login';
-import { logout } from '../thunks/auth/Logout';
-import { updateHashtag, updateUser } from '../thunks/user/UpdateUser';
-import { getProfile } from '../thunks/user/GetProfile';
-import { deleteProfile } from '../thunks/user/DeleteProfile';
-import { Platform } from 'react-native';
+import {UserTypes} from '../types/UserTypes';
+import {createUser} from '../thunks/user/CreateUser';
+import {loginUser} from '../thunks/auth/Login';
+import {logout} from '../thunks/auth/Logout';
+import {updateHashtag, updateUser} from '../thunks/user/UpdateUser';
+import {getProfile} from '../thunks/user/GetProfile';
+import {deleteProfile} from '../thunks/user/DeleteProfile';
+import {Platform} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import { createFavorite } from '../thunks/favorite/CreateFavorite';
-import { removeFavorite } from '../thunks/favorite/RemoveFavorite';
-import { fetchFavorite } from '../thunks/favorite/GetFavorites';
-import { TEST_BLOGER } from '../../Screens/BlogerScreens/components/tmpData';
+import {createFavorite} from '../thunks/favorite/CreateFavorite';
+import {removeFavorite} from '../thunks/favorite/RemoveFavorite';
+import {fetchFavorite} from '../thunks/favorite/GetFavorites';
+import {TEST_BLOGER} from '../../Screens/BlogerScreens/components/tmpData';
+import {
+  getAuthor,
+  getAuthorSubscriptions,
+  getMeAuthor,
+} from '../thunks/author/GetAuthor';
 
 const initialState: UserTypes = {
   data: null,
@@ -22,7 +27,7 @@ const initialState: UserTypes = {
   subscribes: 0,
   listSearch: [],
   hashtags: [],
-  selectedSibscribe: { ...TEST_BLOGER },
+  selectedSibscribe: {...TEST_BLOGER},
 };
 
 const userSlice = createSlice({
@@ -54,7 +59,7 @@ const userSlice = createSlice({
       let temp = state.hashtags.map(hashtag => hashtag.hashtag.name);
       if (!temp.includes(action.payload)) {
         state.hashtags = state.hashtags.concat({
-          hashtag: { name: action.payload, id: 0 },
+          hashtag: {name: action.payload, id: 0},
         });
       }
     },
@@ -149,6 +154,12 @@ const userSlice = createSlice({
         state.listSearch = [];
         state.hashtags = [];
       }
+    });
+    builder.addCase(getMeAuthor.fulfilled, (state, action) => {
+      state.author = action.payload;
+    });
+    builder.addCase(getAuthorSubscriptions.fulfilled, (state, action) => {
+      state.subscriptions = action.payload;
     });
   },
 });

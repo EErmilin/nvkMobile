@@ -99,6 +99,7 @@ import {useSelector} from 'react-redux';
 import NewsComments from '../../Screens/NewsScreen/NewsCommets';
 import FilterScreen from '../../Screens/FilterScreen/FilterScreen';
 import {CartoonsSeasons} from '../../Screens/CartoonsScreen/CartoonsSeasons';
+import {SubscriptionsScreen} from '../../Screens/ProfilesScreen/SubscriptionsScreen';
 
 LogBox.ignoreAllLogs();
 
@@ -419,6 +420,13 @@ const StackNavigation = () => {
           component={HashtagScreen}
           options={() => ({
             title: 'Мои хэштеги',
+          })}
+        />
+        <Stack.Screen
+          name="SubscriptionsScreen"
+          component={SubscriptionsScreen}
+          options={() => ({
+            title: 'Мои подписки',
           })}
         />
         {/* <Stack.Screen

@@ -6,6 +6,11 @@ import {TabNavigationProps} from '../../navigation/types/TabTypes';
 import {setLogged} from '../../redux/slices/authSlice';
 import {useIsFocused} from '@react-navigation/native';
 import {getProfile} from '../../redux/thunks/user/GetProfile';
+import {
+  getAuthor,
+  getAuthorSubscriptions,
+  getMeAuthor,
+} from '../../redux/thunks/author/GetAuthor';
 
 export const ProfileScreen: React.FC<TabNavigationProps<'Profile'>> = ({
   navigation,
@@ -21,6 +26,9 @@ export const ProfileScreen: React.FC<TabNavigationProps<'Profile'>> = ({
       (async function () {
         setLoading(true);
         await dispatch(getProfile());
+        if (!!user?.author?.id)
+          await dispatch(getMeAuthor({id: user?.author?.id}));
+        if (!!user) await dispatch(getAuthorSubscriptions({userId: user.id}));
         setLoading(false);
       })();
     }
@@ -30,11 +38,14 @@ export const ProfileScreen: React.FC<TabNavigationProps<'Profile'>> = ({
     <>
       {user ? (
         <AuthProfile
+          subscriptionsPress={() => navigation.navigate('SubscriptionsScreen')}
           profilePress={() => navigation.navigate('EditProfile')}
           hashtagPress={() => navigation.navigate('HashtagScreen')}
           createBloderPress={() => navigation.navigate('CreateBloger')}
           editBloderPress={() => navigation.navigate('EditBloger')}
-          showBloderPress={() => navigation.navigate('BlogerProfile', {id: 2})}
+          showBloderPress={() =>
+            navigation.navigate('BlogerProfile', {id: user?.author?.id})
+          }
           navigation={navigation}
           loading={loading}
         />

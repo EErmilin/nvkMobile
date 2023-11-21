@@ -15,6 +15,7 @@ export type RootStackParamList = {
   Tabs: undefined;
   EditProfile: undefined;
   HashtagScreen: undefined;
+  SubscriptionsScreen: undefined;
   CreateBloger: undefined;
   EditBloger: undefined;
   NewsView: {post: IPost};

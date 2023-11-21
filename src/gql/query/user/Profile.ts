@@ -21,6 +21,9 @@ export const PROFILE = gql`
         url_256
         id
       }
+      author {
+        id
+      }
     }
   }
 `;
