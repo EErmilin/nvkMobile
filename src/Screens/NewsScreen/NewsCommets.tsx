@@ -11,58 +11,88 @@ import {Containter} from '../../components';
 import NewsCommentCard from '../../components/NewsCommentCard';
 import {colors} from '../../Styles/Styles';
 import SendMessage_icon from '../../assets/icons/SendMessage_icon';
+import {RootNavigationTabProps} from '../../navigation/types/RootStackTypes';
+import {useQuery} from '@apollo/client';
+import {POST_COMMENTS} from '../../gql/query/posts/Post';
+import {IPostComment} from '../../models/Post';
+import {getUpdateClient} from '../../requests/updateHeaders';
+import {useAppSelector} from '../../redux/hooks';
+import {CREATE_POST_COMMENT} from '../../gql/mutation/post/CreatePostComment';
 
 const width = Dimensions.get('window').width;
 
-//mock
-const comments = [
-  {
-    image:
-      'https://cojo.ru/wp-content/uploads/2022/12/mariia-zavgorodniaia-3.webp',
-    name: 'Татьяна Рожина',
-    comment:
-      'Идейные соображения высшего порядка, а также новая модель организационной.',
-    createdAt: '12.09.2023',
-  },
-  {
-    image:
-      'https://meragor.com/files/styles//ava_800_800_wm/sfztn_boy_avatar_1.jpg',
-    name: 'Антон Воробьёв',
-    comment: 'Брово!!',
-    createdAt: '12.09.2023',
-  },
-  {
-    image:
-      'https://n1s2.hsmedia.ru/20/cc/9a/20cc9ac5bad1a9fff282a2ed6f741f42/807x807_0xc0a839a2_8097722801509115373.jpeg',
-    name: 'Mark Starostin',
-    comment:
-      'Приятно, граждане, наблюдать, как элементы политического процесса объединены в целые кластеры себе подобных. Также как повышение уровня гражданского сознания не даёт нам иного выбора, кроме определения соответствующих условий активизации.',
-    createdAt: '12.09.2023',
-  },
-];
+const NewsComments: React.FC<RootNavigationTabProps<'Comments'>> = ({
+  route,
+}) => {
+  const postId = route.params.postId;
+  const {data, refetch} = useQuery<{postComments: IPostComment[]}>(
+    POST_COMMENTS,
+    {
+      variables: {postId},
+    },
+  );
 
-const NewsComments = () => {
+  const [commentText, setCommentText] = React.useState('');
+  const [commentSending, setCommentSending] = React.useState(false);
+  const user = useAppSelector(state => state.user.data);
+
+  const sendComment = React.useCallback(async () => {
+    if (!commentText.trim() || !user) {
+      return;
+    }
+    setCommentSending(true);
+    try {
+      const client = await getUpdateClient();
+      await client.mutate({
+        mutation: CREATE_POST_COMMENT,
+        variables: {
+          createPostCommentInput: {
+            content: commentText,
+            userId: user.id,
+            authorId: user.author?.id,
+            postId,
+          },
+        },
+      });
+
+      await refetch();
+
+      setCommentText('');
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setCommentSending(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [commentText, user, postId]);
+
   return (
     <View style={styles.container}>
       <Containter>
         <FlatList
-          data={comments}
-          renderItem={({item}) => {
-            return <NewsCommentCard commentItem={item} />;
-          }}
+          data={data?.postComments ?? []}
+          renderItem={({item}) => <NewsCommentCard commentItem={item} />}
           ItemSeparatorComponent={DevideCommentsCard}
         />
       </Containter>
-      <View style={styles.textInputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Ваш комментарий"
-          multiline
-        />
-        <TouchableOpacity style={styles.send} activeOpacity={0.7}>
-          <SendMessage_icon />
-        </TouchableOpacity>
-      </View>
+      {user && (
+        <View style={styles.textInputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Ваш комментарий"
+            multiline
+            value={commentText}
+            onChangeText={setCommentText}
+          />
+          <TouchableOpacity
+            style={styles.send}
+            activeOpacity={0.7}
+            disabled={commentSending}
+            onPress={sendComment}>
+            <SendMessage_icon />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

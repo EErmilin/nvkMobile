@@ -115,6 +115,9 @@ export type RootStackParamList = {
   Reviews: {
     name: string;
   };
+  Comments: {
+    postId: number;
+  };
 };
 
 export type RootNavigationProps<T extends keyof RootStackParamList> =

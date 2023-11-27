@@ -129,6 +129,37 @@ export const POST = gql`
           url_1536
         }
       }
+
+      totalComments
+      postComments {
+        createdAt
+        content
+        user {
+          firstname
+          lastname
+          avatar {
+            url_128
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const POST_COMMENTS = gql`
+  query postComments($postId: Int!) {
+    postComments(where: {postId: $postId}, orderBy: {createdAt: desc}) {
+      createdAt
+      content
+      user {
+        firstname
+        lastname
+        avatar {
+          id
+          url_128
+        }
+      }
     }
   }
 `;
