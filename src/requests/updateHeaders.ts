@@ -22,6 +22,7 @@ export const getUpdateClient = async (inToken?: string | null) => {
   let token = await getToken();
 
   const authLink = setContext(async (_, {headers}) => {
+    console.log(_.variables);
     return {
       headers: {
         ...headers,

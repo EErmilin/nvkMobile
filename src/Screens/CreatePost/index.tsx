@@ -6,17 +6,27 @@ import ImageIcon from '../../assets/icons/Image_icon';
 import {ModalPhoto} from '../../components';
 import {useAppSelector} from '../../redux/hooks';
 import {useDispatch} from 'react-redux';
-import {addImage, setText} from '../../redux/slices/createPostSlice';
+import {
+  addImage,
+  setContent,
+  setTitle,
+} from '../../redux/slices/createPostSlice';
 
 export default function CreatePost() {
   const {colors} = useTheme();
   const [modalPhoto, setModalPhoto] = React.useState(false);
-  const text = useAppSelector(state => state.createPost.text);
+  const content = useAppSelector(state => state.createPost.content);
+  const title = useAppSelector(state => state.createPost.title);
   const images = useAppSelector(state => state.createPost.images);
   const dispatch = useDispatch();
 
   const onChangeText = React.useCallback((value: string) => {
-    dispatch(setText(value));
+    dispatch(setContent(value));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onChangeTitle = React.useCallback((value: string) => {
+    dispatch(setTitle(value));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -35,6 +45,27 @@ export default function CreatePost() {
       }}>
       <SafeAreaView
         style={{
+          borderBottomWidth: 1,
+          borderColor: '#0000001A',
+          height: 50,
+        }}>
+        <TextInput
+          placeholder="Заголовок..."
+          onChangeText={onChangeTitle}
+          value={title}
+          style={{
+            textAlignVertical: 'top',
+            fontFamily: 'NotoSans-Regular',
+            fontSize: 14,
+            lineHeight: 24,
+            paddingLeft: 16,
+            paddingRight: 16,
+            flex: 1,
+          }}
+        />
+      </SafeAreaView>
+      <SafeAreaView
+        style={{
           flex: 1,
           borderBottomWidth: 1,
           borderColor: '#0000001A',
@@ -43,7 +74,7 @@ export default function CreatePost() {
           multiline
           placeholder="Напишите что-нибудь..."
           onChangeText={onChangeText}
-          value={text}
+          value={content}
           style={{
             textAlignVertical: 'top',
             fontFamily: 'NotoSans-Regular',

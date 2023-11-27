@@ -103,7 +103,7 @@ import {CartoonsSeasons} from '../../Screens/CartoonsScreen/CartoonsSeasons';
 import {SubscriptionsScreen} from '../../Screens/ProfilesScreen/SubscriptionsScreen';
 import {Main} from '../../Screens/TabsScreens/Main';
 import CreatePost from '../../Screens/CreatePost';
-import {publishPost} from '../../redux/slices/createPostSlice';
+import {publishPost} from '../../redux/thunks/post/PublishPost';
 
 LogBox.ignoreAllLogs();
 
@@ -225,6 +225,7 @@ const StackNavigation = () => {
   const [isChildrenMode, setIsChildrenMode] = React.useState(false);
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const {isOpen} = useSelector(state => state.bottomSheet);
+  const [loading, setLoading] = useState(false);
 
   const insets = useSafeAreaInsets();
   const userId = useAppSelector(state => state.user.data?.id);
@@ -407,8 +408,25 @@ const StackNavigation = () => {
           options={{
             title: 'Создать пост',
             headerRight: () => (
-              <TouchableOpacity onPress={() => dispatch(publishPost())}>
-                <Text style={{color: colors.orange}}>Готово</Text>
+              <TouchableOpacity
+                disabled={loading}
+                onPress={async () => {
+                  setLoading(true);
+                  try {
+                    const res = await dispatch(await publishPost());
+                    if (res.meta.requestStatus === 'fulfilled') {
+                      navigation.goBack();
+                    }
+                  } finally {
+                    setLoading(false);
+                  }
+                }}>
+                <Text
+                  style={{
+                    color: !loading ? colors.orange : colors.secondaryGray,
+                  }}>
+                  {loading ? 'Создание...' : 'Готово'}
+                </Text>
               </TouchableOpacity>
             ),
           }}

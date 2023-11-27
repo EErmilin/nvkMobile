@@ -4,6 +4,8 @@ export type CreatePostImage = {
 };
 
 export interface CreatePostType {
-  text: string;
+  title: string;
+  content: string;
   images: CreatePostImage[];
+  lastId: number;
 }

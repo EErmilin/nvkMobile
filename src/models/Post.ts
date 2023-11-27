@@ -81,3 +81,11 @@ export interface IHashtagPost {
     name: string;
   };
 }
+
+export interface ICreatePostArg {
+  authorId: number;
+  title: string;
+  content?: string;
+  imageIds?: number[];
+  published: boolean;
+}

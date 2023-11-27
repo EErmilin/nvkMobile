@@ -24,6 +24,7 @@ import {MusicPlayerContext} from '../../contexts/musicContext';
 import {getUpdateClient} from '../../requests/updateHeaders';
 import {IGetPostArg} from '../../redux/types/PostTypes';
 import {POSTS} from '../../gql/query/posts/Post';
+import {useAppSelector} from '../../redux/hooks';
 
 const TAKE = 10;
 const ACTIVITY_SIZE = 30;
@@ -39,6 +40,7 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
   const [flag, setFlag] = React.useState(false);
   const musicContext = React.useContext(MusicPlayerContext);
   const [posts, setPosts] = React.useState<IPost[]>([]);
+  const lastId = useAppSelector(state => state.createPost.lastId);
   // const responsePost = React.useCallback(async () => {
   //   console.log({
   //     take: TAKE,
@@ -86,8 +88,6 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
   //   responsePost();
   // }, [responsePost]);
 
-  console.log(props.route.params);
-
   const getPosts = React.useCallback(async () => {
     setLoading(true);
     try {
@@ -123,7 +123,7 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
   React.useEffect(() => {
     getPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [lastId]);
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('state', e => {

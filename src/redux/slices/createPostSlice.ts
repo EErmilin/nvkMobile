@@ -1,35 +1,50 @@
 import {createSlice} from '@reduxjs/toolkit';
+import {publishPost} from '../thunks/post/PublishPost';
 import {CreatePostImage, CreatePostType} from '../types/CreatePostTypes';
 
 const initialState: CreatePostType = {
-  text: '',
+  title: '',
+  content: '',
   images: [],
+  lastId: 0,
 };
 
 const createPostSlice = createSlice({
-  name: 'create-post',
+  name: 'createPost',
   initialState,
   reducers: {
-    setText(
+    setTitle(
       state,
       action: {
         payload: string;
       },
     ) {
-      state.text = action.payload;
+      state.title = action.payload;
+    },
+
+    setContent(
+      state,
+      action: {
+        payload: string;
+      },
+    ) {
+      state.content = action.payload;
     },
 
     addImage(state, action: {payload: CreatePostImage}) {
       state.images = [...state.images, action.payload];
     },
-
-    publishPost(state) {
-      state.text = '';
+  },
+  extraReducers(builder) {
+    builder.addCase(publishPost.fulfilled, (state, action) => {
+      state.title = '';
+      state.content = '';
       state.images = [];
-    },
+      state.lastId = action.payload.id;
+    });
   },
 });
 
-export const {setText, addImage, publishPost} = createPostSlice.actions;
+export const {setTitle, setContent, addImage} = createPostSlice.actions;
 
 export default createPostSlice.reducer;
