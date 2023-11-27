@@ -15,7 +15,6 @@ import {
   useNavigation,
   useNavigationState,
 } from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 
 import {BoldText, VideoFullPlayer} from '../../components';
@@ -98,10 +97,11 @@ import ReviewsScreen from '../../Screens/ ReviewsScreen/ReviewsScreen';
 import {useSelector} from 'react-redux';
 import NewsComments from '../../Screens/NewsScreen/NewsCommets';
 import FilterScreen from '../../Screens/FilterScreen/FilterScreen';
+import {createStackNavigator} from '@react-navigation/stack';
 
 LogBox.ignoreAllLogs();
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<RootStackParamList>();
 const events = [
   Event.PlaybackState,
   Event.PlaybackError,

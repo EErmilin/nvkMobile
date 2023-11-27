@@ -28,7 +28,7 @@ type AppMetricaConfig = {
   // Only iOS
   activationAsSessionStart?: boolean,
   sessionsAutoTracking?: boolean,
-};
+}
 
 type FloorType = 'male' | 'female';
 
@@ -37,12 +37,12 @@ type UserProfileConfig = {
   floor?: FloorType,
   age: number,
   isNotification: boolean,
-};
+}
 
 type PreloadInfo = {
   trackingId: string,
   additionalInfo?: Object,
-};
+}
 
 type Location = {
   latitude: number,
@@ -51,29 +51,30 @@ type Location = {
   accuracy?: number,
   course?: number,
   speed?: number,
-  timestamp?: number,
-};
+  timestamp?: number
+}
 
 type AppMetricaDeviceIdReason = 'UNKNOWN' | 'NETWORK' | 'INVALID_RESPONSE';
 
-const AppMetricaObj = {
+export default {
+
   activate(config: AppMetricaConfig) {
     AppMetrica.activate(config);
   },
 
-  initPush(token = '') {
-    if (Platform.OS === 'android') {
+  initPush(token = ''){
+    if(Platform.OS === 'android') {
       AppMetrica.initPush();
     } else {
       AppMetrica.initPush(token);
     }
   },
 
-  getToken() {
+  getToken(){
     return AppMetrica.getToken();
   },
 
-  reportUserProfile(config: UserProfileConfig) {
+  reportUserProfile(config: UserProfileConfig){
     AppMetrica.reportUserProfile(config);
   },
 
@@ -106,9 +107,7 @@ const AppMetricaObj = {
     AppMetrica.reportReferralUrl(referralUrl);
   },
 
-  requestAppMetricaDeviceID(
-    listener: (deviceId?: String, reason?: AppMetricaDeviceIdReason) => void,
-  ) {
+  requestAppMetricaDeviceID(listener: (deviceId?: String, reason?: AppMetricaDeviceIdReason) => void) {
     AppMetrica.requestAppMetricaDeviceID(listener);
   },
 
@@ -136,23 +135,3 @@ const AppMetricaObj = {
     AppMetrica.setUserProfileID(userProfileID);
   },
 };
-
-const mockedFunction = async (methodName, ...args) => {
-  console.log(`Mocked function called for iOS: ${methodName}`);
-  console.log(`Arguments: ${JSON.stringify(args)}`);
-
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  return Promise.resolve(null);
-};
-
-if (Platform.OS === 'ios') {
-  for (const methodName in AppMetricaObj) {
-    if (typeof AppMetricaObj[methodName] === 'function') {
-      AppMetricaObj[methodName] = (...args) =>
-        mockedFunction(methodName, ...args).catch(err => console.error(err));
-    }
-  }
-}
-
-export default AppMetricaObj;

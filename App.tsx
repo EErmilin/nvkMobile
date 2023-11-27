@@ -18,6 +18,8 @@ import AppMetrica from 'react-native-appmetrica-next';
 import {YANDEX_APPMETRICA_API_KEY} from './src/api/config';
 import {TrackPlayerReset} from './src/services/service';
 
+console.log('appMetrica', AppMetrica);
+
 export default function App() {
   const tempRef = React.useRef(false);
 
