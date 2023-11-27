@@ -1,32 +1,28 @@
+import React, {useEffect, useState} from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
   Dimensions,
   Keyboard,
   KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {BoldText, Button, InputText} from '../../components';
+import {BoldText, Button} from '../../components';
 
-import * as yup from 'yup';
-import {yupResolver} from '@hookform/resolvers/yup';
-import {useForm, useFieldArray} from 'react-hook-form';
+import {useFieldArray, useForm} from 'react-hook-form';
 
-import {InputForm} from '../../components/react-hook-form-fields/InputForm';
-import {colors} from '../../Styles/Styles';
-import VK_Icon from '../../assets/icons/VK_Icon';
-import Plus_icon from '../../assets/icons/Plus_icon';
-import Telegram_Icon from '../../assets/icons/Telegram_Icon';
-import YouTube_Icon from '../../assets/icons/YouTube_Icon';
-import Odnoklassniki_icon from '../../assets/icons/Odnoklassniki_icon';
-import {TEST_BLOGER_DATA} from './components/tmpData';
-import {useAppDispatch, useAppSelector} from '../../redux/hooks';
-import PlusWithCircle_icon from '../../assets/icons/PlusWithCircle_icon';
-import {authorCreate, authorUpdate} from '../../redux/thunks/author/GetAuthor';
 import {useNavigation} from '@react-navigation/native';
+import {colors} from '../../Styles/Styles';
+import Odnoklassniki_icon from '../../assets/icons/Odnoklassniki_icon';
+import PlusWithCircle_icon from '../../assets/icons/PlusWithCircle_icon';
+import Telegram_Icon from '../../assets/icons/Telegram_Icon';
+import VK_Icon from '../../assets/icons/VK_Icon';
+import YouTube_Icon from '../../assets/icons/YouTube_Icon';
+import {InputForm} from '../../components/react-hook-form-fields/InputForm';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {authorCreate, authorUpdate} from '../../redux/thunks/author/GetAuthor';
+import Toast from 'react-native-toast-message';
 
 const {width} = Dimensions.get('screen');
 
@@ -48,6 +44,7 @@ const CreateBloger: React.FC<TFormProps> = ({type}) => {
   const nav = useNavigation();
   const dispatch = useAppDispatch();
   const currentAuthor = useAppSelector(state => state.user.author)?.author;
+  const user = useAppSelector(state => state.user.data);
   const {
     control,
     handleSubmit,
@@ -75,21 +72,34 @@ const CreateBloger: React.FC<TFormProps> = ({type}) => {
   });
 
   const handleSubmitForm = async (data: any) => {
+    if (!user) {
+      Toast.show({type: 'error', text1: 'Вы не авторизованы'});
+      return;
+    }
+    if (!data.nik) {
+      Toast.show({type: 'error', text1: 'Введите ник'});
+      return;
+    }
+    if (!data.about) {
+      Toast.show({type: 'error', text1: 'Введите описание'});
+      return;
+    }
     if (type === 'Edit' && !!currentAuthor) {
       const res = await dispatch(
         authorUpdate({
           id: currentAuthor.id,
-          nickname: data.nik,
           description: data.about,
           odnoklassniki: data.odnoklassniki,
           telegram: data.telegram,
           vk: data.vk,
           youtube: data.youTube,
           websites: data.sites,
+          userId: user?.id,
         }),
       );
+      console.log(JSON.stringify(res, null, 4));
     } else {
-      await dispatch(
+      const res = await dispatch(
         authorCreate({
           nickname: data.nik,
           description: data.about,
@@ -98,8 +108,10 @@ const CreateBloger: React.FC<TFormProps> = ({type}) => {
           vk: data.vk,
           youtube: data.youTube,
           websites: data.sites,
+          userId: user?.id,
         }),
       );
+      console.log(JSON.stringify(res, null, 4));
     }
     nav.goBack();
   };

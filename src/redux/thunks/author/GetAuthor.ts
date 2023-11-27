@@ -70,7 +70,9 @@ export const authorCreate = createAsyncThunk<any, IAuthorInput>(
     let client = await getUpdateClient();
     let response = await client.mutate({
       mutation: AUTHOR_CREATE,
-      variables: data,
+      variables: {
+        data: data,
+      },
     });
     return response.data?.item;
   },
@@ -82,7 +84,9 @@ export const authorUpdate = createAsyncThunk<any, IAuthorInput>(
     let client = await getUpdateClient();
     let response = await client.mutate({
       mutation: AUTHOR_UPDATE,
-      variables: data,
+      variables: {
+        data: data,
+      },
     });
     return response.data?.item;
   },

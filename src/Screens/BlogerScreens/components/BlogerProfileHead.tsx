@@ -106,7 +106,7 @@ const SocialInfo = ({openSocial}: TSocialInfo) => {
     </View>
   );
 
-  const isVisibleSubscribe = user.author?.author.id !== authorData?.author.id;
+  const isVisibleSubscribe = user.author?.author?.id !== authorData?.author?.id;
   const [changingSubscribe, setChangingSubscribe] = useState(false);
   const dispatch = useAppDispatch();
 

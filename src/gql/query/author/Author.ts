@@ -115,16 +115,16 @@ export const AUTHOR_SUBSCRIPTIONS = gql`
 `;
 
 export const AUTHOR_CREATE = gql`
-  mutation AuthorCreate($createAuthorInput: CreateAuthorInput!) {
-    item: createAuthor(createAuthorInput: $createAuthorInput) {
+  mutation AuthorCreate($data: CreateAuthorInput!) {
+    item: createAuthor(createAuthorInput: $data) {
       id
     }
   }
 `;
 
 export const AUTHOR_UPDATE = gql`
-  mutation AuthorUpdate($updateAuthorInput: UpdateAuthorInput!) {
-    item: updateAuthor(updateAuthorInput: $updateAuthorInput) {
+  mutation AuthorUpdate($data: UpdateAuthorInput!) {
+    item: updateAuthor(updateAuthorInput: $data) {
       id
     }
   }

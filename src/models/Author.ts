@@ -33,6 +33,7 @@ export interface IAuthorAggregate {
 export interface IAuthorInput {
   id?: number;
   nickname?: string;
+  userId: number;
   description?: string;
   vk?: string;
   telegram?: string;
