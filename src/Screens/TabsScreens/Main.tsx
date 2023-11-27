@@ -12,16 +12,18 @@ import {
 import {PostItem} from '../../components/PostItem';
 import {useTheme} from '../../Styles/Styles';
 
-import Toast from 'react-native-toast-message';
+// import Toast from 'react-native-toast-message';
 import {TabNavigationProps} from '../../navigation/types/TabTypes';
-import {useAppDispatch, useAppSelector} from '../../redux/hooks';
-import {getPosts} from '../../redux/thunks/post/GetPosts';
-import {ApolloError} from '@apollo/client';
+// import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+// import {getPosts} from '../../redux/thunks/post/GetPosts';
+// import {ApolloError} from '@apollo/client';
 import {IPost} from '../../models/Post';
 import {useIsFocused} from '@react-navigation/native';
 import {MainSkeleton} from '../NewsScreen/MainSkeleton';
 import {MusicPlayerContext} from '../../contexts/musicContext';
-import {clearPosts} from '../../redux/slices/postSlice';
+import {getUpdateClient} from '../../requests/updateHeaders';
+import {IGetPostArg} from '../../redux/types/PostTypes';
+import {POSTS} from '../../gql/query/posts/Post';
 
 const TAKE = 10;
 const ACTIVITY_SIZE = 30;
@@ -29,30 +31,70 @@ const ACTIVITY_SIZE = 30;
 export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
   const {navigation} = props;
   const ref = React.useRef<ScrollView>(null);
-  const postsRedux = useAppSelector(state => state.post.data);
-  const dispatch = useAppDispatch();
+  // const postsRedux = useAppSelector(state => state.post.data);
+  // const dispatch = useAppDispatch();
   const {colors, Style} = useTheme();
   const [loading, setLoading] = React.useState(false);
   const [loadingEnd, setLoadingEnd] = React.useState(false);
   const [flag, setFlag] = React.useState(false);
   const musicContext = React.useContext(MusicPlayerContext);
-  const responsePost = React.useCallback(async () => {
-    console.log({
-      take: TAKE,
-      skip: 0,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      where: props.route.params?.authorId
-        ? {
-            authorId: {equals: props.route.params.authorId},
-          }
-        : undefined,
-    });
+  const [posts, setPosts] = React.useState<IPost[]>([]);
+  // const responsePost = React.useCallback(async () => {
+  //   console.log({
+  //     take: TAKE,
+  //     skip: 0,
+  //     orderBy: {
+  //       createdAt: 'desc',
+  //     },
+  //     where: props.route.params?.authorId
+  //       ? {
+  //           authorId: {equals: props.route.params.authorId},
+  //         }
+  //       : undefined,
+  //   });
+  //   try {
+  //     setLoading(true);
+  //     await dispatch(
+  //       getPosts({
+  //         take: TAKE,
+  //         skip: 0,
+  //         orderBy: {
+  //           createdAt: 'desc',
+  //         },
+  //         where: props.route.params?.authorId
+  //           ? {
+  //               authorId: {equals: props.route.params.authorId},
+  //             }
+  //           : undefined,
+  //       }),
+  //     );
+  //     setLoading(false);
+  //   } catch (e) {
+  //     if (e instanceof ApolloError) {
+  //       Toast.show({
+  //         type: 'error',
+  //         text1: 'Ошибка',
+  //         text2: e.message,
+  //       });
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [dispatch, props]);
+
+  // React.useEffect(() => {
+  //   responsePost();
+  // }, [responsePost]);
+
+  console.log(props.route.params);
+
+  const getPosts = React.useCallback(async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      await dispatch(
-        getPosts({
+      const client = await getUpdateClient();
+      const {data} = await client.query<{posts: IPost[]}, IGetPostArg>({
+        query: POSTS,
+        variables: {
           take: TAKE,
           skip: 0,
           orderBy: {
@@ -63,36 +105,29 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
                 authorId: {equals: props.route.params.authorId},
               }
             : undefined,
-        }),
-      );
-      setLoading(false);
-    } catch (e) {
-      if (e instanceof ApolloError) {
-        Toast.show({
-          type: 'error',
-          text1: 'Ошибка',
-          text2: e.message,
-        });
-      }
+        },
+      });
+      setPosts(data.posts);
     } finally {
       setLoading(false);
     }
-  }, [dispatch, props]);
+  }, [props.route.params?.authorId]);
 
-  React.useEffect(() => {
-    responsePost();
-  }, [responsePost]);
-
-  const getSortedData = () => {
-    let temp = [...postsRedux];
+  const sortedPosts = React.useMemo(() => {
+    let temp = [...posts];
     return temp.sort(function (a, b) {
       return new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf();
     });
-  };
+  }, [posts]);
+
+  React.useEffect(() => {
+    getPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('state', e => {
-      if (flag && e.data.state.index === 1 && postsRedux.length) {
+      if (flag && e.data.state.index === 1 && posts.length) {
         ref.current?.scrollTo({
           y: 0,
           animated: true,
@@ -106,7 +141,7 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
     });
 
     return unsubscribe;
-  }, [flag, navigation, postsRedux.length]);
+  }, [flag, navigation, posts.length]);
 
   const [position, setPosition] = React.useState<number | null>(null);
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -126,10 +161,12 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
         (async () => {
           try {
             setLoadingEnd(true);
-            await dispatch(
-              getPosts({
+            const client = await getUpdateClient();
+            const {data} = await client.query<{posts: IPost[]}, IGetPostArg>({
+              query: POSTS,
+              variables: {
                 take: TAKE,
-                skip: getSortedData().length,
+                skip: sortedPosts.length,
                 orderBy: {
                   createdAt: 'desc',
                 },
@@ -138,8 +175,17 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
                       authorId: {equals: props.route.params.authorId},
                     }
                   : undefined,
-              }),
-            ).then(res => (payloadPost = res.payload));
+              },
+            });
+
+            setPosts(value => {
+              const ids: Record<number, boolean> = {};
+              for (const p of value) {
+                ids[p.id] = true;
+              }
+
+              return [...value, ...data.posts.filter(p => !ids[p.id])];
+            });
           } catch (e) {
             console.log(e);
           } finally {
@@ -155,7 +201,7 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
         })();
     }
   };
-  if (!getSortedData().length && loading) {
+  if (!sortedPosts.length && loading) {
     return (
       <View style={{flex: 1, backgroundColor: colors.fillPrimary}}>
         <SafeAreaView />
@@ -209,11 +255,11 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
               refreshing={loading}
               onRefresh={() => {
                 setLoading(true);
-                responsePost();
+                getPosts();
               }}
             />
           }>
-          {getSortedData().map(item => {
+          {sortedPosts.map(item => {
             return (
               <RenderItem
                 key={item.id.toString()}

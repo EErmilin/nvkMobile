@@ -6,6 +6,7 @@ import {
   PermissionsAndroid,
   Platform,
   StatusBar,
+  Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
@@ -18,7 +19,7 @@ import {
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 
-import {BoldText, VideoFullPlayer} from '../../components';
+import {BoldText, Button, VideoFullPlayer} from '../../components';
 import {ArrowLeft} from '../../components/SVGcomponents';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {useTheme} from '../../Styles/Styles';
@@ -101,6 +102,8 @@ import FilterScreen from '../../Screens/FilterScreen/FilterScreen';
 import {CartoonsSeasons} from '../../Screens/CartoonsScreen/CartoonsSeasons';
 import {SubscriptionsScreen} from '../../Screens/ProfilesScreen/SubscriptionsScreen';
 import {Main} from '../../Screens/TabsScreens/Main';
+import CreatePost from '../../Screens/CreatePost';
+import {publishPost} from '../../redux/slices/createPostSlice';
 
 LogBox.ignoreAllLogs();
 
@@ -390,6 +393,24 @@ const StackNavigation = () => {
           component={Main}
           options={{
             title: 'Мои посты',
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('CreatePost')}>
+                <Text style={{color: colors.orange}}>Создать пост</Text>
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="CreatePost"
+          component={CreatePost}
+          options={{
+            title: 'Создать пост',
+            headerRight: () => (
+              <TouchableOpacity onPress={() => dispatch(publishPost())}>
+                <Text style={{color: colors.orange}}>Готово</Text>
+              </TouchableOpacity>
+            ),
           }}
         />
         <Stack.Screen

@@ -14,6 +14,7 @@ import {FilterType} from '../../gql/query/filters/filters';
 export type RootStackParamList = {
   Tabs: undefined;
   MyPosts: TabParamList['Main'];
+  CreatePost: undefined;
   EditProfile: undefined;
   HashtagScreen: undefined;
   SubscriptionsScreen: undefined;
