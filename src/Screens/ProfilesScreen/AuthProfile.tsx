@@ -52,6 +52,7 @@ export const AuthProfile: React.FC<{
   const layout = useWindowDimensions();
   const screenWidth = Dimensions.get('screen').width;
   const user = useAppSelector(state => state.user.data);
+  const isAuthor = !!user?.author;
   const subscribers =
     useAppSelector(state => state.user.author)?.authorAggregate?.subsCount ?? 0;
   const subscribes =
@@ -189,20 +190,35 @@ export const AuthProfile: React.FC<{
                 Профиль
               </BoldText>
               <View style={{flex: 1}}>
-                <NavLink text="Мои посты" onPress={myPostsPress} />
-                <Separator mt={15} mb={15} />
+                {isAuthor && (
+                  <>
+                    <NavLink text="Мои посты" onPress={myPostsPress} />
+                    <Separator mt={15} mb={15} />
+                  </>
+                )}
                 <NavLink text="Мои подписки" onPress={subscriptionsPress} />
                 <Separator mt={15} mb={15} />
                 <NavLink text="Мои хэштеги" onPress={hashtagPress} />
                 <Separator mt={15} mb={15} />
                 <NavLink text="Редактировать профиль" onPress={profilePress} />
-                <Separator mt={15} mb={15} />
-                <NavLink
-                  text="Редактировать данные блогера"
-                  onPress={editBloderPress}
-                />
-                <Separator mt={15} mb={15} />
-                <NavLink text="Посмотреть блогера" onPress={showBloderPress} />
+                {isAuthor && (
+                  <>
+                    <Separator mt={15} mb={15} />
+                    <NavLink
+                      text="Редактировать данные блогера"
+                      onPress={editBloderPress}
+                    />
+                  </>
+                )}
+                {isAuthor && (
+                  <>
+                    <Separator mt={15} mb={15} />
+                    <NavLink
+                      text="Посмотреть блогера"
+                      onPress={showBloderPress}
+                    />
+                  </>
+                )}
               </View>
             </Block>
             <Block>
