@@ -37,6 +37,7 @@ export const AuthProfile: React.FC<{
   editBloderPress?: any;
   navigation: TabNavigationProps<'Profile'>['navigation'];
   loading: boolean;
+  myPostsPress: () => void;
 }> = ({
   subscriptionsPress,
   hashtagPress,
@@ -46,6 +47,7 @@ export const AuthProfile: React.FC<{
   editBloderPress,
   navigation,
   loading,
+  myPostsPress,
 }) => {
   const layout = useWindowDimensions();
   const screenWidth = Dimensions.get('screen').width;
@@ -187,9 +189,11 @@ export const AuthProfile: React.FC<{
                 Профиль
               </BoldText>
               <View style={{flex: 1}}>
+                <NavLink text="Мои посты" onPress={myPostsPress} />
+                <Separator mt={15} mb={15} />
                 <NavLink text="Мои подписки" onPress={subscriptionsPress} />
                 <Separator mt={15} mb={15} />
-                <NavLink text="Мои хештеги" onPress={hashtagPress} />
+                <NavLink text="Мои хэштеги" onPress={hashtagPress} />
                 <Separator mt={15} mb={15} />
                 <NavLink text="Редактировать профиль" onPress={profilePress} />
                 <Separator mt={15} mb={15} />

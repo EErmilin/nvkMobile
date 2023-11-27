@@ -1,11 +1,15 @@
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
-import React, {useMemo, useRef, useState} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import FastImage from 'react-native-fast-image';
 import {Button} from '../../../components';
 import TextWithMore from '../../../components/TextWithMore';
 import DropDown_Icon from '../../../assets/icons/DropDown_Icon';
 import {ShowSocialModalizeHandle} from './ShowSocialModal';
-import {useAppSelector} from '../../../redux/hooks';
+import {useAppDispatch, useAppSelector} from '../../../redux/hooks';
+import {getUpdateClient} from '../../../requests/updateHeaders';
+import {CHANGE_SUBSCRIBE} from '../../../gql/mutation/user/ChangeSubscribe';
+import {ISubscribeArg} from '../../../redux/types/AuthorTypes';
+import {setIsSubscribe} from '../../../redux/slices/screensSlice';
 
 const {width} = Dimensions.get('screen');
 
@@ -82,6 +86,7 @@ type TSocialInfo = {
 
 const SocialInfo = ({openSocial}: TSocialInfo) => {
   const authorData = useAppSelector(state => state.screens.authorData);
+  const user = useAppSelector(state => state.user);
   const isSubscribe = useMemo(
     () => authorData?.authorIsSubscribe.isSubscribe,
     [authorData],
@@ -101,12 +106,40 @@ const SocialInfo = ({openSocial}: TSocialInfo) => {
     </View>
   );
 
+  const isVisibleSubscribe = user.author?.author.id !== authorData?.author.id;
+  const [changingSubscribe, setChangingSubscribe] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const onChangeSubscribe = useCallback(async () => {
+    setChangingSubscribe(true);
+    try {
+      const client = await getUpdateClient();
+      client.mutate<{}, ISubscribeArg>({
+        mutation: CHANGE_SUBSCRIBE,
+        variables: {
+          authorId: authorData?.author.id as number,
+          userId: user.data?.id as number,
+          isSubscribe: !isSubscribe,
+        },
+      });
+      dispatch(setIsSubscribe({isSubscribe: !isSubscribe}));
+    } finally {
+      setChangingSubscribe(false);
+    }
+  }, [isSubscribe, authorData, user]);
+
   return (
     <View style={styles.social_wraper}>
-      <Button
-        title={isSubscribe ? 'Отписаться' : 'Подписаться'}
-        style={styles.social_subscribeButton}
-      />
+      {isVisibleSubscribe ? (
+        <Button
+          title={isSubscribe ? 'Отписаться' : 'Подписаться'}
+          style={styles.social_subscribeButton}
+          onPress={onChangeSubscribe}
+          loading={changingSubscribe}
+        />
+      ) : (
+        <View />
+      )}
 
       {isVisibleSoc && (
         <Button

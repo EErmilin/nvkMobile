@@ -26,9 +26,12 @@ export const ProfileScreen: React.FC<TabNavigationProps<'Profile'>> = ({
       (async function () {
         setLoading(true);
         await dispatch(getProfile());
-        if (!!user?.author?.id)
+        if (user?.author?.id) {
           await dispatch(getMeAuthor({id: user?.author?.id}));
-        if (!!user) await dispatch(getAuthorSubscriptions({userId: user.id}));
+        }
+        if (user) {
+          await dispatch(getAuthorSubscriptions({userId: user.id}));
+        }
         setLoading(false);
       })();
     }
@@ -45,6 +48,9 @@ export const ProfileScreen: React.FC<TabNavigationProps<'Profile'>> = ({
           editBloderPress={() => navigation.navigate('EditBloger')}
           showBloderPress={() =>
             navigation.navigate('BlogerProfile', {id: user?.author?.id})
+          }
+          myPostsPress={() =>
+            navigation.navigate('MyPosts', {authorId: user?.author?.id})
           }
           navigation={navigation}
           loading={loading}

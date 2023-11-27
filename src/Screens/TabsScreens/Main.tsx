@@ -21,6 +21,7 @@ import {IPost} from '../../models/Post';
 import {useIsFocused} from '@react-navigation/native';
 import {MainSkeleton} from '../NewsScreen/MainSkeleton';
 import {MusicPlayerContext} from '../../contexts/musicContext';
+import {clearPosts} from '../../redux/slices/postSlice';
 
 const TAKE = 10;
 const ACTIVITY_SIZE = 30;
@@ -36,6 +37,18 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
   const [flag, setFlag] = React.useState(false);
   const musicContext = React.useContext(MusicPlayerContext);
   const responsePost = React.useCallback(async () => {
+    console.log({
+      take: TAKE,
+      skip: 0,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: props.route.params?.authorId
+        ? {
+            authorId: {equals: props.route.params.authorId},
+          }
+        : undefined,
+    });
     try {
       setLoading(true);
       await dispatch(
@@ -45,6 +58,11 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
           orderBy: {
             createdAt: 'desc',
           },
+          where: props.route.params?.authorId
+            ? {
+                authorId: {equals: props.route.params.authorId},
+              }
+            : undefined,
         }),
       );
       setLoading(false);
@@ -59,7 +77,7 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
     } finally {
       setLoading(false);
     }
-  }, [dispatch]);
+  }, [dispatch, props]);
 
   React.useEffect(() => {
     responsePost();
@@ -115,6 +133,11 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
                 orderBy: {
                   createdAt: 'desc',
                 },
+                where: props.route.params?.authorId
+                  ? {
+                      authorId: {equals: props.route.params.authorId},
+                    }
+                  : undefined,
               }),
             ).then(res => (payloadPost = res.payload));
           } catch (e) {

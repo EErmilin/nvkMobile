@@ -17,6 +17,7 @@ import {getCartoons} from '../thunks/screens/cartoons/GetCartoons';
 import {createReview} from '../thunks/review/CreateReview';
 import {getReviews} from '../thunks/screens/getReviews/GetReviews';
 import {getAuthor} from '../thunks/author/GetAuthor';
+import {IAuthorIsSubscribe} from '../../models/Author';
 
 const initialState: IScreenState = {
   broadcasts: [],
@@ -55,6 +56,14 @@ const screensSlice = createSlice({
       state.broadcasts = [];
       state.musics = null;
       state.podcasts = [];
+    },
+    setIsSubscribe: (state, action: {payload: IAuthorIsSubscribe}) => {
+      if (state.authorData?.authorIsSubscribe) {
+        state.authorData.authorIsSubscribe = action.payload;
+      }
+    },
+    clearAuthorScreen: state => {
+      state.authorData = undefined;
     },
   },
   extraReducers: builder => {
@@ -161,5 +170,7 @@ export const {
   clearScreensState,
   setScreenSerials,
   setScreenMovies,
+  setIsSubscribe,
+  clearAuthorScreen,
 } = screensSlice.actions;
 export default screensSlice.reducer;

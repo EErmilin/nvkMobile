@@ -30,6 +30,7 @@ import {getAuthor} from '../../redux/thunks/author/GetAuthor';
 import {IAuthor} from '../../models/Author';
 import {IPost} from '../../models/Post';
 import {getPosts} from '../../redux/thunks/post/GetPosts';
+import {clearAuthorScreen} from '../../redux/slices/screensSlice';
 
 const {width} = Dimensions.get('screen');
 
@@ -126,6 +127,12 @@ const BlogerProfile: FC<RootNavigationProps<'BlogerProfile'>> = ({
   const renderTabBar = () => (
     <BlogerContentTabBar tabs={tabs} activeTab={index} goToPage={setIndex} />
   );
+
+  useEffect(() => {
+    () => {
+      dispatch(clearAuthorScreen());
+    };
+  }, []);
 
   return (
     <View style={styles.container}>

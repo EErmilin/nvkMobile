@@ -66,16 +66,21 @@ export const PostItem = ({
           marginBottom: 15,
           marginHorizontal: 15,
         }}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Avatar
-            size={45}
-            url={post.author?.avatar?.url_256}
-            style={{marginRight: 15}}
-          />
-          <BoldText fontSize={12}>{`${post.author?.user?.firstname ?? ''} ${
-            post.author?.user?.lastname ?? ''
-          }`}</BoldText>
-        </View>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('BlogerProfile', {
+              id: post.authorId,
+            })
+          }>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Avatar
+              size={45}
+              url={post.author?.avatar?.url_256}
+              style={{marginRight: 15}}
+            />
+            <BoldText fontSize={12}>{post.author.nickname}</BoldText>
+          </View>
+        </TouchableOpacity>
       </View>
       <RenderContent inSight={inSight} post={post} navigation={navigation} />
       <TouchableOpacity

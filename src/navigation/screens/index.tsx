@@ -100,6 +100,7 @@ import NewsComments from '../../Screens/NewsScreen/NewsCommets';
 import FilterScreen from '../../Screens/FilterScreen/FilterScreen';
 import {CartoonsSeasons} from '../../Screens/CartoonsScreen/CartoonsSeasons';
 import {SubscriptionsScreen} from '../../Screens/ProfilesScreen/SubscriptionsScreen';
+import {Main} from '../../Screens/TabsScreens/Main';
 
 LogBox.ignoreAllLogs();
 
@@ -383,6 +384,13 @@ const StackNavigation = () => {
           name="Tabs"
           component={TabNavigation}
           options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="MyPosts"
+          component={Main}
+          options={{
+            title: 'Мои посты',
+          }}
         />
         <Stack.Screen
           name="Region"
