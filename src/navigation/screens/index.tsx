@@ -6,6 +6,7 @@ import {
   PermissionsAndroid,
   Platform,
   StatusBar,
+  Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
@@ -17,7 +18,7 @@ import {
 } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 
-import {BoldText, VideoFullPlayer} from '../../components';
+import {BoldText, Button, VideoFullPlayer} from '../../components';
 import {ArrowLeft} from '../../components/SVGcomponents';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {useTheme} from '../../Styles/Styles';
@@ -97,11 +98,16 @@ import ReviewsScreen from '../../Screens/ ReviewsScreen/ReviewsScreen';
 import {useSelector} from 'react-redux';
 import NewsComments from '../../Screens/NewsScreen/NewsCommets';
 import FilterScreen from '../../Screens/FilterScreen/FilterScreen';
-import {createStackNavigator} from '@react-navigation/stack';
+import {CartoonsSeasons} from '../../Screens/CartoonsScreen/CartoonsSeasons';
+import {SubscriptionsScreen} from '../../Screens/ProfilesScreen/SubscriptionsScreen';
+import {Main} from '../../Screens/TabsScreens/Main';
+import CreatePost from '../../Screens/CreatePost';
+import {publishPost} from '../../redux/thunks/post/PublishPost';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 LogBox.ignoreAllLogs();
 
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 const events = [
   Event.PlaybackState,
   Event.PlaybackError,
@@ -219,6 +225,7 @@ const StackNavigation = () => {
   const [isChildrenMode, setIsChildrenMode] = React.useState(false);
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
   const {isOpen} = useSelector(state => state.bottomSheet);
+  const [loading, setLoading] = useState(false);
 
   const insets = useSafeAreaInsets();
   const userId = useAppSelector(state => state.user.data?.id);
@@ -383,6 +390,48 @@ const StackNavigation = () => {
           options={{headerShown: false}}
         />
         <Stack.Screen
+          name="MyPosts"
+          component={Main}
+          options={{
+            title: 'Мои посты',
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('CreatePost')}>
+                <Text style={{color: colors.orange}}>Создать пост</Text>
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="CreatePost"
+          component={CreatePost}
+          options={{
+            title: 'Создать пост',
+            headerRight: () => (
+              <TouchableOpacity
+                disabled={loading}
+                onPress={async () => {
+                  setLoading(true);
+                  try {
+                    const res = await dispatch(await publishPost());
+                    if (res.meta.requestStatus === 'fulfilled') {
+                      navigation.goBack();
+                    }
+                  } finally {
+                    setLoading(false);
+                  }
+                }}>
+                <Text
+                  style={{
+                    color: !loading ? colors.orange : colors.secondaryGray,
+                  }}>
+                  {loading ? 'Создание...' : 'Готово'}
+                </Text>
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
           name="Region"
           component={Region}
           options={{
@@ -418,6 +467,13 @@ const StackNavigation = () => {
           component={HashtagScreen}
           options={() => ({
             title: 'Мои хэштеги',
+          })}
+        />
+        <Stack.Screen
+          name="SubscriptionsScreen"
+          component={SubscriptionsScreen}
+          options={() => ({
+            title: 'Мои подписки',
           })}
         />
         {/* <Stack.Screen
@@ -731,6 +787,21 @@ const StackNavigation = () => {
             ),
             headerStyle: {backgroundColor: colors.fillPrimary},
           }}
+        />
+        <Stack.Screen
+          name="CartoonSeasons"
+          component={CartoonsSeasons}
+          options={({route}) => ({
+            title: 'Сезоны',
+            headerLeft: () => (isChildrenMode ? null : headerLeft()),
+            headerRight: () => (
+              <TouchableOpacity onPress={onChildrenMode}>
+                <Rating disabled={isChildrenMode} rating={'Детский'} lock />
+              </TouchableOpacity>
+            ),
+            headerStyle: {backgroundColor: colors.fillPrimary},
+            headerShown: isOpen,
+          })}
         />
         <Stack.Screen
           name="Cartoon"

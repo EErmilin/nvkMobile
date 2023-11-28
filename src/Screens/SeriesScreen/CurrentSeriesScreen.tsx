@@ -18,8 +18,10 @@ import WebView from 'react-native-webview';
 import {ArrowRight} from '../../components/SVGcomponents';
 import {Review} from '../../components/Review';
 import MediumText from '../../components/MediumText';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import BottomSheet from '../../components/BottomSheet';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 
 //mock data
 const data = [1];
@@ -68,17 +70,30 @@ export const CurrentSeriesScreen: FC<
   const {colors} = useTheme();
   const navigation = useNavigation();
   const bottomSheetRef = React.useRef(null);
+  const routes = useRoute();
+  const {serialData, url, content} = routes.params;
+  const dispatch = useAppDispatch();
+  const reviews = useAppSelector(state => state.screens.reviews);
+  React.useEffect(() => {
+    dispatch(getReviews({where: {seriesId: serialData.series?.id}}));
+  }, []);
 
   const openModal = () => {
     bottomSheetRef?.current?.open();
   };
 
+  console.log(serialData?.series);
   return (
     <SafeAreaView style={styles.container}>
       <BottomSheet name={'serial'} ref={bottomSheetRef} />
       <ScrollView>
         {data.length ? (
-          <VideoPlayer urls={{url: '', hls: []}} />
+          <VideoPlayer
+            urls={{
+              url: url,
+              hls: [],
+            }}
+          />
         ) : (
           <ActivityIndicator color={colors.colorMain} size={'large'} />
         )}
@@ -88,9 +103,9 @@ export const CurrentSeriesScreen: FC<
               style={{justifyContent: 'space-between', flexDirection: 'row'}}>
               <Animated.View
                 style={{gap: 5, flexDirection: 'row', alignItems: 'center'}}>
-                <BoldText fontSize={18}>{item.name}</BoldText>
+                <BoldText fontSize={18}>{serialData?.series.name}</BoldText>
                 <RegularText style={{color: colors.textSecondary}}>
-                  {item.age}
+                  {serialData?.series.age} +
                 </RegularText>
               </Animated.View>
               <TouchableOpacity>
@@ -99,22 +114,23 @@ export const CurrentSeriesScreen: FC<
                 </Animated.View>
               </TouchableOpacity>
             </Animated.View>
-            <MediumText>{`${item.season} сезон. ${item.series} серия`}</MediumText>
+            <MediumText>{`${serialData.name} ${item.series} серия`}</MediumText>
 
             <Animated.View
               style={{gap: 10, flexDirection: 'row', alignItems: 'center'}}>
               <ClockIcon color={colors.colorMain} />
-              <RegularText>{item.time}</RegularText>
+              <RegularText>{serialData?.series.duration} минут</RegularText>
               <RegularText style={{color: colors.colorMain}}>/</RegularText>
-              <RegularText>{item.genre}</RegularText>
+              <RegularText>{serialData?.series.genre}</RegularText>
             </Animated.View>
             <Animated.View>
               <RegularText style={{color: colors.textSecondary}}>
-                {item.year} / {item.country} / {item.views}
+                {serialData?.series.date} / {serialData?.series.country} /{' '}
+                {item.views}
               </RegularText>
             </Animated.View>
           </Animated.View>
-          <Animated.View style={{flexDirection: 'row', gap: 15}}>
+          {/* <Animated.View style={{flexDirection: 'row', gap: 15}}>
             <TouchableOpacity style={styles.btn}>
               <MediumText style={styles.textColor}>Смотреть</MediumText>
               <MediumText style={styles.textColor} fontSize={12}>
@@ -132,7 +148,7 @@ export const CurrentSeriesScreen: FC<
               </MediumText>
               <ViewedIcon color={colors.colorMain} />
             </TouchableOpacity>
-          </Animated.View>
+          </Animated.View> */}
           <Animated.View
             style={{
               borderBottomColor: colors.borderPrimary,
@@ -141,10 +157,10 @@ export const CurrentSeriesScreen: FC<
           />
           <Animated.View style={{gap: 20}}>
             <BoldText fontSize={16}>О сериале</BoldText>
-            <MediumText>{item.description}</MediumText>
+            <MediumText>{content}</MediumText>
           </Animated.View>
           <Animated.View>
-            <BoldText fontSize={16}>Трейлер</BoldText>
+            {/* <BoldText fontSize={16}>Трейлер</BoldText> */}
             {/*<WebView*/}
             {/*    style={{flex: 1}}*/}
             {/*    javaScriptEnabled={true}*/}
@@ -155,14 +171,16 @@ export const CurrentSeriesScreen: FC<
             {/*    // source={{ uri: "https://www.youtube.com/embed/-ZZPOXn6_9w" }}*/}
             {/*/>*/}
           </Animated.View>
-          <Animated.View>
+          {/* <Animated.View>
             <BoldText fontSize={16}>{item.name}</BoldText>
             <MediumText>1 february 2021</MediumText>
-          </Animated.View>
+          </Animated.View> */}
           <Animated.View style={styles.flexBetween}>
             <MediumText>Языки</MediumText>
             <TouchableOpacity style={styles.smallBtn}>
-              <MediumText style={styles.textColor}>Якуцкий</MediumText>
+              <MediumText style={styles.textColor}>
+                {serialData?.series.language}
+              </MediumText>
             </TouchableOpacity>
           </Animated.View>
           <Animated.View
@@ -171,12 +189,12 @@ export const CurrentSeriesScreen: FC<
               borderBottomWidth: StyleSheet.hairlineWidth,
             }}
           />
-          <Animated.View style={styles.flexBetween}>
+          {/* <Animated.View style={styles.flexBetween}>
             <MediumText>Субтитры</MediumText>
             <TouchableOpacity style={styles.smallBtn}>
               <MediumText style={styles.textColor}>Русские</MediumText>
             </TouchableOpacity>
-          </Animated.View>
+          </Animated.View> */}
           <Animated.View style={styles.box}>
             <Animated.View style={styles.flexBetween}>
               <Animated.View style={{flexDirection: 'row', gap: 15}}>
@@ -203,18 +221,25 @@ export const CurrentSeriesScreen: FC<
             <BoldText fontSize={16}>Отзывы</BoldText>
             <Animated.View
               style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
-              <BoldText fontSize={16}>{item.reviews_nbk.toString()}</BoldText>
+              <BoldText fontSize={16}>{reviews?.length ?? 0}</BoldText>
               <ArrowRight
                 onPress={() =>
-                  navigation.navigate('Reviews', {name: item.name})
+                  navigation.navigate('Reviews', {
+                    id: serialData?.series?.id,
+                    name: serialData?.series?.name,
+                    year: serialData?.series?.date,
+                    imageUrl: serialData?.series?.image?.url,
+                    userVote: reviews,
+                    idField: 'seriesId',
+                  })
                 }
               />
             </Animated.View>
           </Animated.View>
           <ScrollView horizontal>
             <Animated.View style={{flexDirection: 'row', gap: 16}}>
-              {item.reviews.length ? (
-                item.reviews.map(item => <Review key={item.id} item={item} />)
+              {!!reviews?.length ? (
+                reviews?.map(item => <Review key={item.id} item={item} />)
               ) : (
                 <ActivityIndicator color={colors.colorMain} size={'large'} />
               )}
@@ -222,7 +247,16 @@ export const CurrentSeriesScreen: FC<
           </ScrollView>
           <TouchableOpacity
             style={[styles.smallBtn, {borderRadius: 42}]}
-            onPress={() => navigation.navigate('Reviews', {name: item.name})}>
+            onPress={() => {
+              navigation.navigate('Reviews', {
+                id: serialData?.series?.id,
+                name: serialData?.series?.name,
+                year: serialData?.series?.date,
+                imageUrl: serialData?.series?.image?.url,
+                userVote: reviews,
+                idField: 'seriesId',
+              });
+            }}>
             <MediumText style={styles.textColor}>
               Прочитать все отзывы
             </MediumText>

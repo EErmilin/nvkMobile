@@ -3,7 +3,12 @@ import {StyleSheet, View} from 'react-native';
 import {Button} from './Button';
 import {colors} from '../Styles/Styles';
 
-const FilterFooterButtons = () => {
+type Props = {
+  onClear: () => void;
+  onApply: () => void;
+};
+
+const FilterFooterButtons = ({onClear, onApply}: Props) => {
   return (
     <View style={styles.buttons}>
       <Button
@@ -13,8 +18,9 @@ const FilterFooterButtons = () => {
           flex: 1,
         }}
         textStyle={{color: colors.gray}}
+        onPress={onClear}
       />
-      <Button title="Показать" style={{flex: 1}} />
+      <Button title="Показать" style={{flex: 1}} onPress={onApply} />
     </View>
   );
 };

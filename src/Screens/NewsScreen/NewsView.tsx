@@ -38,34 +38,9 @@ import AppMetrica from 'react-native-appmetrica-next';
 import DeviceInfo from 'react-native-device-info';
 import NewsCommentCard from '../../components/NewsCommentCard';
 import SendMessage_icon from '../../assets/icons/SendMessage_icon';
+import {CREATE_POST_COMMENT} from '../../gql/mutation/post/CreatePostComment';
 
 const REGULAR_HASTAG = /#[0-9A-Za-zА-Яа-яё]+/g;
-//mock
-const comments = [
-  {
-    image:
-      'https://cojo.ru/wp-content/uploads/2022/12/mariia-zavgorodniaia-3.webp',
-    name: 'Татьяна Рожина',
-    comment:
-      'Идейные соображения высшего порядка, а также новая модель организационной.',
-    createdAt: '12.09.2023',
-  },
-  {
-    image:
-      'https://meragor.com/files/styles//ava_800_800_wm/sfztn_boy_avatar_1.jpg',
-    name: 'Антон Воробьёв',
-    comment: 'Брово!!',
-    createdAt: '12.09.2023',
-  },
-  {
-    image:
-      'https://n1s2.hsmedia.ru/20/cc/9a/20cc9ac5bad1a9fff282a2ed6f741f42/807x807_0xc0a839a2_8097722801509115373.jpeg',
-    name: 'Mark Starostin',
-    comment:
-      'Приятно, граждане, наблюдать, как элементы политического процесса объединены в целые кластеры себе подобных. Также как повышение уровня гражданского сознания не даёт нам иного выбора, кроме определения соответствующих условий активизации.',
-    createdAt: '12.09.2023',
-  },
-];
 
 export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
   const {route, navigation} = props;
@@ -123,8 +98,8 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
           <BoldText
             numberOfLines={1}
             style={{marginLeft: 15, width: screenWidth / 2}}>
-            {route.params.post.author?.firstname ?? ''}{' '}
-            {route.params.post.author?.lastname ?? ''}
+            {route.params.post.author?.user?.firstname ?? ''}{' '}
+            {route.params.post.author?.user?.lastname ?? ''}
           </BoldText>
         </TouchableOpacity>
       </View>
@@ -135,8 +110,8 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
     insets.top,
     navigation,
     route.params.post.author?.avatar?.url_512,
-    route.params.post.author?.firstname,
-    route.params.post.author?.lastname,
+    route.params.post.author?.user?.firstname,
+    route.params.post.author?.user?.lastname,
     screenWidth,
   ]);
 
@@ -184,6 +159,47 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post.id]);
+
+  const [commentText, setCommentText] = React.useState('');
+  const [commentSending, setCommentSending] = React.useState(false);
+
+  const sendComment = React.useCallback(async () => {
+    if (!commentText.trim() || !user) {
+      return;
+    }
+    setCommentSending(true);
+    try {
+      const client = await getUpdateClient();
+      await client.mutate({
+        mutation: CREATE_POST_COMMENT,
+        variables: {
+          createPostCommentInput: {
+            content: commentText,
+            userId: user.id,
+            authorId: user.author?.id,
+            postId: post.id,
+          },
+        },
+      });
+
+      const {data} = await client.query({
+        query: POST,
+        variables: {postId: post.id},
+      });
+
+      let post_contant: string = data.post.content;
+      setPostView(data.post);
+      setContent(
+        post_contant.replace(REGULAR_HASTAG, function replacer(str) {
+          return '<a id=hashtag href="' + str + '">' + str + '</a>';
+        }),
+      );
+
+      setCommentText('');
+    } finally {
+      setCommentSending(false);
+    }
+  }, [commentText, user, post.id]);
 
   return (
     <ScrollView
@@ -348,8 +364,7 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
         <Divider style={{marginTop: 5}} />
         <View style={{marginTop: 20, gap: 10, marginBottom: 40}}>
           <BoldText style={{color: colors.textPrimary}}>
-            Автор: {postView?.author?.firstname ?? ''}{' '}
-            {postView?.author?.lastname ?? ''}
+            Автор: {postView?.author?.nickname}
           </BoldText>
         </View>
 
@@ -357,36 +372,45 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
         <View style={styles.commentContainer}>
           <View style={styles.commentsHeader}>
             <BoldText style={{color: colors.textPrimary}}>
-              Комметарии (12)
+              Комметарии ({(postView?.totalComments ?? 0).toString()})
             </BoldText>
             <Pressable
               hitSlop={10}
-              onPress={() => navigation.navigate('Comments')}>
+              onPress={() =>
+                navigation.navigate('Comments', {
+                  postId: post.id,
+                })
+              }>
               <MediumText style={{color: colors.orange}}>
                 <Text>Показать все</Text>
               </MediumText>
             </Pressable>
           </View>
           {/* INPUT */}
-          <View style={styles.leaveComment}>
-            <InputText
-              placeholder="Написать комментарий"
-              style={{alignItems: 'center', marginBottom: 20, flex: 1}}
-              comment
-            />
-            <TouchableOpacity style={styles.send}>
-              <SendMessage_icon />
-            </TouchableOpacity>
-          </View>
+          {user && (
+            <View style={styles.leaveComment}>
+              <InputText
+                placeholder="Написать комментарий"
+                style={{alignItems: 'center', marginBottom: 20, flex: 1}}
+                comment
+                value={commentText}
+                onChangeText={setCommentText}
+              />
+              <TouchableOpacity
+                style={styles.send}
+                disabled={commentSending}
+                onPress={sendComment}>
+                <SendMessage_icon />
+              </TouchableOpacity>
+            </View>
+          )}
 
           {/* CommentCard */}
 
           <View>
             <FlatList
-              data={comments}
-              renderItem={({item}) => {
-                return <NewsCommentCard commentItem={item} />;
-              }}
+              data={postView?.postComments ?? []}
+              renderItem={({item}) => <NewsCommentCard commentItem={item} />}
               ItemSeparatorComponent={DevideCommentsCard}
             />
           </View>

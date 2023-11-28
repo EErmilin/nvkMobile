@@ -20,9 +20,10 @@ import Animated from 'react-native-reanimated';
 import MediumText from '../../components/MediumText';
 import {useNavigation} from '@react-navigation/native';
 import BottomSheet from '../../components/BottomSheet';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getFilm } from '../../redux/thunks/screens/getFilms/GetFilms';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {getFilm} from '../../redux/thunks/screens/getFilms/GetFilms';
 import Toast from 'react-native-toast-message';
+import { getReviews } from '../../redux/thunks/screens/getReviews/GetReviews';
 
 //mock data
 
@@ -32,8 +33,13 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
   const dispatch = useAppDispatch();
   const filmRedux = useAppSelector(state => state.screens.movie);
   const [isLoading, setIsLoading] = React.useState(false);
-  console.log('props')
-  console.log(filmRedux)
+  console.log('props');
+  console.log(filmRedux);
+
+  const reviews = useAppSelector(state => state.screens.reviews ?? []);
+  React.useEffect(() => {
+    dispatch(getReviews({where: {movieId: filmRedux?.id}}));
+  }, []);
 
   const bottomSheetRef = React.useRef();
   //
@@ -41,11 +47,10 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
     bottomSheetRef?.current?.open();
   };
 
-
   const update = React.useCallback(async () => {
     try {
       setIsLoading(true);
-    const response =  await dispatch(getFilm({movieId:route.params.id }));
+      const response = await dispatch(getFilm({movieId: route.params.id}));
     } catch (e) {
       Toast.show({type: 'error', text1: 'Что-то пошло не так'});
     } finally {
@@ -58,15 +63,15 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
       await update();
     })();
   }, [update]);
-  
-  if(!filmRedux)return
+
+  if (!filmRedux) return;
 
   return (
     <SafeAreaView style={styles.container}>
       <BottomSheet name={'film'} ref={bottomSheetRef} />
       <ScrollView>
         {filmRedux ? (
-          <VideoPlayer urls={{url: filmRedux?.media.indexM3u8Url, hls: []}} />
+          <VideoPlayer urls={{url: filmRedux?.media?.indexM3u8Url, hls: []}} />
         ) : (
           <ActivityIndicator color={colors.colorMain} size={'large'} />
         )}
@@ -91,7 +96,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
             <Animated.View
               style={{gap: 10, flexDirection: 'row', alignItems: 'center'}}>
               <ClockIcon color={colors.colorMain} />
-              <RegularText>{filmRedux?.duration}</RegularText>
+              <RegularText>{filmRedux?.duration} минут</RegularText>
               <RegularText style={{color: colors.colorMain}}>/</RegularText>
               <RegularText>{filmRedux?.genre}</RegularText>
             </Animated.View>
@@ -102,13 +107,13 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
             </Animated.View>
           </Animated.View>
           <Animated.View style={{flexDirection: 'row', gap: 15}}>
- {/*           <TouchableOpacity style={styles.btn}>
+            {/*           <TouchableOpacity style={styles.btn}>
               <MediumText style={styles.textColor}>Смотреть</MediumText>
               <MediumText style={styles.textColor} fontSize={12}>
                 За {filmRedux.price} p
               </MediumText>
         </TouchableOpacity> */}
-{/*            <TouchableOpacity
+            {/*            <TouchableOpacity
               style={[
                 styles.btn,
                 styles.btnOutlined,
@@ -130,17 +135,17 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
             <BoldText fontSize={16}>О фильме</BoldText>
             <MediumText>{filmRedux.content}</MediumText>
           </Animated.View>
-         {/*  <Animated.View>
+          {/*  <Animated.View>
             <BoldText fontSize={16}>Трейлер</BoldText>
             {/*<WebView*/}
-            {/*    style={{flex: 1}}*/}
-            {/*    javaScriptEnabled={true}*/}
-            {/*    source={{uri: 'https://www.youtube.com/embed/ZZ5LpwO-An4?rel=0&autoplay=0&showinfo=0&controls=0'}}*/}
-            {/*    // style={{ marginTop: 20, width: 320, height: 230 }}*/}
-            {/*    // javaScriptEnabled={true}*/}
-            {/*    // domStorageEnabled={true}*/}
-            {/*    // source={{ uri: "https://www.youtube.com/embed/-ZZPOXn6_9w" }}*/}
-            {/*/>
+          {/*    style={{flex: 1}}*/}
+          {/*    javaScriptEnabled={true}*/}
+          {/*    source={{uri: 'https://www.youtube.com/embed/ZZ5LpwO-An4?rel=0&autoplay=0&showinfo=0&controls=0'}}*/}
+          {/*    // style={{ marginTop: 20, width: 320, height: 230 }}*/}
+          {/*    // javaScriptEnabled={true}*/}
+          {/*    // domStorageEnabled={true}*/}
+          {/*    // source={{ uri: "https://www.youtube.com/embed/-ZZPOXn6_9w" }}*/}
+          {/*/>
           </Animated.View></ScrollView>*/}
           <Animated.View>
             <BoldText fontSize={16}>{filmRedux.name}</BoldText>
@@ -149,7 +154,9 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
           <Animated.View style={styles.flexBetween}>
             <MediumText>Языки</MediumText>
             <TouchableOpacity style={styles.smallBtn}>
-              <MediumText style={styles.textColor}>{filmRedux.language}</MediumText>
+              <MediumText style={styles.textColor}>
+                {filmRedux.language}
+              </MediumText>
             </TouchableOpacity>
           </Animated.View>
           <Animated.View
@@ -158,7 +165,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
               borderBottomWidth: StyleSheet.hairlineWidth,
             }}
           />
-{/*          <Animated.View style={styles.flexBetween}>
+          {/*          <Animated.View style={styles.flexBetween}>
             <MediumText>Субтитры</MediumText>
             <TouchableOpacity style={styles.smallBtn}>
               <MediumText style={styles.textColor}>Русские</MediumText>
@@ -170,7 +177,8 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
                     <BoldText style={{color: colors.white}} fontSize={16}>
-                      {//filmRedux.rating_kinopoisk.toString()
+                      {
+                        //filmRedux.rating_kinopoisk.toString()
                       }
                     </BoldText>
                   </Animated.View>
@@ -189,15 +197,18 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
                     <BoldText style={{color: colors.white}} fontSize={16}>
-                      {//item.rating_nbk.toString()
+                      {
+                        //item.rating_nbk.toString()
                       }
                     </BoldText>
                   </Animated.View>
                   <Animated.View>
                     <BoldText>Рейтинг НБК</BoldText>
                     <RegularText fontSize={12}>
-                      {//item.reviews_kinopoisk
-                      } отзывов
+                      {
+                        //item.reviews_kinopoisk
+                      }{' '}
+                      отзывов
                     </RegularText>
                   </Animated.View>
                 </Animated.View>
@@ -214,19 +225,28 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
             <Animated.View
               style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
               <BoldText fontSize={16}>
-                {//item.reviews_nbk.toString()
-                }</BoldText>
+                {
+                  //item.reviews_nbk.toString()
+                }
+              </BoldText>
               <ArrowRight
                 onPress={() =>
-                  navigation.navigate('Reviews', {name: filmRedux.name})
+                  navigation.navigate('Reviews', {
+                    id: filmRedux.id,
+                    name: filmRedux.name,
+                    year: filmRedux.date,
+                    imageUrl: filmRedux.image?.url,
+                    userVote: reviews,
+                    idField: 'movieId',
+                  })
                 }
               />
             </Animated.View>
           </Animated.View>
           <ScrollView horizontal>
             <Animated.View style={{flexDirection: 'row', gap: 16}}>
-              {filmRedux.reviews?.length ? (
-                filmRedux.reviews.map(item => <Review key={item.id} item={item} />)
+              {!!reviews?.length ? (
+                reviews.map(item => <Review key={item.id} item={item} />)
               ) : (
                 <ActivityIndicator color={colors.colorMain} size={'large'} />
               )}
@@ -234,7 +254,16 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
           </ScrollView>
           <TouchableOpacity
             style={[styles.smallBtn, {borderRadius: 42}]}
-            onPress={() => navigation.navigate('Reviews', {name: filmRedux.name})}>
+            onPress={() =>
+              navigation.navigate('Reviews', {
+                id: filmRedux.id,
+                name: filmRedux.name,
+                year: filmRedux.date,
+                imageUrl: filmRedux.image?.url,
+                userVote: reviews,
+                idField: 'movieId',
+              })
+            }>
             <MediumText style={styles.textColor}>
               Прочитать все отзывы
             </MediumText>

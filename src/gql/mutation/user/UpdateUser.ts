@@ -10,6 +10,7 @@ export const UPDATE_USER = gql`
       emailVerified
       email
       birthdate
+      isAuthor
       hashtags {
         hashtag {
           id

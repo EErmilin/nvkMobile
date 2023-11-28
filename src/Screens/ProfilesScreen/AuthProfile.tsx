@@ -24,8 +24,10 @@ import {TabNavigationProps} from '../../navigation/types/TabTypes';
 import {useAppSelector} from '../../redux/hooks';
 import {useTheme} from '../../Styles/Styles';
 import Plus_icon from '../../assets/icons/Plus_icon';
+import Toast from 'react-native-toast-message';
 
 export const AuthProfile: React.FC<{
+  subscriptionsPress?: any;
   hashtagPress?: any;
   profilePress?: any;
   createBloderPress?: any;
@@ -36,7 +38,9 @@ export const AuthProfile: React.FC<{
   editBloderPress?: any;
   navigation: TabNavigationProps<'Profile'>['navigation'];
   loading: boolean;
+  myPostsPress: () => void;
 }> = ({
+  subscriptionsPress,
   hashtagPress,
   profilePress,
   createBloderPress,
@@ -44,12 +48,17 @@ export const AuthProfile: React.FC<{
   editBloderPress,
   navigation,
   loading,
+  myPostsPress,
 }) => {
   const layout = useWindowDimensions();
   const screenWidth = Dimensions.get('screen').width;
   const user = useAppSelector(state => state.user.data);
-  const subscribers = useAppSelector(state => state.user.subscribers);
-  const subscribes = useAppSelector(state => state.user.subscribes);
+  const isAuthor = user?.isAuthor;
+  const subscribers =
+    useAppSelector(state => state.user.author)?.authorAggregate?.subsCount ?? 0;
+  const subscribes =
+    useAppSelector(state => state.user.author)?.authorAggregate?.followsCount ??
+    0;
   const {colors, Style} = useTheme();
 
   const CreateBlogerItem = (
@@ -182,16 +191,35 @@ export const AuthProfile: React.FC<{
                 Профиль
               </BoldText>
               <View style={{flex: 1}}>
-                <NavLink text="Мои хештеги" onPress={hashtagPress} />
+                {isAuthor && (
+                  <>
+                    <NavLink text="Мои посты" onPress={myPostsPress} />
+                    <Separator mt={15} mb={15} />
+                  </>
+                )}
+                <NavLink text="Мои подписки" onPress={subscriptionsPress} />
+                <Separator mt={15} mb={15} />
+                <NavLink text="Мои хэштеги" onPress={hashtagPress} />
                 <Separator mt={15} mb={15} />
                 <NavLink text="Редактировать профиль" onPress={profilePress} />
-                <Separator mt={15} mb={15} />
-                <NavLink
-                  text="Редактировать данные блогера"
-                  onPress={editBloderPress}
-                />
-                <Separator mt={15} mb={15} />
-                <NavLink text="Посмотреть блогера" onPress={showBloderPress} />
+                {isAuthor && (
+                  <>
+                    <Separator mt={15} mb={15} />
+                    <NavLink
+                      text="Редактировать данные блогера"
+                      onPress={editBloderPress}
+                    />
+                  </>
+                )}
+                {isAuthor && (
+                  <>
+                    <Separator mt={15} mb={15} />
+                    <NavLink
+                      text="Посмотреть блогера"
+                      onPress={showBloderPress}
+                    />
+                  </>
+                )}
               </View>
             </Block>
             <Block>
@@ -224,17 +252,28 @@ export const AuthProfile: React.FC<{
               </View>
             </Block>
           </ScrollView>
-          <Button
-            title="Стать блогером"
-            icon={<Plus_icon />}
-            mt={15}
-            style={{
-              marginBottom: 14,
-              marginHorizontal: 15,
-              height: 40,
-            }}
-            onPress={createBloderPress}
-          />
+          {!isAuthor && (
+            <Button
+              title="Стать блогером"
+              icon={<Plus_icon />}
+              mt={15}
+              style={{
+                marginBottom: 14,
+                marginHorizontal: 15,
+                height: 40,
+              }}
+              onPress={() => {
+                if (!isAuthor && !!user?.author) {
+                  Toast.show({
+                    text1:
+                      'Вы уже подали заявку, чтобы стать блогером. Ожидайте подтверждения',
+                  });
+                } else {
+                  createBloderPress();
+                }
+              }}
+            />
+          )}
         </View>
       </SafeAreaView>
     </View>

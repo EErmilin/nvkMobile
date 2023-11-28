@@ -3,6 +3,8 @@ import {BoldText} from './index';
 import {colors} from '../Styles/Styles';
 import {Rating} from './Rating';
 import RegularText from './RegularText';
+import React from 'react';
+import {Text} from 'react-native';
 
 interface Props {
   item: any;
@@ -12,16 +14,20 @@ interface Props {
 
 export const LayoutVideoItem = ({item, height, heightImage}: Props) => {
   return (
-    <View style={[styles.container, {height: height}]}>
-      <ImageBackground
-        source={{uri: item.image?.url ?? null}}
-        resizeMode={'cover'}
-        style={[styles.image, {height: heightImage}]}>
-{/*        <View style={styles.rating}>
-          <Rating rating={item.rating} isStar={false} />
-  </View>*/}
-      </ImageBackground>
-      <BoldText fontSize={16}>{item?.name}</BoldText>
+    <>
+      <View style={[styles.container, {height: height}]}>
+        <ImageBackground
+          source={{
+            uri: (item?.cover?.url ?? item?.image?.url) || '',
+          }}
+          resizeMode={'cover'}
+          style={[styles.image, {height: "100%"}]}>
+          <View style={styles.rating}>
+            <Rating rating={5.2} isStar={false} />
+          </View>
+        </ImageBackground>
+      </View>
+      <BoldText fontSize={16}>{item.name}</BoldText>
       {item.price ? (
         <RegularText style={{color: colors.orange}}>{item?.price}</RegularText>
       ) : (
@@ -29,16 +35,15 @@ export const LayoutVideoItem = ({item, height, heightImage}: Props) => {
           Бесплатно
         </RegularText>
       )}
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     minWidth: 162,
-    borderColor: 'red',
-    borderStyle: 'solid',
-    borderWidth: 1,
+    backgroundColor: colors.borderGray,
+    borderRadius: 12,
   },
   image: {
     position: 'relative',

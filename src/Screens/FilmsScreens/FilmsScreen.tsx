@@ -20,9 +20,12 @@ import {ArrowDownIcon} from '../../components/SVGcomponents/ArrowDownIcon';
 import ContentLoader from 'react-content-loader';
 import {Rect} from 'react-native-svg';
 import {LayoutVideoItem} from '../../components/LayoutVideoItem';
-import SortDropDown from '../../components/SortDropDown';
-import { getFilms } from '../../redux/thunks/screens/getFilms/GetFilms';
-import { setScreenMovies } from '../../redux/slices/screensSlice';
+import SortDropDown, {sortOptions} from '../../components/SortDropDown';
+import {getFilms} from '../../redux/thunks/screens/getFilms/GetFilms';
+import {setScreenMovies} from '../../redux/slices/screensSlice';
+import {useFilter} from '../../helpers/useFilter';
+import {useOrderBy} from '../../helpers/useOrderBy';
+import {setOrderBy} from '../../redux/slices/filterSlice';
 
 interface Props {
   id: number;
@@ -39,31 +42,26 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [sortVisible, setSortVisible] = useState(false);
-  const [sortOption, setSortOption] = useState('По просмотрам');
   const moviesRedux = useAppSelector(state => state.screens.movies);
- 
-  //mock data
-  const films: Props[] = [
-    {id: 1, name: 'film1', price: 199, rating: 5.5},
-    {id: 2, name: 'film2', price: null, rating: 7.8},
-  ];
-
-
 
   const showSortModalHandle = () => {
     setSortVisible(prevState => !prevState);
   };
 
+  const mainFilter = useFilter('MOVIE');
+  const [sortOption, orderBy] = useOrderBy('MOVIE');
   const update = React.useCallback(async () => {
     try {
       setIsLoading(true);
-    const response =  await dispatch(getFilms({search:search }));
+      await dispatch(
+        getFilms({search: search, take: 10, orderBy, where: {mainFilter}}),
+      );
     } catch (e) {
       Toast.show({type: 'error', text1: 'Что-то пошло не так'});
     } finally {
       setIsLoading(false);
     }
-  }, [dispatch, search]);
+  }, [dispatch, search, mainFilter, orderBy]);
 
   React.useEffect(() => {
     (async () => {
@@ -71,7 +69,6 @@ export const FilmsScreen: FC<RootNavigationProps<'Films'>> = ({navigation}) => {
     })();
   }, [update]);
 
-if(!moviesRedux.length)return
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -82,16 +79,7 @@ if(!moviesRedux.length)return
           colors={[colors.colorMain]}
           tintColor={colors.colorMain}
           refreshing={isLoading}
-          onRefresh={async () => {
-            try {
-              setIsLoading(true);
-              await dispatch(getFilms({take: 10 }));
-            } catch (e) {
-              console.log(e);
-            } finally {
-              setIsLoading(false);
-            }
-          }}
+          onRefresh={update}
         />
       }>
       <SearchComponent
@@ -102,7 +90,12 @@ if(!moviesRedux.length)return
         placeholder={'Поиск по названию'}
       />
       <Containter style={styles.textContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Filter')}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('Filter', {
+              type: 'MOVIE',
+            })
+          }>
           <View style={styles.btn}>
             <FilterIcon color={colors.colorMain} />
             <BoldText fontSize={16}>Фильтры</BoldText>
@@ -112,21 +105,34 @@ if(!moviesRedux.length)return
           <TouchableOpacity onPress={showSortModalHandle}>
             <View style={styles.btn}>
               <ArrowsIcon color={colors.colorMain} />
-              <BoldText fontSize={16}>{sortOption}</BoldText>
+              <BoldText fontSize={16}>{sortOptions[sortOption]}</BoldText>
               <ArrowDownIcon color={colors.colorMain} />
             </View>
           </TouchableOpacity>
           {sortVisible ? (
             <SortDropDown
               sortOption={sortOption}
-              setSortOption={setSortOption}
+              setSortOption={orderBy =>
+                dispatch(
+                  setOrderBy({
+                    type: 'MOVIE',
+                    orderBy,
+                  }),
+                )
+              }
               setSortVisible={setSortVisible}
             />
           ) : null}
         </View>
       </Containter>
       <ScrollView>
-        {moviesRedux.length && (
+        {moviesRedux.length === 0 && !isLoading && (
+          <Containter>
+            <BoldText>Не найдено</BoldText>
+          </Containter>
+        )}
+
+        {moviesRedux.length > 0 && (
           <FlatList
             data={moviesRedux}
             style={styles.items}
@@ -138,7 +144,7 @@ if(!moviesRedux.length)return
                   navigation.navigate('Film', {
                     id: item.id,
                     title: item.name,
-                   // rating: item.rating,
+                    // rating: item.rating,
                   })
                 }>
                 <LayoutVideoItem item={item} height={282} heightImage={230} />

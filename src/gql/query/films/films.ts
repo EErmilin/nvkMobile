@@ -1,46 +1,68 @@
-import { gql } from '@apollo/client';
+import {gql} from '@apollo/client';
 
 export const GET_MOVIES = gql`
-query Movies($take: Int) {
-  movies(take: $take) {
-  id
-    name
-    image {
-      url
-    }
-    rating {
+  query Movies(
+    $take: Int
+    $search: String
+    $where: MovieWhereInput
+    $orderBy: MovieOrderByWithRelationInput
+  ) {
+    movies(take: $take, search: $search, where: $where, orderBy: $orderBy) {
       id
-      createdAt
-      updatedAt
-      showId
-      animationId
-      movieId
-      seriesId
+      name
+      image {
+        url
+        url_512
+      }
+      rating {
+        id
+        createdAt
+        updatedAt
+        showId
+        animationId
+        movieId
+        seriesId
+      }
     }
   }
-}
 `;
 
 export const GET_MOVIE = gql`
-query Movie($movieId: Int!) {
-  movie(id: $movieId) {
-    name
-    content
-    media {
-      indexM3u8Url
-      hls {
-        m3u8Url
+  query Movie($movieId: Int!) {
+    movie(id: $movieId) {
+      id
+      name
+      content
+      media {
+        indexM3u8Url
+        hls {
+          m3u8Url
+        }
+      }
+      kinoPoisk_url
+      kinoPoisk
+      age
+      language
+      country
+      date
+      genre
+      duration
+      views
+      image {
+        url
+      }
+      userVote {
+        id
+        comment
+        vote
+        user {
+          avatar {
+            url_256
+          }
+          firstname
+          lastname
+        }
       }
     }
-    kinoPoisk_url
-    kinoPoisk
-    age
-    language
-    country
-    date
-    genre
-    duration
-    views
   }
-}
 `;

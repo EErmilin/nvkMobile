@@ -3,7 +3,7 @@ import {CompositeScreenProps} from '@react-navigation/native';
 import {RootNavigationProps, RootStackParamList} from './RootStackTypes';
 
 export type TabParamList = {
-  Main: undefined;
+  Main: {authorId?: number} | undefined;
   Home: undefined;
   Search: {page?: number; searchValue?: string};
   Services: undefined;

@@ -9,14 +9,17 @@ import {Track} from 'react-native-track-player';
 import {CompositeScreenProps} from '@react-navigation/native';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {TabParamList} from './TabTypes';
+import {FilterType} from '../../gql/query/filters/filters';
 
 export type RootStackParamList = {
   Tabs: undefined;
+  MyPosts: TabParamList['Main'];
+  CreatePost: undefined;
   EditProfile: undefined;
   HashtagScreen: undefined;
+  SubscriptionsScreen: undefined;
   CreateBloger: undefined;
   EditBloger: undefined;
-  BlogerProfile: undefined;
   NewsView: {post: IPost};
   Horoscope: undefined;
   Broadcasts: undefined;
@@ -81,11 +84,16 @@ export type RootStackParamList = {
   Settings: undefined;
   TechSupport: undefined;
   Films: undefined;
-  Filter: undefined;
+  Filter: {
+    type: FilterType;
+  };
   Film: {
     id: number;
     title: string;
     rating: number;
+  };
+  BlogerProfile: {
+    id: number;
   };
   Series: undefined;
   CurrentSeries: {
@@ -99,11 +107,16 @@ export type RootStackParamList = {
   };
   Cartoons: undefined;
   Cartoon: {
-    id: number;
+    cartoon: any;
+    season: any;
+    episode: any;
     title: string;
   };
   Reviews: {
     name: string;
+  };
+  Comments: {
+    postId: number;
   };
 };
 

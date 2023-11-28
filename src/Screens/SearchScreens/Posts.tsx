@@ -89,27 +89,25 @@ export const Posts = (props: IProps) => {
         const client = await getUpdateClient();
         let response = await client.query({
           query: POSTS,
-          variables:
-            search.length > 3
-              ? {
-                  search: search,
-                }
-              : {},
+          variables: {
+            search: search,
+          },
         });
-        if (search.length > 3) {
-          AppMetrica.reportEvent('SEARCH_POSTS', {
-            user: user,
-            search_posts: search,
-            date: new Date(),
-            date_string: new Date().toString(),
-            platform: Platform.OS,
-            device_id: !user ? DeviceInfo.getDeviceId() : undefined,
-            app_version: DeviceInfo.getVersion(),
-          });
-        }
+        // if (search.length > 3) {
+        //   AppMetrica.reportEvent('SEARCH_POSTS', {
+        //     user: user,
+        //     search_posts: search,
+        //     date: new Date(),
+        //     date_string: new Date().toString(),
+        //     platform: Platform.OS,
+        //     device_id: !user ? DeviceInfo.getDeviceId() : undefined,
+        //     app_version: DeviceInfo.getVersion(),
+        //   });
+        // }
 
         setPosts(response.data.posts);
       } catch (e) {
+        console.log(e);
         if (e instanceof ApolloError) {
           Toast.show({
             type: 'error',

@@ -7,11 +7,12 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   View,
+  ActivityIndicator,
 } from 'react-native';
 import {RootNavigationProps} from '../../navigation/types/RootStackTypes';
 import {useTheme} from '../../Styles/Styles';
-import {useAppDispatch} from '../../redux/hooks';
-import {FC, useEffect, useState} from 'react';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {FC, useState} from 'react';
 import Toast from 'react-native-toast-message';
 import {BoldText, Containter, SearchComponent} from '../../components';
 import {FilterIcon} from '../../components/SVGcomponents/FilterIcon';
@@ -21,7 +22,10 @@ import ContentLoader from 'react-content-loader';
 import {Rect} from 'react-native-svg';
 import {LayoutVideoItem} from '../../components/LayoutVideoItem';
 import {getSeries} from '../../redux/thunks/screens/getSeries/GetSeries';
-import SortDropDown from '../../components/SortDropDown';
+import SortDropDown, {sortOptions} from '../../components/SortDropDown';
+import {useFilter} from '../../helpers/useFilter';
+import {useOrderBy} from '../../helpers/useOrderBy';
+import {setOrderBy} from '../../redux/slices/filterSlice';
 
 interface Props {
   id: number;
@@ -35,21 +39,35 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
   const screenWidth = useWindowDimensions().width;
   const {colors} = useTheme();
   const dispatch = useAppDispatch();
+  const serials = useAppSelector(state => state.screens.serials);
+
   const length = Math.ceil((screenWidth - 30) / (140 + 10));
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [sortVisible, setSortVisible] = useState(false);
-  const [sortOption, setSortOption] = useState('По просмотрам');
-  //mock data
-  const series: Props[] = [
-    {id: 1, name: 'series1', rating: 5.5},
-    {id: 2, name: 'series2', rating: 7.8},
-  ];
+
+  const mainFilter = useFilter('SERIES');
+  const [sortOption, orderBy] = useOrderBy('SERIES');
+
   const update = React.useCallback(async () => {
-    setIsLoading(true);
-    await dispatch(getSeries({search: search}));
-    setIsLoading(false);
-  }, [dispatch, search]);
+    try {
+      setIsLoading(true);
+      await dispatch(
+        getSeries({
+          take: 10,
+          search,
+          orderBy,
+          where: {
+            mainFilter,
+          },
+        }),
+      );
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [dispatch, search, mainFilter, orderBy]);
 
   const showSortModalHandle = () => {
     setSortVisible(prevState => !prevState);
@@ -71,16 +89,7 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
           colors={[colors.colorMain]}
           tintColor={colors.colorMain}
           refreshing={isLoading}
-          onRefresh={async () => {
-            try {
-              setIsLoading(true);
-              // await getSeriesRequest();
-            } catch (e) {
-              console.log(e);
-            } finally {
-              setIsLoading(false);
-            }
-          }}
+          onRefresh={update}
         />
       }>
       <SearchComponent
@@ -92,7 +101,12 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
       />
       <Containter style={{zIndex: 1}}>
         <View style={styles.textContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('Filter')}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('Filter', {
+                type: 'SERIES',
+              })
+            }>
             <View style={styles.btn}>
               <FilterIcon color={colors.colorMain} />
               <BoldText fontSize={16}>Фильтры</BoldText>
@@ -102,14 +116,21 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
             <TouchableOpacity onPress={showSortModalHandle}>
               <View style={styles.btn}>
                 <ArrowsIcon color={colors.colorMain} />
-                <BoldText fontSize={16}>{sortOption}</BoldText>
+                <BoldText fontSize={16}>{sortOptions[sortOption]}</BoldText>
                 <ArrowDownIcon color={colors.colorMain} />
               </View>
             </TouchableOpacity>
             {sortVisible ? (
               <SortDropDown
                 sortOption={sortOption}
-                setSortOption={setSortOption}
+                setSortOption={orderBy =>
+                  dispatch(
+                    setOrderBy({
+                      type: 'SERIES',
+                      orderBy,
+                    }),
+                  )
+                }
                 setSortVisible={setSortVisible}
               />
             ) : null}
@@ -117,9 +138,14 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
         </View>
       </Containter>
       <ScrollView>
-        {series.length && (
+        {serials?.length === 0 && !isLoading && (
+          <Containter>
+            <BoldText>Не найдено</BoldText>
+          </Containter>
+        )}
+        {serials?.length > 0 && (
           <FlatList
-            data={series}
+            data={serials}
             style={styles.items}
             contentContainerStyle={styles.itemContainer}
             keyExtractor={(item, index) => index.toString()}
@@ -127,8 +153,9 @@ export const SeriesScreen: FC<RootNavigationProps<'Series'>> = ({
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('AllSeries', {
-                    id: item.id,
-                    title: item.name,
+                    id: item?.id,
+                    title: item?.name,
+                    content: item?.content,
                   })
                 }>
                 <LayoutVideoItem item={item} height={162} heightImage={110} />
@@ -202,3 +229,6 @@ const styles = StyleSheet.create({
     gap: 15,
   },
 });
+// function setScreenSerials(): any {
+//   throw new Error('Function not implemented.');
+// }

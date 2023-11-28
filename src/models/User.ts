@@ -1,4 +1,4 @@
-import { IPost } from "./Post";
+import {IPost} from './Post';
 
 export interface IUser {
   id: number;
@@ -20,21 +20,24 @@ export interface IUser {
     url_128: string;
     id: number;
   };
+  isAuthor: boolean
+  author: {
+    id: number;
+  };
 }
 
 export interface IBloger {
   nik: string;
   about: string;
-  content:{
+  content: {
     photo: Array<IPost>;
     video: Array<IPost>;
     audio: Array<IPost>;
-  },
-  sites:Array<string>,
-  vk?: string,
-  telegram?: string,
-  youTube?: string,
-  odnoklassniki?: string,
+  };
+  sites: Array<string>;
+  vk?: string;
+  telegram?: string;
+  youTube?: string;
+  odnoklassniki?: string;
   user?: IUser;
-  
 }

@@ -1,3 +1,4 @@
+import {seasons} from './../../gql/query/series/Series';
 import {createSlice} from '@reduxjs/toolkit';
 import {IScreenState} from '../types/ScreensTypes';
 
@@ -10,12 +11,21 @@ import {removeFavorite} from '../thunks/favorite/RemoveFavorite';
 import {fetchFavorite} from '../thunks/favorite/GetFavorites';
 import {deleteProfile} from '../thunks/user/DeleteProfile';
 import {updateHashtag, updateUser} from '../thunks/user/UpdateUser';
-import { getFilm, getFilms } from '../thunks/screens/getFilms/GetFilms';
+import {getFilm, getFilms} from '../thunks/screens/getFilms/GetFilms';
+import {getSeasons, getSeries} from '../thunks/screens/getSeries/GetSeries';
+import {getCartoons} from '../thunks/screens/cartoons/GetCartoons';
+import {createReview} from '../thunks/review/CreateReview';
+import {getReviews} from '../thunks/screens/getReviews/GetReviews';
+import {getAuthor} from '../thunks/author/GetAuthor';
+import {IAuthorIsSubscribe} from '../../models/Author';
 
 const initialState: IScreenState = {
   broadcasts: [],
   musics: null,
   podcasts: [],
+  serials: [],
+  seasons: [],
+  cartoons: [],
   movies: [],
   movie: null,
 };
@@ -33,6 +43,9 @@ const screensSlice = createSlice({
     setScreenBroadcasts: (state, action) => {
       state.broadcasts = action.payload;
     },
+    setScreenSerials: (state, action) => {
+      state.serials = action.payload;
+    },
     setScreenMusics: (state, action) => {
       state.musics = action.payload;
     },
@@ -43,6 +56,14 @@ const screensSlice = createSlice({
       state.broadcasts = [];
       state.musics = null;
       state.podcasts = [];
+    },
+    setIsSubscribe: (state, action: {payload: IAuthorIsSubscribe}) => {
+      if (state.authorData?.authorIsSubscribe) {
+        state.authorData.authorIsSubscribe = action.payload;
+      }
+    },
+    clearAuthorScreen: state => {
+      state.authorData = undefined;
     },
   },
   extraReducers: builder => {
@@ -61,6 +82,33 @@ const screensSlice = createSlice({
     builder.addCase(getPodcasts.fulfilled, (state, action) => {
       state.podcasts = action.payload;
     });
+    builder.addCase(getSeries.fulfilled, (state, action) => {
+      state.serials = action.payload;
+    });
+
+    builder.addCase(getSeasons.fulfilled, (state, action) => {
+      state.seasons = action.payload;
+    });
+
+    builder.addCase(getReviews.fulfilled, (state, action) => {
+      state.reviews = action.payload;
+    });
+
+    builder.addCase(getCartoons.fulfilled, (state, action) => {
+      // console.log('arrr', action.payload);
+      state.cartoons = action.payload;
+    });
+
+    builder.addCase(createReview.fulfilled, (state, action) => {
+      // console.log('arrr', action.payload);
+      state.review = action.payload;
+    });
+
+    builder.addCase(getAuthor.fulfilled, (state, action) => {
+      console.log('getAuthor', action.payload);
+      state.authorData = action.payload;
+    });
+
     builder.addCase(logout.rejected, state => {
       state.broadcasts = [];
       state.musics;
@@ -116,6 +164,13 @@ const screensSlice = createSlice({
   },
 });
 
-export const {setScreenBroadcasts, setScreenMusics, clearScreensState, setScreenMovies} =
-  screensSlice.actions;
+export const {
+  setScreenBroadcasts,
+  setScreenMusics,
+  clearScreensState,
+  setScreenSerials,
+  setScreenMovies,
+  setIsSubscribe,
+  clearAuthorScreen,
+} = screensSlice.actions;
 export default screensSlice.reducer;

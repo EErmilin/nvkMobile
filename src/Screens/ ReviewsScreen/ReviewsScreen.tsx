@@ -8,6 +8,11 @@ import {Review} from '../../components/Review';
 import {StarIcon} from '../../components/SVGcomponents/StarIcon';
 import {RootNavigationProps} from '../../navigation/types/RootStackTypes';
 import BottomSheet from '../../components/BottomSheet';
+import {useRoute} from '@react-navigation/native';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {createReview} from '../../redux/thunks/review/CreateReview';
+import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
+import { setLogged } from '../../redux/slices/authSlice';
 
 //dummy data
 
@@ -53,11 +58,36 @@ const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
   // const {route, navigation} = props;
   // const {colors} = useTheme();
+  const dispatch = useAppDispatch();
+  const route = useRoute();
+  const id = route.params?.id!;
+  const name = route.params?.name ?? '';
+  const year = route.params?.year;
+  const imageUrl = route.params?.imageUrl;
+  const idField = route.params?.idField;
+
+  const userId = useAppSelector(state => state.user.data?.id);
+  const reviews = useAppSelector(state => state.screens.reviews ?? []);
+
+  React.useEffect(() => {
+    dispatch(
+      getReviews({
+        where: {[idField]: id},
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    );
+  }, []);
 
   const bottomSheetRef = React.useRef(null);
 
   const openModal = () => {
-    bottomSheetRef?.current?.open();
+    if (!userId) {
+      dispatch(setLogged(false));
+    } else {
+      bottomSheetRef?.current?.open();
+    }
   };
 
   const [activeReview, setActiveReview] = useState<number | null>(null);
@@ -74,18 +104,43 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
     };
   }, []);
 
+  const onReview = async (comment: string, vote: number) => {
+    console.log('CREATE REVIEW');
+    if (!userId) return;
+    const data = await dispatch(
+      createReview({
+        comment,
+        vote,
+        userId: userId,
+        [idField]: id,
+      }),
+    );
+    await dispatch(
+      getReviews({
+        where: {[idField]: id},
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    );
+    console.log(data);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <BottomSheet
-        name={'film'}
+        name={name}
+        imageUrl={imageUrl}
+        year={year}
         ref={bottomSheetRef}
         activeReview={activeReview}
+        onReview={(comment, vote) => onReview(comment, vote)}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Containter style={{gap: 25}}>
           {isReviewedFilm ? (
             <>
-              {/*ОТзыв пользователя*/}
+              {/*Отзыв пользователя*/}
               <BoldText fontSize={16}>Ваш отзыв</BoldText>
               <Review item={item.reviews[0]} cardWidth />
             </>
@@ -115,10 +170,8 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
           <BoldText fontSize={16}>Отзывы пользователей</BoldText>
           {/* Reviews Cards */}
           <View style={{gap: 16}}>
-            {item.reviews.length ? (
-              item.reviews.map(r => (
-                <Review key={r.id.toString()} item={r} cardWidth />
-              ))
+            {reviews.length > 0 ? (
+              reviews?.map(r => <Review key={r.id} item={r} cardWidth />)
             ) : (
               <ActivityIndicator color={colors.white} size={'large'} />
             )}

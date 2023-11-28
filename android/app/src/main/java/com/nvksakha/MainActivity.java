@@ -12,7 +12,7 @@ import com.facebook.react.defaults.DefaultReactActivityDelegate;
 import com.google.android.gms.cast.framework.CastContext;
 
 import org.devio.rn.splashscreen.SplashScreen;
-import com.reactnativepipandroid.PipAndroidModule;
+// import com.reactnativepipandroid.PipAndroidModule; // с этим включить падает
 
 public class MainActivity extends ReactActivity {
 
@@ -37,11 +37,11 @@ public class MainActivity extends ReactActivity {
       // cast framework not supported
     }
   }
-
-  @Override
-  public void onPictureInPictureModeChanged (boolean isInPictureInPictureMode, Configuration newConfig) {
-    PipAndroidModule.pipModeChanged(isInPictureInPictureMode);
-  }
+  //если включить пидиет приложение
+  // @Override
+  // public void onPictureInPictureModeChanged (boolean isInPictureInPictureMode, Configuration newConfig) {
+  //   PipAndroidModule.pipModeChanged(isInPictureInPictureMode);
+  // }
 
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule

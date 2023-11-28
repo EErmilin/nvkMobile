@@ -1,34 +1,39 @@
 import {gql} from '@apollo/client';
 
 export const GET_CARTOONS = gql`
-  query (
-    $search: String
-    $where: AnimationWhereInput
+  query Animations(
+    $take: Int
     $orderBy: AnimationOrderByWithRelationInput
+    $where: AnimationWhereInput
   ) {
-    animations(search: $search, where: $where, orderBy: $orderBy) {
-      id
-      genre
-      name
+    animations(take: $take, orderBy: $orderBy, where: $where) {
+      age
+      content
+      country
       date
       duration
+      genre
+      language
+      name
+      views
       content
-      cover {
+      ratingKinopoisk
+      animationSeasons {
         id
-        createdAt
-        updatedAt
         name
-        url
-        url_64
-        url_128
-        url_256
-        url_512
-        url_1536
-        key
-        date
+        number
+        animationId
+        createdAt
+        animationEpisode {
+          number
+          media {
+            indexM3u8Url
+          }
+        }
       }
-      ratings {
-        exampleField
+      coverId
+      cover {
+        url
       }
     }
   }

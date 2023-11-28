@@ -10,6 +10,7 @@ export const LOGIN = gql`
         firstname
         emailVerified
         email
+        isAuthor
         hashtags {
           hashtag {
             id

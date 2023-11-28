@@ -1,30 +1,34 @@
-import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import BoldText from './BoldText';
-import CheckedInput from '../assets/icons/CheckedInput';
-import {TouchableOpacity} from 'react-native';
+import React from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {colors} from '../Styles/Styles';
+import CheckedInput from '../assets/icons/CheckedInput';
+import BoldText from './BoldText';
 
 interface FilterRenderItemProps {
   item: string | number;
   index: number;
   isRatio: boolean;
+  suffix?: string;
+  isChecked: boolean;
+  onToggle: () => void;
 }
 
-const FilterRenderItem = ({item, index, isRatio}: FilterRenderItemProps) => {
-  const [isChecked, setIsChecked] = useState(false);
-
-  const toggleCheckboxHandler = () => {
-    setIsChecked(prev => !prev);
-  };
-
+const FilterRenderItem = ({
+  item,
+  index,
+  isRatio,
+  suffix,
+  isChecked,
+  onToggle,
+}: FilterRenderItemProps) => {
   return (
     <View style={styles.container}>
       <BoldText style={{marginTop: index === 0 ? 10 : 0}}>
         {item.toString()}
+        {suffix || ''}
       </BoldText>
       {isRatio ? (
-        <TouchableOpacity onPress={toggleCheckboxHandler}>
+        <TouchableOpacity onPress={onToggle}>
           {!isChecked ? (
             <View style={styles.ratio} />
           ) : (
@@ -35,7 +39,7 @@ const FilterRenderItem = ({item, index, isRatio}: FilterRenderItemProps) => {
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
-          onPress={toggleCheckboxHandler}
+          onPress={onToggle}
           style={[
             styles.checkbox,
             !isChecked ? styles.inActiveCheckBox : null,

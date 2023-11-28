@@ -18,57 +18,34 @@ import WebView from 'react-native-webview';
 import {ArrowRight} from '../../components/SVGcomponents';
 import {Review} from '../../components/Review';
 import MediumText from '../../components/MediumText';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import BottomSheet from '../../components/BottomSheet';
-
-//mock data
-const data = [1];
-const item = {
-  name: 'name',
-  season: 1,
-  series: 1,
-  age: '6+',
-  time: '40 min',
-  genre: 'comedy',
-  year: 2022,
-  country: 'russia',
-  views: 231,
-  price: 199,
-  description:
-    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusamus aspernatur consectetur distinctio, ducimus ipsa maxime molestiae nobis obcaecati quibusdam quod quos sint voluptatem. At harum id magni nemo quasi.',
-  rating_kinopoisk: 6.6,
-  rating_nbk: 8.6,
-  reviews_kinopoisk: 112,
-  reviews_nbk: 32,
-  reviews: [
-    {
-      id: 1,
-      author: 'author1',
-      url: '',
-      rating_nbk: 2.3,
-      reviews_nbk:
-        'psum dolor sit amet, consectetur adipisicing elit. Ab accusamus aspernatur consectetur distinctio, ducimus ipsa maxime molestiae nobis obcaecati quibusdam quod quos sint voluptatem. At harum id magni nemo quasi.',
-      date: '31.11.22',
-    },
-    {
-      id: 2,
-      author: 'author2',
-      url: '',
-      rating_nbk: 6.3,
-      reviews_nbk:
-        'distinctio, ducimus ipsa maxime molestiae nobis obcaecati quibusdam quod quos sint voluptatem. At harum id magni nemo quasi.',
-      date: '21.01.23',
-    },
-  ],
-};
+import {useSelector} from 'react-redux';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 
 export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
   const {colors} = useTheme();
   const navigation = useNavigation();
+  const routes = useRoute();
   const bottomSheetRef = React.useRef();
-
   //   const {reviewSheet} = useSelector(state => state.bottomSheet);
+  const {cartoon, season, episode} = routes.params;
 
+  const dispatch = useAppDispatch();
+  const reviews = useAppSelector(state => state.screens.reviews ?? []);
+  React.useEffect(() => {
+    dispatch(
+      getReviews({
+        where: {animationId: cartoon?.id},
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    );
+  }, []);
+
+  // console.log(url);
   const openModal = () => {
     bottomSheetRef?.current?.open();
   };
@@ -77,8 +54,8 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
     <SafeAreaView style={styles.container}>
       <BottomSheet name={'cartoon'} ref={bottomSheetRef} />
       <ScrollView>
-        {data.length ? (
-          <VideoPlayer urls={{url: '', hls: []}} />
+        {!!episode?.media ? (
+          <VideoPlayer urls={{url: episode?.media?.indexM3u8Url, hls: []}} />
         ) : (
           <ActivityIndicator color={colors.colorMain} size={'large'} />
         )}
@@ -88,9 +65,9 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
               style={{justifyContent: 'space-between', flexDirection: 'row'}}>
               <Animated.View
                 style={{gap: 5, flexDirection: 'row', alignItems: 'center'}}>
-                <BoldText fontSize={18}>{item.name}</BoldText>
+                <BoldText fontSize={18}>{cartoon.name}</BoldText>
                 <RegularText style={{color: colors.textSecondary}}>
-                  {item.age}
+                  {`${cartoon.age}+`}
                 </RegularText>
               </Animated.View>
               <TouchableOpacity>
@@ -99,22 +76,22 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
                 </Animated.View>
               </TouchableOpacity>
             </Animated.View>
-            <MediumText>{`${item.season} сезон. ${item.series} серия`}</MediumText>
+            <MediumText>{`${season.number} сезон. ${episode.number} серия`}</MediumText>
 
             <Animated.View
               style={{gap: 10, flexDirection: 'row', alignItems: 'center'}}>
               <ClockIcon color={colors.colorMain} />
-              <RegularText>{item.time}</RegularText>
+              <RegularText>{`${cartoon.duration} минут`}</RegularText>
               <RegularText style={{color: colors.colorMain}}>/</RegularText>
-              <RegularText>{item.genre}</RegularText>
+              <RegularText>{cartoon.genre}</RegularText>
             </Animated.View>
             <Animated.View>
               <RegularText style={{color: colors.textSecondary}}>
-                {item.year} / {item.country} / {item.views}
+                {cartoon.date} / {cartoon.country} / {cartoon.views}
               </RegularText>
             </Animated.View>
           </Animated.View>
-          <Animated.View style={{flexDirection: 'row', gap: 15}}>
+          {/* <Animated.View style={{flexDirection: 'row', gap: 15}}>
             <TouchableOpacity style={styles.btn}>
               <MediumText style={styles.textColor}>Смотреть</MediumText>
               <MediumText style={styles.textColor} fontSize={12}>
@@ -132,7 +109,7 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
               </MediumText>
               <ViewedIcon color={colors.colorMain} />
             </TouchableOpacity>
-          </Animated.View>
+          </Animated.View> */}
           <Animated.View
             style={{
               borderBottomColor: colors.borderPrimary,
@@ -141,10 +118,10 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
           />
           <Animated.View style={{gap: 20}}>
             <BoldText fontSize={16}>О мультсериале</BoldText>
-            <MediumText>{item.description}</MediumText>
+            <MediumText>{cartoon.content}</MediumText>
           </Animated.View>
           <Animated.View>
-            <BoldText fontSize={16}>Трейлер</BoldText>
+            {/* <BoldText fontSize={16}>Трейлер</BoldText> */}
             {/*<WebView*/}
             {/*    style={{flex: 1}}*/}
             {/*    javaScriptEnabled={true}*/}
@@ -155,14 +132,16 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
             {/*    // source={{ uri: "https://www.youtube.com/embed/-ZZPOXn6_9w" }}*/}
             {/*/>*/}
           </Animated.View>
-          <Animated.View>
+          {/* <Animated.View>
             <BoldText fontSize={16}>{item.name}</BoldText>
             <MediumText>1 february 2021</MediumText>
-          </Animated.View>
+          </Animated.View> */}
           <Animated.View style={styles.flexBetween}>
             <MediumText>Языки</MediumText>
             <TouchableOpacity style={styles.smallBtn}>
-              <MediumText style={styles.textColor}>Якуцкий</MediumText>
+              <MediumText style={styles.textColor}>
+                {cartoon.language}
+              </MediumText>
             </TouchableOpacity>
           </Animated.View>
           <Animated.View
@@ -171,24 +150,24 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
               borderBottomWidth: StyleSheet.hairlineWidth,
             }}
           />
-          <Animated.View style={styles.flexBetween}>
+          {/* <Animated.View style={styles.flexBetween}>
             <MediumText>Субтитры</MediumText>
             <TouchableOpacity style={styles.smallBtn}>
               <MediumText style={styles.textColor}>Русские</MediumText>
             </TouchableOpacity>
-          </Animated.View>
+          </Animated.View> */}
           <Animated.View style={styles.box}>
             <Animated.View style={styles.flexBetween}>
               <Animated.View style={{flexDirection: 'row', gap: 15}}>
                 <Animated.View style={styles.rating}>
                   <BoldText style={{color: colors.white}} fontSize={16}>
-                    {item.rating_nbk.toString()}
+                    {cartoon.ratingKinopoisk.toString()}
                   </BoldText>
                 </Animated.View>
                 <Animated.View>
                   <BoldText>Рейтинг НБК</BoldText>
                   <RegularText fontSize={12}>
-                    {item.reviews_kinopoisk} отзывов
+                    {reviews.length} отзывов
                   </RegularText>
                 </Animated.View>
               </Animated.View>
@@ -203,18 +182,25 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
             <BoldText fontSize={16}>Отзывы</BoldText>
             <Animated.View
               style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
-              <BoldText fontSize={16}>{item.reviews_nbk.toString()}</BoldText>
+              <BoldText fontSize={16}>{reviews.length.toString()}</BoldText>
               <ArrowRight
                 onPress={() =>
-                  navigation.navigate('Reviews', {name: item.name})
+                  navigation.navigate('Reviews', {
+                    id: cartoon.id,
+                    name: cartoon.name,
+                    year: cartoon.date,
+                    imageUrl: cartoon.cover?.url,
+                    userVote: reviews,
+                    idField: 'animationId',
+                  })
                 }
               />
             </Animated.View>
           </Animated.View>
           <ScrollView horizontal>
             <Animated.View style={{flexDirection: 'row', gap: 16}}>
-              {item.reviews.length ? (
-                item.reviews.map(item => <Review key={item.id} item={item} />)
+              {reviews.length ? (
+                reviews.map(item => <Review key={item.id} item={item} />)
               ) : (
                 <ActivityIndicator color={colors.colorMain} size={'large'} />
               )}
@@ -222,7 +208,16 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
           </ScrollView>
           <TouchableOpacity
             style={[styles.smallBtn, {borderRadius: 42}]}
-            onPress={() => navigation.navigate('Reviews', {name: item.name})}>
+            onPress={() =>
+              navigation.navigate('Reviews', {
+                id: cartoon.id,
+                name: cartoon.name,
+                year: cartoon.date,
+                imageUrl: cartoon.cover?.url,
+                userVote: reviews,
+                idField: 'animationId',
+              })
+            }>
             <MediumText style={styles.textColor}>
               Прочитать все отзывы
             </MediumText>

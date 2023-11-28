@@ -1,12 +1,15 @@
+import {IAuthor, IAuthorData} from '../../models/Author';
 import {IBloger, IUser} from '../../models/User';
 
 export interface UserTypes {
   data: IUser | null;
+  author?: IAuthorData | null | undefined;
   subscribers: number;
   subscribes: number;
   listSearch: string[];
   hashtags: {hashtag: {name: string; id: number}}[];
   selectedSibscribe: IBloger | null;
+  subscriptions?: IAuthor[];
 }
 
 export interface IUserInput {

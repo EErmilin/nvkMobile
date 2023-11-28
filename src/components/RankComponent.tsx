@@ -1,4 +1,10 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   TouchableOpacity,
   StyleSheet,
@@ -8,6 +14,7 @@ import {
   Keyboard,
   Platform,
   Dimensions,
+  TextInputProps,
 } from 'react-native';
 import Animated, {useSharedValue, withTiming} from 'react-native-reanimated';
 import {colors} from '../Styles/Styles';
@@ -42,6 +49,7 @@ const RankComponent = ({
   //
   const [active, setActive] = useState<number>();
   const [rankActive, setRankActive] = useState<number | null>(null);
+  const [comment, setComment] = useState<string>('');
 
   //rank movie handler
   const rankToMovieHandle = (indexChecked: number) => {
@@ -50,7 +58,8 @@ const RankComponent = ({
   };
   //submit review
   const onSubmit = () => {
-    publishReviewHandler(rankActive, 'ok');
+    console.log('review-select', rankActive, comment);
+    publishReviewHandler(rankActive, comment);
     Keyboard.dismiss();
   };
 
@@ -78,7 +87,7 @@ const RankComponent = ({
         keyboardEndCoordinates = event.endCoordinates.height;
         if (translateButton.value === 0) {
           translateButton.value = withTiming(
-            translateButton.value - keyboardEndCoordinates,
+            translateButton.value - keyboardEndCoordinates + 80,
             {
               duration: 200,
             },
@@ -91,7 +100,7 @@ const RankComponent = ({
       'keyboardDidHide',
       () => {
         translateButton.value = withTiming(
-          translateButton.value + keyboardEndCoordinates,
+          translateButton.value + keyboardEndCoordinates - 80,
         );
       },
     );
@@ -139,6 +148,7 @@ const RankComponent = ({
             }}>
             <TextInput
               multiline
+              onChangeText={e => setComment(e)}
               style={[
                 styles.inputText,
                 // {

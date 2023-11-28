@@ -269,13 +269,15 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
   const styleScreen = StyleSheet.create({
     fullscreen: fullscreen
       ? {
+          position: 'absolute',
           height: SCREEN_HEIGHT,
           width: '100%',
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: 'black',
+          zIndex: 1,
         }
       : {
+          zIndex: 1,
           width: SCREEN_WIDTH,
           height: (SCREEN_WIDTH / 16) * 9,
         },
@@ -417,7 +419,10 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
           <Video
             ref={refVideo}
             style={[styleScreen.fullscreen, style]}
-            source={{uri: urls.url}}
+            source={{uri: modalSetting.quality}}
+            // source={{
+            //   uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            // }}
             rate={modalSetting.speed}
             resizeMode="contain"
             onPlaybackRateChange={async res => {
