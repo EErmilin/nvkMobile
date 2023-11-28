@@ -10,6 +10,7 @@ export const CREATE_USER = gql`
       emailVerified
       email
       birthdate
+      isAuthor
       hashtags {
         hashtag {
           id

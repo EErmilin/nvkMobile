@@ -24,6 +24,7 @@ import {TabNavigationProps} from '../../navigation/types/TabTypes';
 import {useAppSelector} from '../../redux/hooks';
 import {useTheme} from '../../Styles/Styles';
 import Plus_icon from '../../assets/icons/Plus_icon';
+import Toast from 'react-native-toast-message';
 
 export const AuthProfile: React.FC<{
   subscriptionsPress?: any;
@@ -52,7 +53,7 @@ export const AuthProfile: React.FC<{
   const layout = useWindowDimensions();
   const screenWidth = Dimensions.get('screen').width;
   const user = useAppSelector(state => state.user.data);
-  const isAuthor = !!user?.author;
+  const isAuthor = user?.isAuthor;
   const subscribers =
     useAppSelector(state => state.user.author)?.authorAggregate?.subsCount ?? 0;
   const subscribes =
@@ -251,7 +252,7 @@ export const AuthProfile: React.FC<{
               </View>
             </Block>
           </ScrollView>
-          {!user?.author && (
+          {!isAuthor && (
             <Button
               title="Стать блогером"
               icon={<Plus_icon />}
@@ -261,7 +262,16 @@ export const AuthProfile: React.FC<{
                 marginHorizontal: 15,
                 height: 40,
               }}
-              onPress={createBloderPress}
+              onPress={() => {
+                if (!isAuthor && !!user?.author) {
+                  Toast.show({
+                    text1:
+                      'Вы уже подали заявку, чтобы стать блогером. Ожидайте подтверждения',
+                  });
+                } else {
+                  createBloderPress();
+                }
+              }}
             />
           )}
         </View>

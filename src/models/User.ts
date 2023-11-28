@@ -20,6 +20,7 @@ export interface IUser {
     url_128: string;
     id: number;
   };
+  isAuthor: boolean
   author: {
     id: number;
   };
