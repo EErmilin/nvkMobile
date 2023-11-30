@@ -77,7 +77,6 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
     quality: urls.url,
   });
   const [modalCast, setModalCast] = React.useState(false);
-  const [isPictureInPicture, setIsPictureInPicture] = React.useState(false);
 
   React.useEffect(() => {
     setModalSetting({
@@ -463,7 +462,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
             }}
             playInBackground={true}
             // playWhenInactive
-            controls
+            //controls
           />
           <Animated.View
             pointerEvents={!touch ? 'none' : undefined}
