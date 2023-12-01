@@ -1,12 +1,14 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {publishPost} from '../thunks/post/PublishPost';
 import {CreatePostImage, CreatePostType} from '../types/CreatePostTypes';
+import {Video} from 'react-native-image-crop-picker';
 
 const initialState: CreatePostType = {
   title: '',
   content: '',
   images: [],
   lastId: 0,
+  video: null,
 };
 
 const createPostSlice = createSlice({
@@ -34,6 +36,10 @@ const createPostSlice = createSlice({
     addImage(state, action: {payload: CreatePostImage}) {
       state.images = [...state.images, action.payload];
     },
+
+    setVideo(state, action: {payload: Video | null}) {
+      state.video = action.payload;
+    },
   },
   extraReducers(builder) {
     builder.addCase(publishPost.fulfilled, (state, action) => {
@@ -41,10 +47,12 @@ const createPostSlice = createSlice({
       state.content = '';
       state.images = [];
       state.lastId = action.payload.id;
+      state.video = null;
     });
   },
 });
 
-export const {setTitle, setContent, addImage} = createPostSlice.actions;
+export const {setTitle, setContent, addImage, setVideo} =
+  createPostSlice.actions;
 
 export default createPostSlice.reducer;
