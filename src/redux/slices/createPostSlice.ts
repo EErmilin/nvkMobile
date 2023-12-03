@@ -40,6 +40,10 @@ const createPostSlice = createSlice({
     setVideo(state, action: {payload: Video | null}) {
       state.video = action.payload;
     },
+
+    removeImage(state, action: {payload: number}) {
+      state.images = state.images.filter(i => i.id !== action.payload);
+    },
   },
   extraReducers(builder) {
     builder.addCase(publishPost.fulfilled, (state, action) => {
@@ -52,7 +56,7 @@ const createPostSlice = createSlice({
   },
 });
 
-export const {setTitle, setContent, addImage, setVideo} =
+export const {setTitle, setContent, addImage, setVideo, removeImage} =
   createPostSlice.actions;
 
 export default createPostSlice.reducer;

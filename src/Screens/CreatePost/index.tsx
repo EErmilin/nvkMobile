@@ -24,6 +24,7 @@ import {Plus} from '../../components/SVGcomponents';
 import {useAppSelector} from '../../redux/hooks';
 import {
   addImage,
+  removeImage,
   setContent,
   setTitle,
   setVideo,
@@ -96,7 +97,7 @@ export default function CreatePost() {
     dispatch(setVideo(vid));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log(images);
+
   return (
     <View
       style={{
@@ -153,6 +154,8 @@ export default function CreatePost() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 display: 'flex',
+                borderColor: colors.borderGray,
+                borderWidth: 1,
               }}>
               <TouchableOpacity onPress={() => dispatch(setVideo(null))}>
                 <Plus color="red" />
@@ -202,12 +205,35 @@ export default function CreatePost() {
                   borderWidth: 1,
                   borderColor: colors.borderGray,
                   borderRadius: 8,
+                  position: 'relative',
                 }}>
                 <Image
                   source={{uri: i.url}}
                   key={i.id}
-                  style={{maxWidth: '100%', maxHeight: '100%'}}
+                  style={{width: '100%', height: '100%'}}
                 />
+
+                <View
+                  style={{
+                    position: 'absolute',
+                    right: -4,
+                    top: -4,
+                    width: 24,
+                    height: 24,
+                    backgroundColor: colors.background,
+                    borderWidth: 1,
+                    borderColor: colors.borderGray,
+                    zIndex: 2,
+                    borderRadius: 24,
+                    transform: [{rotate: '45deg'}],
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    display: 'flex',
+                  }}>
+                  <TouchableOpacity onPress={() => dispatch(removeImage(i.id))}>
+                    <Plus color="red" />
+                  </TouchableOpacity>
+                </View>
               </View>
             ))}
           </View>
