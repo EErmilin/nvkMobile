@@ -210,7 +210,7 @@ export default function CreatePost() {
                 <Image
                   source={{uri: i.url}}
                   key={i.id}
-                  style={{width: '100%', height: '100%'}}
+                  style={{width: 48, height: 48, borderRadius: 8}}
                 />
 
                 <View
