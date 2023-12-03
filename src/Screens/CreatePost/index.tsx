@@ -56,7 +56,9 @@ export default function CreatePost() {
   const addMedia = React.useCallback(async () => {
     const permission =
       Platform.OS === 'android'
-        ? PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
+        ? Platform.Version && Number(Platform.Version) >= 32
+          ? PERMISSIONS.ANDROID.READ_MEDIA_VIDEO
+          : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
         : PERMISSIONS.IOS.MEDIA_LIBRARY;
 
     let result = await check(permission);
@@ -94,7 +96,7 @@ export default function CreatePost() {
     dispatch(setVideo(vid));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  console.log(images);
   return (
     <View
       style={{
@@ -106,13 +108,14 @@ export default function CreatePost() {
       <SafeAreaView
         style={{
           borderBottomWidth: 1,
-          borderColor: '#0000001A',
+          borderColor: colors.borderGray,
           height: 50,
         }}>
         <TextInput
           placeholder="Заголовок..."
           onChangeText={onChangeTitle}
           value={title}
+          placeholderTextColor={colors.textSecondary}
           style={{
             textAlignVertical: 'top',
             fontFamily: 'NotoSans-Regular',
@@ -121,6 +124,7 @@ export default function CreatePost() {
             paddingLeft: 16,
             paddingRight: 16,
             flex: 1,
+            color: colors.textPrimary,
           }}
         />
       </SafeAreaView>
@@ -128,7 +132,7 @@ export default function CreatePost() {
         style={{
           flex: 1,
           borderBottomWidth: 1,
-          borderColor: '#0000001A',
+          borderColor: colors.borderGray,
         }}>
         {video && (
           <View
@@ -138,11 +142,11 @@ export default function CreatePost() {
             <View
               style={{
                 position: 'absolute',
-                right: 16,
-                top: 16,
+                right: 12,
+                top: 12,
                 width: 24,
                 height: 24,
-                backgroundColor: '#ffffff',
+                backgroundColor: colors.background,
                 zIndex: 2,
                 borderRadius: 32,
                 transform: [{rotate: '45deg'}],
@@ -162,6 +166,7 @@ export default function CreatePost() {
           placeholder="Напишите что-нибудь..."
           onChangeText={onChangeText}
           value={content}
+          placeholderTextColor={colors.textSecondary}
           style={{
             textAlignVertical: 'top',
             fontFamily: 'NotoSans-Regular',
@@ -170,6 +175,7 @@ export default function CreatePost() {
             paddingLeft: 16,
             paddingRight: 16,
             flex: 1,
+            color: colors.textPrimary,
           }}
         />
       </SafeAreaView>
@@ -185,6 +191,8 @@ export default function CreatePost() {
               padding: 4,
               paddingLeft: 16,
               paddingRight: 16,
+              borderBottomWidth: 1,
+              borderColor: colors.borderGray,
             }}>
             {images.map(i => (
               <View
@@ -192,7 +200,7 @@ export default function CreatePost() {
                   width: 48,
                   height: 48,
                   borderWidth: 1,
-                  borderColor: '#0000001A',
+                  borderColor: colors.borderGray,
                   borderRadius: 8,
                 }}>
                 <Image
@@ -232,7 +240,7 @@ export default function CreatePost() {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <ImageIcon />
+              <ImageIcon color={colors.textPrimary} />
             </TouchableOpacity>
           </View>
 
@@ -246,7 +254,7 @@ export default function CreatePost() {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <CameraIcon />
+              <CameraIcon color={colors.textPrimary} />
             </TouchableOpacity>
           </View>
         </View>

@@ -2,6 +2,7 @@ import {IPost} from '../../models/Post';
 
 export interface IPostState {
   data: IPost[];
+  removedPosts: number[];
 }
 
 export interface IGetPostArg {

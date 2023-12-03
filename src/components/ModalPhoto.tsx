@@ -111,7 +111,11 @@ const checkPermission = (
   if (Platform.OS === 'android') {
     check(
       PERMISSIONS.ANDROID[
-        permissionType === 'CAMERA' ? 'CAMERA' : 'READ_EXTERNAL_STORAGE'
+        permissionType === 'CAMERA'
+          ? 'CAMERA'
+          : Platform.Version && Number(Platform.Version) >= 32
+          ? 'READ_MEDIA_IMAGES'
+          : 'READ_EXTERNAL_STORAGE'
       ],
     ).then(result => {
       switch (result) {
@@ -120,7 +124,11 @@ const checkPermission = (
         case 'unavailable':
           request(
             PERMISSIONS.ANDROID[
-              permissionType === 'CAMERA' ? 'CAMERA' : 'READ_EXTERNAL_STORAGE'
+              permissionType === 'CAMERA'
+                ? 'CAMERA'
+                : Platform.Version && Number(Platform.Version) >= 32
+                ? 'READ_MEDIA_IMAGES'
+                : 'READ_EXTERNAL_STORAGE'
             ],
           )
             .then(resultReq => {
