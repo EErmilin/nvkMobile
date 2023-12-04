@@ -20,6 +20,8 @@ export const SERIALS = gql`
       kinoPoisk_url
       language
       name
+      ratingKinopoisk
+      ratingNvk
       seriesSeasons {
         seriesEpisodes {
           media {
@@ -54,6 +56,8 @@ export const SEASONS = gql`
         language
         kinoPoisk
         kinoPoisk_url
+        ratingKinopoisk
+        ratingNvk
         id
         rating {
           id
@@ -90,6 +94,8 @@ export const CURRENT_SERIAS = gql`
         language
         kinoPoisk
         kinoPoisk_url
+        ratingKinopoisk
+        ratingNvk
         id
         rating {
           id
@@ -112,6 +118,8 @@ export const CURRENT_SERIAS = gql`
           language
           country
           content
+          ratingKinopoisk
+          ratingNvk
         }
         number
         duration

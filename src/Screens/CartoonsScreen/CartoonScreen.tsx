@@ -156,26 +156,46 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
               <MediumText style={styles.textColor}>Русские</MediumText>
             </TouchableOpacity>
           </Animated.View> */}
-          <Animated.View style={styles.box}>
-            <Animated.View style={styles.flexBetween}>
-              <Animated.View style={{flexDirection: 'row', gap: 15}}>
-                <Animated.View style={styles.rating}>
-                  <BoldText style={{color: colors.white}} fontSize={16}>
-                    {cartoon.ratingKinopoisk.toString()}
-                  </BoldText>
+          <Animated.View style={{gap: 10}}>
+            <Animated.View style={styles.box}>
+              <Animated.View style={styles.flexBetween}>
+                <Animated.View style={{flexDirection: 'row', gap: 15}}>
+                  <Animated.View style={styles.rating}>
+                    <BoldText style={{color: colors.white}} fontSize={16}>
+                      {cartoon?.ratingKinopoisk?.toFixed(1) ?? '-'}
+                    </BoldText>
+                  </Animated.View>
+                  <Animated.View>
+                    <BoldText>Рейтинг Кинопоиск</BoldText>
+                    {/* <RegularText fontSize={12}>
+                      {filmRedux.reviews_kinopoisk} отзывов
+                    </RegularText> */}
+                  </Animated.View>
                 </Animated.View>
-                <Animated.View>
-                  <BoldText>Рейтинг НБК</BoldText>
-                  <RegularText fontSize={12}>
-                    {reviews.length} отзывов
-                  </RegularText>
-                </Animated.View>
+                <ArrowRight color={colors.colorMain} />
               </Animated.View>
-              <TouchableOpacity
-                style={[styles.smallBtn, styles.btnOutlined]}
-                onPress={openModal}>
-                <RegularText>Оценить</RegularText>
-              </TouchableOpacity>
+            </Animated.View>
+            <Animated.View style={styles.box}>
+              <Animated.View style={styles.flexBetween}>
+                <Animated.View style={{flexDirection: 'row', gap: 15}}>
+                  <Animated.View style={styles.rating}>
+                    <BoldText style={{color: colors.white}} fontSize={16}>
+                      {cartoon?.ratingNvk?.toFixed(1) ?? '-'}
+                    </BoldText>
+                  </Animated.View>
+                  <Animated.View>
+                    <BoldText>Рейтинг НВК</BoldText>
+                    {/* <RegularText fontSize={12}>
+                      {item.reviews_kinopoisk} отзывов
+                    </RegularText> */}
+                  </Animated.View>
+                </Animated.View>
+                <TouchableOpacity
+                  style={[styles.smallBtn, styles.btnOutlined]}
+                  onPress={openModal}>
+                  <RegularText>Оценить</RegularText>
+                </TouchableOpacity>
+              </Animated.View>
             </Animated.View>
           </Animated.View>
           <Animated.View style={styles.flexBetween}>

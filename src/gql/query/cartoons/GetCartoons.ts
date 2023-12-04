@@ -18,6 +18,7 @@ export const GET_CARTOONS = gql`
       views
       content
       ratingKinopoisk
+      ratingNvk
       animationSeasons {
         id
         name

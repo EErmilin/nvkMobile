@@ -23,7 +23,7 @@ import BottomSheet from '../../components/BottomSheet';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {getFilm} from '../../redux/thunks/screens/getFilms/GetFilms';
 import Toast from 'react-native-toast-message';
-import { getReviews } from '../../redux/thunks/screens/getReviews/GetReviews';
+import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 
 //mock data
 
@@ -177,16 +177,14 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
                     <BoldText style={{color: colors.white}} fontSize={16}>
-                      {
-                        //filmRedux.rating_kinopoisk.toString()
-                      }
+                      {filmRedux.ratingKinopoisk ?? '-'}
                     </BoldText>
                   </Animated.View>
                   <Animated.View>
                     <BoldText>Рейтинг Кинопоиск</BoldText>
-                    <RegularText fontSize={12}>
+                    {/* <RegularText fontSize={12}>
                       {filmRedux.reviews_kinopoisk} отзывов
-                    </RegularText>
+                    </RegularText> */}
                   </Animated.View>
                 </Animated.View>
                 <ArrowRight color={colors.colorMain} />
@@ -197,13 +195,11 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
                     <BoldText style={{color: colors.white}} fontSize={16}>
-                      {
-                        //item.rating_nbk.toString()
-                      }
+                      {filmRedux.ratingNvk ?? '-'}
                     </BoldText>
                   </Animated.View>
                   <Animated.View>
-                    <BoldText>Рейтинг НБК</BoldText>
+                    <BoldText>Рейтинг НВК</BoldText>
                     <RegularText fontSize={12}>
                       {
                         //item.reviews_kinopoisk

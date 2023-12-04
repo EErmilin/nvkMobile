@@ -195,28 +195,49 @@ export const CurrentSeriesScreen: FC<
               <MediumText style={styles.textColor}>Русские</MediumText>
             </TouchableOpacity>
           </Animated.View> */}
-          <Animated.View style={styles.box}>
-            <Animated.View style={styles.flexBetween}>
-              <Animated.View style={{flexDirection: 'row', gap: 15}}>
-                <Animated.View style={styles.rating}>
-                  <BoldText style={{color: colors.white}} fontSize={16}>
-                    {item.rating_nbk.toString()}
-                  </BoldText>
+          <Animated.View style={{gap: 10}}>
+            <Animated.View style={styles.box}>
+              <Animated.View style={styles.flexBetween}>
+                <Animated.View style={{flexDirection: 'row', gap: 15}}>
+                  <Animated.View style={styles.rating}>
+                    <BoldText style={{color: colors.white}} fontSize={16}>
+                      {serialData?.series?.ratingKinopoisk?.toFixed(1) ?? '-'}
+                    </BoldText>
+                  </Animated.View>
+                  <Animated.View>
+                    <BoldText>Рейтинг Кинопоиск</BoldText>
+                    {/* <RegularText fontSize={12}>
+                      {filmRedux.reviews_kinopoisk} отзывов
+                    </RegularText> */}
+                  </Animated.View>
                 </Animated.View>
-                <Animated.View>
-                  <BoldText>Рейтинг НБК</BoldText>
-                  <RegularText fontSize={12}>
-                    {item.reviews_kinopoisk} отзывов
-                  </RegularText>
-                </Animated.View>
+                <ArrowRight color={colors.colorMain} />
               </Animated.View>
-              <TouchableOpacity
-                style={[styles.smallBtn, styles.btnOutlined]}
-                onPress={openModal}>
-                <RegularText>Оценить</RegularText>
-              </TouchableOpacity>
+            </Animated.View>
+            <Animated.View style={styles.box}>
+              <Animated.View style={styles.flexBetween}>
+                <Animated.View style={{flexDirection: 'row', gap: 15}}>
+                  <Animated.View style={styles.rating}>
+                    <BoldText style={{color: colors.white}} fontSize={16}>
+                      {serialData?.series?.ratingNvk?.toFixed(1) ?? '-'}
+                    </BoldText>
+                  </Animated.View>
+                  <Animated.View>
+                    <BoldText>Рейтинг НВК</BoldText>
+                    <RegularText fontSize={12}>
+                      {item.reviews_kinopoisk} отзывов
+                    </RegularText>
+                  </Animated.View>
+                </Animated.View>
+                <TouchableOpacity
+                  style={[styles.smallBtn, styles.btnOutlined]}
+                  onPress={openModal}>
+                  <RegularText>Оценить</RegularText>
+                </TouchableOpacity>
+              </Animated.View>
             </Animated.View>
           </Animated.View>
+
           <Animated.View style={styles.flexBetween}>
             <BoldText fontSize={16}>Отзывы</BoldText>
             <Animated.View

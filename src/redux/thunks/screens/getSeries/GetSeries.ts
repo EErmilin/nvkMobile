@@ -1,9 +1,9 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 
-import {getUpdateClient} from '../../../../requests/updateHeaders';
+import {SEASONS, SERIALS} from '../../../../gql/query/series/Series';
 import {IPodcastData} from '../../../../models/Music';
+import {getUpdateClient} from '../../../../requests/updateHeaders';
 import {IPodcastArg} from '../../../types/PodcastType';
-import {SERIES, SERIALS, SEASONS} from '../../../../gql/query/series/Series';
 
 export const getSeries = createAsyncThunk<IPodcastData[], IPodcastArg>(
   'series/fetch',
