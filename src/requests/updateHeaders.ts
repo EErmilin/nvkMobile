@@ -26,7 +26,7 @@ export const getUpdateClient = async (inToken?: string | null) => {
     return {
       headers: {
         ...headers,
-        authorization: token || inToken ? `Bearer ${inToken ?? token}` : '',
+        authorization: token ?? inToken ? `Bearer ${inToken ?? token}` : '',
       },
     };
   });

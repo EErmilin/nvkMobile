@@ -21,9 +21,14 @@ import MediumText from '../../components/MediumText';
 import {useNavigation} from '@react-navigation/native';
 import BottomSheet from '../../components/BottomSheet';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
-import {getFilm} from '../../redux/thunks/screens/getFilms/GetFilms';
+import {
+  getFilm,
+  markMovieViewed,
+  movieIsViewed,
+} from '../../redux/thunks/screens/getFilms/GetFilms';
 import Toast from 'react-native-toast-message';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
+import {setLogged} from '../../redux/slices/authSlice';
 
 //mock data
 
@@ -32,9 +37,11 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const filmRedux = useAppSelector(state => state.screens.movie);
+  const isLogin = useAppSelector(state => state.auth.token);
   const [isLoading, setIsLoading] = React.useState(false);
   console.log('props');
   console.log(filmRedux);
+  const [isViewed, setIsViewed] = React.useState(false);
 
   const reviews = useAppSelector(state => state.screens.reviews ?? []);
   React.useEffect(() => {
@@ -51,12 +58,23 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
     try {
       setIsLoading(true);
       const response = await dispatch(getFilm({movieId: route.params.id}));
+      const isViewedRes = await dispatch(movieIsViewed({id: route.params.id}));
+      setIsViewed(isViewedRes.payload ?? false);
     } catch (e) {
       Toast.show({type: 'error', text1: 'Что-то пошло не так'});
     } finally {
       setIsLoading(false);
     }
   }, [dispatch]);
+
+  const markAsView = async () => {
+    if (!isLogin) {
+      dispatch(setLogged(false));
+      return;
+    }
+    const isViewedRes = await dispatch(markMovieViewed({id: route.params.id}));
+    setIsViewed(isViewedRes.payload ?? false);
+  };
 
   React.useEffect(() => {
     (async () => {
@@ -113,17 +131,22 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 За {filmRedux.price} p
               </MediumText>
         </TouchableOpacity> */}
-            {/*            <TouchableOpacity
+            <TouchableOpacity
+              onPress={markAsView}
               style={[
                 styles.btn,
                 styles.btnOutlined,
+                isViewed && styles.btnDisabled,
                 {flexDirection: 'row', gap: 8},
               ]}>
-              <MediumText style={styles.textColorOutlined}>
+              <MediumText
+                style={
+                  isViewed ? styles.textColorDisabled : styles.textColorOutlined
+                }>
                 Просмотрен
               </MediumText>
-              <ViewedIcon color={colors.colorMain} />
-            </TouchableOpacity> */}
+              <ViewedIcon color={isViewed ? colors.gray : colors.colorMain} />
+            </TouchableOpacity>
           </Animated.View>
           <Animated.View
             style={{
@@ -303,6 +326,10 @@ const styles = StyleSheet.create({
     borderColor: colors.orange,
     borderWidth: 1,
   },
+  btnDisabled: {
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+  },
   smallBtn: {
     borderRadius: 10,
     paddingVertical: 5,
@@ -315,6 +342,9 @@ const styles = StyleSheet.create({
   },
   textColorOutlined: {
     color: colors.orange,
+  },
+  textColorDisabled: {
+    color: colors.gray,
   },
   box: {
     backgroundColor: colors.white,
