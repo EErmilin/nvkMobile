@@ -62,6 +62,9 @@ export const SEASONS = gql`
         rating {
           id
         }
+        image {
+          url
+        }
       }
       seriesId
       seriesEpisodes {

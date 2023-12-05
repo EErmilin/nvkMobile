@@ -23,7 +23,7 @@ import BottomSheet from '../../components/BottomSheet';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 import {useMovieViewed} from '../../helpers/useMovieViewed';
-import { createReview } from '../../redux/thunks/review/CreateReview';
+import {createReview} from '../../redux/thunks/review/CreateReview';
 
 //mock data
 const data = [1];
@@ -91,7 +91,6 @@ export const CurrentSeriesScreen: FC<
     bottomSheetRef?.current?.open();
   };
 
-  
   const userId = useAppSelector(state => state.user.data?.id);
   const onReview = async (comment: string, vote: number) => {
     console.log('CREATE REVIEW');
@@ -101,22 +100,22 @@ export const CurrentSeriesScreen: FC<
         comment,
         vote,
         userId: userId,
+        seriesId: serialData.series?.id,
       }),
     );
-    await dispatch(
-      getReviews({
-        orderBy: {
-          createdAt: 'desc',
-        },
-      }),
-    );
-    console.log(data);
+    await dispatch(getReviews({where: {seriesId: serialData.series?.id}}));
   };
 
-  console.log(serialData?.series);
   return (
-    <SafeAreaView style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
-      <BottomSheet name={'serial'} ref={bottomSheetRef}     onReview={(comment, vote) => onReview(comment, vote)}/>
+    <SafeAreaView
+      style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
+      <BottomSheet
+        name={serialData.series?.name}
+        imageUrl={serialData?.series?.image?.url}
+        year={serialData?.series?.date}
+        ref={bottomSheetRef}
+        onReview={(comment, vote) => onReview(comment, vote)}
+      />
       <ScrollView>
         {data.length ? (
           <VideoPlayer
@@ -161,7 +160,7 @@ export const CurrentSeriesScreen: FC<
               </RegularText>
             </Animated.View>
           </Animated.View>
-          <Animated.View style={{flexDirection: 'row', gap: 15, }}>
+          <Animated.View style={{flexDirection: 'row', gap: 15}}>
             {/* <TouchableOpacity style={styles.btn}>
               <MediumText style={styles.textColor}>Смотреть</MediumText>
               <MediumText style={styles.textColor} fontSize={12}>
@@ -175,7 +174,11 @@ export const CurrentSeriesScreen: FC<
                 styles.btn,
                 styles.btnOutlined,
                 isViewed && styles.btnDisabled,
-                {flexDirection: 'row', gap: 8, backgroundColor: colors.bgPrimary},
+                {
+                  flexDirection: 'row',
+                  gap: 8,
+                  backgroundColor: colors.bgPrimary,
+                },
               ]}>
               <MediumText
                 style={
@@ -233,9 +236,10 @@ export const CurrentSeriesScreen: FC<
             </TouchableOpacity>
           </Animated.View> */}
           <Animated.View style={{gap: 10}}>
-            <Animated.View style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
+            <Animated.View
+              style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
               <Animated.View style={styles.flexBetween}>
-                <Animated.View style={{flexDirection: 'row', gap: 15,}}>
+                <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
                     <BoldText style={{color: colors.white}} fontSize={16}>
                       {serialData?.series?.ratingKinopoisk?.toFixed(1) ?? '-'}
@@ -251,7 +255,8 @@ export const CurrentSeriesScreen: FC<
                 <ArrowRight color={colors.colorMain} />
               </Animated.View>
             </Animated.View>
-            <Animated.View style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
+            <Animated.View
+              style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
               <Animated.View style={styles.flexBetween}>
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
@@ -262,12 +267,16 @@ export const CurrentSeriesScreen: FC<
                   <Animated.View>
                     <BoldText>Рейтинг НВК</BoldText>
                     <RegularText fontSize={12}>
-                      {item.reviews_kinopoisk} отзывов
+                      {reviews?.length ?? 0} отзывов
                     </RegularText>
                   </Animated.View>
                 </Animated.View>
                 <TouchableOpacity
-                  style={[styles.smallBtn, styles.btnOutlined, {backgroundColor: colors.bgPrimary}]}
+                  style={[
+                    styles.smallBtn,
+                    styles.btnOutlined,
+                    {backgroundColor: colors.bgPrimary},
+                  ]}
                   onPress={openModal}>
                   <RegularText>Оценить</RegularText>
                 </TouchableOpacity>
@@ -297,7 +306,9 @@ export const CurrentSeriesScreen: FC<
           <ScrollView horizontal>
             <Animated.View style={{flexDirection: 'row', gap: 16}}>
               {!!reviews?.length ? (
-                reviews?.map(item => <Review key={item.id} item={item} numberOfLines={5} />)
+                reviews?.map(item => (
+                  <Review key={item.id} item={item} numberOfLines={5} />
+                ))
               ) : (
                 <ActivityIndicator color={colors.colorMain} size={'large'} />
               )}

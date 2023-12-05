@@ -43,7 +43,7 @@ export const GET_MOVIE = gql`
       genre
       duration
       views
-      image {
+      cover: image {
         url
       }
       userVote {

@@ -24,7 +24,7 @@ import {useSelector} from 'react-redux';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 import {useMovieViewed} from '../../helpers/useMovieViewed';
-import { createReview } from '../../redux/thunks/review/CreateReview';
+import {createReview} from '../../redux/thunks/review/CreateReview';
 
 export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
   const {colors} = useTheme();
@@ -68,12 +68,12 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
         comment,
         vote,
         userId: userId,
-        [idField]: id,
+        animationId: cartoon?.id,
       }),
     );
     await dispatch(
       getReviews({
-        where: {[idField]: id},
+        where: {animationId: cartoon?.id},
         orderBy: {
           createdAt: 'desc',
         },
@@ -83,10 +83,15 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
-      <BottomSheet name={'cartoon'} 
+    <SafeAreaView
+      style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
+      <BottomSheet
+        name={cartoon?.name}
+        imageUrl={cartoon?.cover?.url}
+        year={cartoon?.date}
         ref={bottomSheetRef}
-        onReview={(comment, vote) => onReview(comment, vote)} />
+        onReview={(comment, vote) => onReview(comment, vote)}
+      />
       <ScrollView>
         {!!episode?.media ? (
           <VideoPlayer urls={{url: episode?.media?.indexM3u8Url, hls: []}} />
@@ -139,7 +144,11 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
                 styles.btn,
                 styles.btnOutlined,
                 isViewed && styles.btnDisabled,
-                {flexDirection: 'row', gap: 8, backgroundColor: colors.bgPrimary},
+                {
+                  flexDirection: 'row',
+                  gap: 8,
+                  backgroundColor: colors.bgPrimary,
+                },
               ]}>
               <MediumText
                 style={
@@ -198,7 +207,8 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
             </TouchableOpacity>
           </Animated.View> */}
           <Animated.View style={{gap: 10}}>
-            <Animated.View style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
+            <Animated.View
+              style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
               <Animated.View style={styles.flexBetween}>
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
@@ -216,7 +226,8 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
                 <ArrowRight color={colors.colorMain} />
               </Animated.View>
             </Animated.View>
-            <Animated.View style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
+            <Animated.View
+              style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
               <Animated.View style={styles.flexBetween}>
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
@@ -226,13 +237,17 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
                   </Animated.View>
                   <Animated.View>
                     <BoldText>Рейтинг НВК</BoldText>
-                    {/* <RegularText fontSize={12}>
-                      {item.reviews_kinopoisk} отзывов
-                    </RegularText> */}
+                    <RegularText fontSize={12}>
+                      {reviews?.length ?? 0} отзывов
+                    </RegularText>
                   </Animated.View>
                 </Animated.View>
                 <TouchableOpacity
-                  style={[styles.smallBtn, styles.btnOutlined, {backgroundColor: colors.bgPrimary}]}
+                  style={[
+                    styles.smallBtn,
+                    styles.btnOutlined,
+                    {backgroundColor: colors.bgPrimary},
+                  ]}
                   onPress={openModal}>
                   <RegularText>Оценить</RegularText>
                 </TouchableOpacity>
@@ -260,8 +275,10 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
           </Animated.View>
           <ScrollView horizontal>
             <Animated.View style={{flexDirection: 'row', gap: 16}}>
-              {reviews.length ? (
-                reviews.map(item => <Review key={item.id} item={item} numberOfLines={5} />)
+              {!!reviews?.length ? (
+                reviews?.map(item => (
+                  <Review key={item.id} item={item} numberOfLines={5} />
+                ))
               ) : (
                 <ActivityIndicator color={colors.colorMain} size={'large'} />
               )}

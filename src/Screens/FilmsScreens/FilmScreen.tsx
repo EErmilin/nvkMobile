@@ -30,7 +30,7 @@ import Toast from 'react-native-toast-message';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 import {setLogged} from '../../redux/slices/authSlice';
 import {useMovieViewed} from '../../helpers/useMovieViewed';
-import { createReview } from '../../redux/thunks/review/CreateReview';
+import {createReview} from '../../redux/thunks/review/CreateReview';
 
 //mock data
 
@@ -45,7 +45,6 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
     'MOVIE',
   );
   const id = route.params?.id!;
-  const idField = route.params?.idField;
   const reviews = useAppSelector(state => state.screens.reviews ?? []);
   React.useEffect(() => {
     dispatch(getReviews({where: {movieId: filmRedux?.id}}));
@@ -84,23 +83,25 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
         comment,
         vote,
         userId: userId,
+        movieId: id,
       }),
     );
-    await dispatch(
-      getReviews({
-        orderBy: {
-          createdAt: 'desc',
-        },
-      }),
-    );
-    console.log(data);
+    console.log('DATA', data);
+    await dispatch(getReviews({where: {movieId: filmRedux?.id}}));
   };
 
   if (!filmRedux) return;
 
   return (
-    <SafeAreaView style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
-      <BottomSheet name={'film'} ref={bottomSheetRef}  onReview={(comment, vote) => onReview(comment, vote)} />
+    <SafeAreaView
+      style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
+      <BottomSheet
+        name={filmRedux?.name}
+        imageUrl={filmRedux?.cover?.url}
+        year={filmRedux?.date}
+        ref={bottomSheetRef}
+        onReview={(comment, vote) => onReview(comment, vote)}
+      />
       <ScrollView>
         {filmRedux ? (
           <VideoPlayer urls={{url: filmRedux?.media?.indexM3u8Url, hls: []}} />
@@ -152,7 +153,11 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 styles.btn,
                 styles.btnOutlined,
                 isViewed && styles.btnDisabled,
-                {flexDirection: 'row', gap: 8, backgroundColor: colors.bgPrimary},
+                {
+                  flexDirection: 'row',
+                  gap: 8,
+                  backgroundColor: colors.bgPrimary,
+                },
               ]}>
               <MediumText
                 style={
@@ -210,7 +215,8 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
             </TouchableOpacity>
           </Animated.View>*/}
           <Animated.View style={{gap: 10}}>
-            <Animated.View style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
+            <Animated.View
+              style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
               <Animated.View style={styles.flexBetween}>
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
@@ -228,27 +234,29 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 <ArrowRight color={colors.colorMain} />
               </Animated.View>
             </Animated.View>
-            <Animated.View style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
+            <Animated.View
+              style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
               <Animated.View style={styles.flexBetween}>
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
                     <BoldText style={{color: colors.white}} fontSize={16}>
-                      {filmRedux.ratingNvk ?? '-'}
+                      {filmRedux.ratingNvk?.toFixed(1) ?? '-'}
                     </BoldText>
                   </Animated.View>
                   <Animated.View>
                     <BoldText>Рейтинг НВК</BoldText>
                     <RegularText fontSize={12}>
-                      {
-                        //item.reviews_kinopoisk
-                      }{' '}
-                      отзывов
+                      {reviews?.length ?? 0} отзывов
                     </RegularText>
                   </Animated.View>
                 </Animated.View>
                 <TouchableOpacity
                   onPress={openModal}
-                  style={[styles.smallBtn, styles.btnOutlined, {backgroundColor: colors.bgPrimary}]}>
+                  style={[
+                    styles.smallBtn,
+                    styles.btnOutlined,
+                    {backgroundColor: colors.bgPrimary},
+                  ]}>
                   <RegularText>Оценить</RegularText>
                 </TouchableOpacity>
               </Animated.View>
@@ -269,7 +277,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                     id: filmRedux.id,
                     name: filmRedux.name,
                     year: filmRedux.date,
-                    imageUrl: filmRedux.image?.url,
+                    imageUrl: filmRedux.cover?.url,
                     userVote: reviews,
                     idField: 'movieId',
                   })
@@ -295,7 +303,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 id: filmRedux.id,
                 name: filmRedux.name,
                 year: filmRedux.date,
-                imageUrl: filmRedux.image?.url,
+                imageUrl: filmRedux.cover?.url,
                 userVote: reviews,
                 idField: 'movieId',
               })
