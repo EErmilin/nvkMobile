@@ -10,6 +10,7 @@ import {getUpdateClient} from '../../../requests/updateHeaders';
 import {CHANGE_SUBSCRIBE} from '../../../gql/mutation/user/ChangeSubscribe';
 import {ISubscribeArg} from '../../../redux/types/AuthorTypes';
 import {setIsSubscribe} from '../../../redux/slices/screensSlice';
+import { colors, useTheme } from '../../../Styles/Styles';
 
 const {width} = Dimensions.get('screen');
 
@@ -87,6 +88,7 @@ type TSocialInfo = {
 const SocialInfo = ({openSocial}: TSocialInfo) => {
   const authorData = useAppSelector(state => state.screens.authorData);
   const user = useAppSelector(state => state.user);
+  const {colors} = useTheme()
   const isSubscribe = useMemo(
     () => authorData?.authorIsSubscribe.isSubscribe,
     [authorData],
@@ -129,7 +131,7 @@ const SocialInfo = ({openSocial}: TSocialInfo) => {
   }, [isSubscribe, authorData, user]);
 
   return (
-    <View style={styles.social_wraper}>
+    <View style={[styles.social_wraper]}>
       {isVisibleSubscribe ? (
         <Button
           title={isSubscribe ? 'Отписаться' : 'Подписаться'}

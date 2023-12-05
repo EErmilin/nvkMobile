@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,13 +7,13 @@ import {
   GestureResponderEvent,
   Animated,
 } from 'react-native';
-import {FC} from 'react';
-import {RootNavigationProps} from '../../navigation/types/RootStackTypes';
-import {SceneMap} from 'react-native-tab-view';
-import {HScrollView} from 'react-native-head-tab-view';
-import {CollapsibleHeaderTabView} from 'react-native-tab-view-collapsible-header';
+import { FC } from 'react';
+import { RootNavigationProps } from '../../navigation/types/RootStackTypes';
+import { SceneMap } from 'react-native-tab-view';
+import { HScrollView } from 'react-native-head-tab-view';
+import { CollapsibleHeaderTabView } from 'react-native-tab-view-collapsible-header';
 import BlogerContentTabBar from './components/BlogerContentTabBar';
-import {tmpData1, tmpData2} from './components/tmpData';
+import { tmpData1, tmpData2 } from './components/tmpData';
 import FastImage from 'react-native-fast-image';
 import {
   BlogerContent_Audio,
@@ -23,18 +23,19 @@ import {
 import ShowSocialModal, {
   ShowSocialModalizeHandle,
 } from './components/ShowSocialModal';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BlogerProfileHead from './components/BlogerProfileHead';
-import {useAppDispatch, useAppSelector} from '../../redux/hooks';
-import {getAuthor} from '../../redux/thunks/author/GetAuthor';
-import {IAuthor} from '../../models/Author';
-import {IPost} from '../../models/Post';
-import {getPosts} from '../../redux/thunks/post/GetPosts';
-import {clearAuthorScreen} from '../../redux/slices/screensSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { getAuthor } from '../../redux/thunks/author/GetAuthor';
+import { IAuthor } from '../../models/Author';
+import { IPost } from '../../models/Post';
+import { getPosts } from '../../redux/thunks/post/GetPosts';
+import { clearAuthorScreen } from '../../redux/slices/screensSlice';
+import { useTheme } from '../../Styles/Styles';
 
-const {width} = Dimensions.get('screen');
+const { width } = Dimensions.get('screen');
 
-const PhotoRoute = ({onTap}: {onTap: (post: IPost) => void}) => {
+const PhotoRoute = ({ onTap }: { onTap: (post: IPost) => void }) => {
   const posts =
     useAppSelector(state => state.screens.authorData)?.author?.posts ?? [];
   return (
@@ -55,13 +56,13 @@ const PhotoRoute = ({onTap}: {onTap: (post: IPost) => void}) => {
 };
 
 const VideoRoute = () => (
-  <HScrollView index={1} onMomentumScrollEnd={() => {}}>
+  <HScrollView index={1} onMomentumScrollEnd={() => { }}>
     <View style={styles.grid}>
       {tmpData2.map((element, index) => (
         <BlogerContent_Video
           key={`s_${index}`}
           post={element}
-          onPress={() => {}}
+          onPress={() => { }}
         />
       ))}
     </View>
@@ -69,20 +70,20 @@ const VideoRoute = () => (
 );
 
 const AudioRoute = () => (
-  <HScrollView index={1} onMomentumScrollEnd={() => {}}>
+  <HScrollView index={1} onMomentumScrollEnd={() => { }}>
     <View style={styles.grid}>
       {tmpData1.map((element, index) => (
         <BlogerContent_Audio
           key={`s_${index}`}
           post={element}
-          onPress={() => {}}
+          onPress={() => { }}
         />
       ))}
     </View>
   </HScrollView>
 );
 
-const initialLayout = {width: Dimensions.get('window').width};
+const initialLayout = { width: Dimensions.get('window').width };
 
 const BlogerProfile: FC<RootNavigationProps<'BlogerProfile'>> = ({
   route,
@@ -93,7 +94,7 @@ const BlogerProfile: FC<RootNavigationProps<'BlogerProfile'>> = ({
   const showSocialRef = useRef<ShowSocialModalizeHandle>();
   const authorData = useAppSelector(state => state.screens.authorData);
   const userId = useAppSelector(state => state.user.data?.id);
-
+  const { colors } = useTheme()
   const openSocial = () => {
     showSocialRef.current?.open();
   };
@@ -103,7 +104,7 @@ const BlogerProfile: FC<RootNavigationProps<'BlogerProfile'>> = ({
   const tabs = ['photo' /*, 'audio', 'video' */];
 
   const [routes] = React.useState([
-    {key: 'photo', title: 'First'},
+    { key: 'photo', title: 'First' },
     // {key: 'video', title: 'Second'},
     // {key: 'audio', title: 'Third'},
   ]);
@@ -111,14 +112,14 @@ const BlogerProfile: FC<RootNavigationProps<'BlogerProfile'>> = ({
   const renderScene = SceneMap({
     photo: () =>
       PhotoRoute({
-        onTap: post => navigation.navigate('NewsView', {post: post}),
+        onTap: post => navigation.navigate('NewsView', { post: post }),
       }),
     // video: VideoRoute,
     // audio: AudioRoute,
   });
 
   useEffect(() => {
-    dispatch(getAuthor({id: authorId, userId: userId})).then(e => {
+    dispatch(getAuthor({ id: authorId, userId: userId })).then(e => {
       // setData(e.payload as IAuthor);
       console.log(e);
     });
@@ -135,10 +136,10 @@ const BlogerProfile: FC<RootNavigationProps<'BlogerProfile'>> = ({
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       <CollapsibleHeaderTabView
         renderScrollHeader={() => <BlogerProfileHead openSocial={openSocial} />}
-        navigationState={{index, routes}}
+        navigationState={{ index, routes }}
         renderTabBar={renderTabBar}
         renderScene={renderScene}
         onIndexChange={setIndex}

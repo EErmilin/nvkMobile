@@ -13,7 +13,7 @@ import {BoldText, Button} from '../../components';
 import {useFieldArray, useForm} from 'react-hook-form';
 
 import {useNavigation} from '@react-navigation/native';
-import {colors} from '../../Styles/Styles';
+import {colors, useTheme} from '../../Styles/Styles';
 import Odnoklassniki_icon from '../../assets/icons/Odnoklassniki_icon';
 import PlusWithCircle_icon from '../../assets/icons/PlusWithCircle_icon';
 import Telegram_Icon from '../../assets/icons/Telegram_Icon';
@@ -45,6 +45,7 @@ const CreateBloger: React.FC<TFormProps> = ({type}) => {
   const dispatch = useAppDispatch();
   const currentAuthor = useAppSelector(state => state.user.author)?.author;
   const user = useAppSelector(state => state.user.data);
+  const {colors} = useTheme()
   const {
     control,
     handleSubmit,
@@ -138,7 +139,7 @@ const CreateBloger: React.FC<TFormProps> = ({type}) => {
 
   return (
     <SafeAreaView
-      style={[styles.container, {marginTop: keyboardVisible ? 8 : 15}]}>
+      style={[styles.container, { backgroundColor:colors.bgSecondary,paddingTop: keyboardVisible ? 8 : 15}]}>
       <ScrollView
         style={styles.scroll_container}
         showsVerticalScrollIndicator={false}>

@@ -58,7 +58,7 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
       <BottomSheet name={'cartoon'} ref={bottomSheetRef} />
       <ScrollView>
         {!!episode?.media ? (
@@ -112,7 +112,7 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
                 styles.btn,
                 styles.btnOutlined,
                 isViewed && styles.btnDisabled,
-                {flexDirection: 'row', gap: 8},
+                {flexDirection: 'row', gap: 8, backgroundColor: colors.bgPrimary},
               ]}>
               <MediumText
                 style={
@@ -171,7 +171,7 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
             </TouchableOpacity>
           </Animated.View> */}
           <Animated.View style={{gap: 10}}>
-            <Animated.View style={styles.box}>
+            <Animated.View style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
               <Animated.View style={styles.flexBetween}>
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
@@ -189,7 +189,7 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
                 <ArrowRight color={colors.colorMain} />
               </Animated.View>
             </Animated.View>
-            <Animated.View style={styles.box}>
+            <Animated.View style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
               <Animated.View style={styles.flexBetween}>
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
@@ -205,7 +205,7 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
                   </Animated.View>
                 </Animated.View>
                 <TouchableOpacity
-                  style={[styles.smallBtn, styles.btnOutlined]}
+                  style={[styles.smallBtn, styles.btnOutlined, {backgroundColor: colors.bgPrimary}]}
                   onPress={openModal}>
                   <RegularText>Оценить</RegularText>
                 </TouchableOpacity>

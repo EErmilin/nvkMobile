@@ -76,7 +76,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
   if (!filmRedux) return;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
       <BottomSheet name={'film'} ref={bottomSheetRef} />
       <ScrollView>
         {filmRedux ? (
@@ -129,7 +129,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 styles.btn,
                 styles.btnOutlined,
                 isViewed && styles.btnDisabled,
-                {flexDirection: 'row', gap: 8},
+                {flexDirection: 'row', gap: 8, backgroundColor: colors.bgPrimary},
               ]}>
               <MediumText
                 style={
@@ -187,7 +187,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
             </TouchableOpacity>
           </Animated.View>*/}
           <Animated.View style={{gap: 10}}>
-            <Animated.View style={styles.box}>
+            <Animated.View style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
               <Animated.View style={styles.flexBetween}>
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
@@ -205,7 +205,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 <ArrowRight color={colors.colorMain} />
               </Animated.View>
             </Animated.View>
-            <Animated.View style={styles.box}>
+            <Animated.View style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
               <Animated.View style={styles.flexBetween}>
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
@@ -225,7 +225,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 </Animated.View>
                 <TouchableOpacity
                   onPress={openModal}
-                  style={[styles.smallBtn, styles.btnOutlined]}>
+                  style={[styles.smallBtn, styles.btnOutlined, {backgroundColor: colors.bgPrimary}]}>
                   <RegularText>Оценить</RegularText>
                 </TouchableOpacity>
               </Animated.View>

@@ -10,7 +10,7 @@ import {
 import * as React from 'react';
 import {FC} from 'react';
 import {RootNavigationProps} from '../../navigation/types/RootStackTypes';
-import {colors} from '../../Styles/Styles';
+import {colors, useTheme} from '../../Styles/Styles';
 import {Containter, Divider, MediumText} from '../../components';
 import {PlayIcon} from '../../components/SVGcomponents/PlayIcon';
 import Animated from 'react-native-reanimated';
@@ -42,7 +42,7 @@ export const AllSeriesScreen: FC<RootNavigationProps<'AllSeries'>> = ({
   navigation,
 }) => {
   const routes = useRoute();
-
+  const {colors} = useTheme();
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = React.useState(false);
   const seasons = useAppSelector(state => state.screens.seasons);
@@ -70,7 +70,7 @@ export const AllSeriesScreen: FC<RootNavigationProps<'AllSeries'>> = ({
 
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
       <Containter>
         {seasons.length > 0 &&
           seasons.map(s => {

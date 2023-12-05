@@ -1,13 +1,14 @@
 import {StyleSheet, View} from 'react-native';
 import * as React from 'react';
-import {colors} from '../Styles/Styles';
+import {colors, useTheme} from '../Styles/Styles';
 import {Avatar} from './Avatar';
 import {BoldText, MediumText, RegularText} from './index';
 import {Rating} from './Rating';
 
 export const Review = ({item, cardWidth}: any) => {
+  const{colors} = useTheme()
   return (
-    <View style={[styles.container, cardWidth && {width: null}]}>
+    <View style={[styles.container, cardWidth && {width: null}, {backgroundColor: colors.bgPrimary}]}>
       <View
         style={{
           flexDirection: 'row',

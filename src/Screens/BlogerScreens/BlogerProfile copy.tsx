@@ -24,6 +24,7 @@ import ShowSocialModal, {
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {AnimatedRef} from 'react-native-reanimated';
 import BlogerProfileHead from './components/BlogerProfileHead';
+import { useTheme } from '../../Styles/Styles';
 
 const {width} = Dimensions.get('screen');
 
@@ -102,8 +103,10 @@ const BlogerProfile1 = () => {
     const value = event.
   };
 
+  const {colors} = useTheme()
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container]}>
       <GestureHandlerRootView
       onPointerMove={onResponderMove}
       >
