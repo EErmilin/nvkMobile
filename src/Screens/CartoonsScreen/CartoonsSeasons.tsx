@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Animated from 'react-native-reanimated';
-import {colors} from '../../Styles/Styles';
+import {colors, useTheme} from '../../Styles/Styles';
 import {Containter, Divider, MediumText} from '../../components';
 import {PlayIcon} from '../../components/SVGcomponents/PlayIcon';
 import {RootNavigationProps} from '../../navigation/types/RootStackTypes';
@@ -19,7 +19,7 @@ export const CartoonsSeasons: FC<RootNavigationProps<'AllSeries'>> = ({
   navigation,
 }) => {
   const routes = useRoute();
-
+  const {colors} = useTheme();
   const dispatch = useAppDispatch();
 
   const {cartoon} = routes.params;
@@ -29,7 +29,7 @@ export const CartoonsSeasons: FC<RootNavigationProps<'AllSeries'>> = ({
   // }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
       <Containter>
         {cartoon.animationSeasons.map(s => {
           return (

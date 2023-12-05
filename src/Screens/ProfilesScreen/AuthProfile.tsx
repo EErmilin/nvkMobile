@@ -115,6 +115,7 @@ export const AuthProfile: React.FC<{
                   flexDirection: 'row',
                   alignItems: 'center',
                   marginTop: 16,
+                  
                 }}>
                 <View style={{marginRight: 15}}>
                   {!loading || user ? (

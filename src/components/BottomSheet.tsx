@@ -21,7 +21,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {colors} from '../Styles/Styles';
+import {colors, useTheme} from '../Styles/Styles';
 import BoldText from './BoldText';
 import {Rating} from './Rating';
 import RankComponent from './RankComponent';
@@ -51,7 +51,7 @@ const BottomSheet = forwardRef(
     const insets = useSafeAreaInsets();
     //state
     const [keyboardVisible, setKeyboardVisible] = useState(false);
-
+const {colors} = useTheme()
     //shared Value
     const translateYR = useSharedValue(0);
     const scrollContentY = useSharedValue(0);
@@ -173,6 +173,7 @@ const BottomSheet = forwardRef(
           style={[
             styles.container,
             {
+
               paddingTop: Platform.OS === 'ios' ? insets.top : 12,
               paddingBottom: Platform.OS === 'ios' ? insets.bottom : 12,
             },

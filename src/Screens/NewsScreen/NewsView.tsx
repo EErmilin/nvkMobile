@@ -369,7 +369,7 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
         </View>
 
         {/* COMMENTS */}
-        <View style={styles.commentContainer}>
+        <View style={[styles.commentContainer, {backgroundColor: colors.background}]}>
           <View style={styles.commentsHeader}>
             <BoldText style={{color: colors.textPrimary}}>
               Комметарии ({(postView?.totalComments ?? 0).toString()})

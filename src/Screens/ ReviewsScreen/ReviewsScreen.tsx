@@ -65,6 +65,7 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
   const year = route.params?.year;
   const imageUrl = route.params?.imageUrl;
   const idField = route.params?.idField;
+  const {colors} = useTheme()
 
   const userId = useAppSelector(state => state.user.data?.id);
   const reviews = useAppSelector(state => state.screens.reviews ?? []);
@@ -127,7 +128,7 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {              backgroundColor:colors.bgSecondary,}]}>
       <BottomSheet
         name={name}
         imageUrl={imageUrl}
@@ -155,13 +156,14 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
               {/* Оставить отзыв */}
               <TouchableOpacity
                 style={[
+                  
                   styles.btn,
                   styles.btnOutlined,
-                  {flexDirection: 'row', gap: 8, paddingVertical: 16},
+                  {flexDirection: 'row', gap: 8, paddingVertical: 16, backgroundColor: colors.bgPrimary}
                 ]}
                 onPress={openModal}>
                 <StarIcon color={colors.orange} size={20} />
-                <MediumText style={{color: colors.blackText}}>
+                <MediumText style={{color: colors.textPrimary}}>
                   Оставить Отзыв
                 </MediumText>
               </TouchableOpacity>

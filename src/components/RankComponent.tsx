@@ -17,7 +17,7 @@ import {
   TextInputProps,
 } from 'react-native';
 import Animated, {useSharedValue, withTiming} from 'react-native-reanimated';
-import {colors} from '../Styles/Styles';
+import {colors, useTheme} from '../Styles/Styles';
 import BoldText from './BoldText';
 import {Button} from './Button';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -46,6 +46,7 @@ const RankComponent = ({
   //animated
   const translateButton = useSharedValue(0);
   const insets = useSafeAreaInsets();
+  const {colors} = useTheme() 
   //
   const [active, setActive] = useState<number>();
   const [rankActive, setRankActive] = useState<number | null>(null);
@@ -145,6 +146,7 @@ const RankComponent = ({
             style={{
               marginTop: 16,
               flex: 1,
+              backgroundColor: colors.bgSecondary
             }}>
             <TextInput
               multiline
