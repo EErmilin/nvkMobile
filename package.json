@@ -70,7 +70,7 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-tab-view-collapsible-header": "^2.0.1",
     "react-native-toast-message": "^2.1.6",
-    "react-native-track-player": "^3.2.0-d85262c113e2aa163ff8870a3074bd07a4850a8e",
+    "react-native-track-player": "^4.0.1",
     "react-native-use-countdown": "^1.0.7",
     "react-native-video": "file:./src/native/react-native-video",
     "react-native-webview": "^11.26.1",
