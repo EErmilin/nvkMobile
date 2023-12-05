@@ -15,6 +15,11 @@ export interface IAuthor {
   avatar: {
     url: string;
   };
+  user: {
+    avatar: {
+      url: string;
+    };
+  };
   description?: string;
   vk?: string;
   telegram?: string;

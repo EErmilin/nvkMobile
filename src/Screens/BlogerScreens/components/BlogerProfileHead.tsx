@@ -20,11 +20,12 @@ type TProps = {
 
 const BlogerProfileHead = ({profile, openSocial}: TProps) => {
   const authorData = useAppSelector(state => state.screens.authorData);
+  console.log('BLOGGER', authorData);
   return (
     <View style={styles.container}>
       <View style={styles.head_wraper}>
         <FastImage
-          source={{uri: authorData?.author?.avatar?.url}}
+          source={{uri: authorData?.author?.user?.avatar?.url}}
           style={styles.profile_image}
         />
         <CountElement

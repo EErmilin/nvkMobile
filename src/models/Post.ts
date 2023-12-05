@@ -5,6 +5,12 @@ type PostAuthor = {
     url_128: string;
     id: number;
   };
+  user?: {
+    avatar: {
+      url: string;
+      url_256: string;
+    };
+  };
 };
 
 export interface IPostComment {

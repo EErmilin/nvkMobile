@@ -13,8 +13,10 @@ export const AUTHOR = gql`
     author(id: $id) {
       id
       nickname
-      avatar {
-        url: url_512
+      user {
+        avatar {
+          url: url_256
+        }
       }
       description
       vk

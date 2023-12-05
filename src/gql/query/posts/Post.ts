@@ -42,13 +42,13 @@ export const POSTS = gql`
         user {
           firstname
           lastname
+          avatar {
+            url_512
+            url_256
+            id
+          }
         }
         nickname
-        avatar {
-          url_512
-          url_256
-          id
-        }
       }
       createdAt
       updatedAt
@@ -103,11 +103,11 @@ export const POST = gql`
         user {
           firstname
           lastname
-        }
-        avatar {
-          url_512
-          url_256
-          id
+          avatar {
+            url_512
+            url_256
+            id
+          }
         }
       }
       createdAt
