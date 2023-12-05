@@ -2,7 +2,7 @@ import {Dimensions, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React, {forwardRef, useImperativeHandle, useMemo, useState} from 'react';
 import OpenWeb_Icon from '../../../assets/icons/OpenWeb_Icon';
 import VK_Icon from '../../../assets/icons/VK_Icon';
-import {useTheme} from '../../../Styles/Styles';
+import {colors, useTheme} from '../../../Styles/Styles';
 import {Separator} from '../../../components';
 import Telegram_Icon from '../../../assets/icons/Telegram_Icon';
 import Odnoklassniki_icon from '../../../assets/icons/Odnoklassniki_icon';
@@ -39,7 +39,7 @@ const ShowSocialModal = forwardRef((_, ref) => {
       onPress={tongleVisible}
       activeOpacity={2}>
       <TouchableOpacity
-        style={[styles.content, {backgroundColor: colors.textPrimary}]}
+        style={[styles.content, {backgroundColor: '#1E1C1C'}]}
         activeOpacity={2}>
         {!!author?.vk && (
           <>
@@ -97,14 +97,15 @@ const SocialElement = ({
   onPress: onPressInner,
 }: TSocialElementProps) => {
   const onPress = () => onPressInner(link);
+  const {colors} = useTheme()
   return (
-    <TouchableOpacity style={styles.social_wrapper} onPress={onPress}>
+    <TouchableOpacity style={[styles.social_wrapper, {backgroundColor: '#1E1C1C'}]} onPress={onPress}>
       <View style={styles.row}>
         {icon}
         <Text style={styles.social_text}>{link}</Text>
       </View>
       <View style={styles.row}>
-        <Text style={styles.social_text}>Перейти</Text>
+        <Text style={[styles.social_text]}>Перейти</Text>
         <OpenWeb_Icon />
       </View>
     </TouchableOpacity>

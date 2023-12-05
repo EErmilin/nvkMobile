@@ -92,7 +92,7 @@ export const CurrentSeriesScreen: FC<
 
   console.log(serialData?.series);
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
       <BottomSheet name={'serial'} ref={bottomSheetRef} />
       <ScrollView>
         {data.length ? (
@@ -138,7 +138,7 @@ export const CurrentSeriesScreen: FC<
               </RegularText>
             </Animated.View>
           </Animated.View>
-          <Animated.View style={{flexDirection: 'row', gap: 15}}>
+          <Animated.View style={{flexDirection: 'row', gap: 15, }}>
             {/* <TouchableOpacity style={styles.btn}>
               <MediumText style={styles.textColor}>Смотреть</MediumText>
               <MediumText style={styles.textColor} fontSize={12}>
@@ -152,7 +152,7 @@ export const CurrentSeriesScreen: FC<
                 styles.btn,
                 styles.btnOutlined,
                 isViewed && styles.btnDisabled,
-                {flexDirection: 'row', gap: 8},
+                {flexDirection: 'row', gap: 8, backgroundColor: colors.bgPrimary},
               ]}>
               <MediumText
                 style={
@@ -210,9 +210,9 @@ export const CurrentSeriesScreen: FC<
             </TouchableOpacity>
           </Animated.View> */}
           <Animated.View style={{gap: 10}}>
-            <Animated.View style={styles.box}>
+            <Animated.View style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
               <Animated.View style={styles.flexBetween}>
-                <Animated.View style={{flexDirection: 'row', gap: 15}}>
+                <Animated.View style={{flexDirection: 'row', gap: 15,}}>
                   <Animated.View style={styles.rating}>
                     <BoldText style={{color: colors.white}} fontSize={16}>
                       {serialData?.series?.ratingKinopoisk?.toFixed(1) ?? '-'}
@@ -228,7 +228,7 @@ export const CurrentSeriesScreen: FC<
                 <ArrowRight color={colors.colorMain} />
               </Animated.View>
             </Animated.View>
-            <Animated.View style={styles.box}>
+            <Animated.View style={[styles.box, {backgroundColor: colors.bgPrimary}]}>
               <Animated.View style={styles.flexBetween}>
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
@@ -244,7 +244,7 @@ export const CurrentSeriesScreen: FC<
                   </Animated.View>
                 </Animated.View>
                 <TouchableOpacity
-                  style={[styles.smallBtn, styles.btnOutlined]}
+                  style={[styles.smallBtn, styles.btnOutlined, {backgroundColor: colors.bgPrimary}]}
                   onPress={openModal}>
                   <RegularText>Оценить</RegularText>
                 </TouchableOpacity>

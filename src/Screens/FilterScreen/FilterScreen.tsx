@@ -1,7 +1,7 @@
 import React, {FC, useRef, useState} from 'react';
 import {Dimensions, StyleSheet, View, SafeAreaView} from 'react-native';
 
-import {colors} from '../../Styles/Styles';
+import {colors, useTheme} from '../../Styles/Styles';
 import FilterOptions from '../../components/FilterOptions';
 import {Containter} from '../../components';
 import {Modalize} from 'react-native-modalize';
@@ -26,7 +26,7 @@ const FilterScreen: FC<RootNavigationProps<'Filter'>> = ({
   navigation,
 }) => {
   const modalizeRef = useRef<Modalize>(null);
-
+  const {colors} = useTheme();
   const xKnobLeft = useSharedValue(0);
   const xKnobRight = useSharedValue(width - 30 - KNOB_SIZE);
   const trackAnimated = useAnimatedStyle(() => {
@@ -89,7 +89,7 @@ const FilterScreen: FC<RootNavigationProps<'Filter'>> = ({
 
   return (
     <>
-      <Containter style={{backgroundColor: colors.white, flex: 1}}>
+      <Containter style={{backgroundColor: colors.bgSecondary, flex: 1}}>
         {/* Options */}
         <FilterOptions
           title={'Жанры'}

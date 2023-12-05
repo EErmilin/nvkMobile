@@ -10,6 +10,7 @@ import {getUpdateClient} from '../../../requests/updateHeaders';
 import {CHANGE_SUBSCRIBE} from '../../../gql/mutation/user/ChangeSubscribe';
 import {ISubscribeArg} from '../../../redux/types/AuthorTypes';
 import {setIsSubscribe} from '../../../redux/slices/screensSlice';
+import { colors, useTheme } from '../../../Styles/Styles';
 
 const {width} = Dimensions.get('screen');
 
@@ -19,9 +20,10 @@ type TProps = {
 };
 
 const BlogerProfileHead = ({profile, openSocial}: TProps) => {
+  const {colors} = useTheme()
   const authorData = useAppSelector(state => state.screens.authorData);
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
       <View style={styles.head_wraper}>
         <FastImage
           source={{uri: authorData?.author?.avatar?.url}}
@@ -54,13 +56,13 @@ type TCountElementProps = {
   count: number;
 };
 
-const CountElement = ({title, count}: TCountElementProps) => (
-  <View style={styles.countElement_wraper}>
-    <Text style={styles.countElement_count}>{count}</Text>
+const CountElement = ({title, count}: TCountElementProps) =>{
+  const {colors} = useTheme()  
+  return <View style={styles.countElement_wraper}>
+    <Text style={[styles.countElement_count, {color:colors.bl}]}>{count}</Text>
 
-    <Text style={styles.countElement_title}>{title}</Text>
-  </View>
-);
+    <Text style={[styles.countElement_title,  {color:colors.bl}]}>{title}</Text>
+  </View>};
 
 type TAboutBlogerProps = {
   text: string;
@@ -87,6 +89,7 @@ type TSocialInfo = {
 const SocialInfo = ({openSocial}: TSocialInfo) => {
   const authorData = useAppSelector(state => state.screens.authorData);
   const user = useAppSelector(state => state.user);
+  const {colors} = useTheme()
   const isSubscribe = useMemo(
     () => authorData?.authorIsSubscribe.isSubscribe,
     [authorData],
@@ -101,7 +104,7 @@ const SocialInfo = ({openSocial}: TSocialInfo) => {
   );
   const socialButtonInput = (
     <View style={styles.social_showButton_inputWrapper}>
-      <Text style={styles.social_showButton_inputText}>Соц. сети</Text>
+      <Text style={[styles.social_showButton_inputText ]}>Соц. сети</Text>
       <DropDown_Icon />
     </View>
   );
@@ -129,7 +132,7 @@ const SocialInfo = ({openSocial}: TSocialInfo) => {
   }, [isSubscribe, authorData, user]);
 
   return (
-    <View style={styles.social_wraper}>
+    <View style={[styles.social_wraper]}>
       {isVisibleSubscribe ? (
         <Button
           title={isSubscribe ? 'Отписаться' : 'Подписаться'}
@@ -146,7 +149,7 @@ const SocialInfo = ({openSocial}: TSocialInfo) => {
           title="Соц. сети"
           icon={<DropDown_Icon />}
           style={styles.social_showButton}
-          textStyle={{color: '#000'}}
+          textStyle={{color: colors.bl}}
           onPress={openSocial}
         />
       )}
