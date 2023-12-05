@@ -21,6 +21,7 @@ import TrackPlayer, {
   State,
   usePlaybackState,
   useProgress,
+  useActiveTrack,
 } from 'react-native-track-player';
 import {PauseCircle} from '../../../components/SVGcomponents/media/PauseCircle';
 import dayjs from 'dayjs';
@@ -47,7 +48,7 @@ export const MusicPlayer: React.FC<RootNavigationProps<'MusicPlayer'>> = ({
   const {StatusBarManager} = NativeModules;
   const musicContext = React.useContext(MusicPlayerContext);
   const user = useAppSelector(state => state.user.data);
-  const activeTrack = null;
+  const activeTrack = useActiveTrack();
   const addMusic = async () => {
     try {
       const albumPlaying = await TrackPlayer.getQueue();
