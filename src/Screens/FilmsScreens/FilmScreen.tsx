@@ -29,6 +29,7 @@ import {
 import Toast from 'react-native-toast-message';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 import {setLogged} from '../../redux/slices/authSlice';
+import {useMovieViewed} from '../../helpers/useMovieViewed';
 
 //mock data
 
@@ -37,11 +38,11 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const filmRedux = useAppSelector(state => state.screens.movie);
-  const isLogin = useAppSelector(state => state.auth.token);
   const [isLoading, setIsLoading] = React.useState(false);
-  console.log('props');
-  console.log(filmRedux);
-  const [isViewed, setIsViewed] = React.useState(false);
+  const {isViewed, fetchViewed, markAsView} = useMovieViewed(
+    route.params.id,
+    'MOVIE',
+  );
 
   const reviews = useAppSelector(state => state.screens.reviews ?? []);
   React.useEffect(() => {
@@ -58,23 +59,13 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
     try {
       setIsLoading(true);
       const response = await dispatch(getFilm({movieId: route.params.id}));
-      const isViewedRes = await dispatch(movieIsViewed({id: route.params.id}));
-      setIsViewed(isViewedRes.payload ?? false);
+      await fetchViewed();
     } catch (e) {
       Toast.show({type: 'error', text1: 'Что-то пошло не так'});
     } finally {
       setIsLoading(false);
     }
   }, [dispatch]);
-
-  const markAsView = async () => {
-    if (!isLogin) {
-      dispatch(setLogged(false));
-      return;
-    }
-    const isViewedRes = await dispatch(markMovieViewed({id: route.params.id}));
-    setIsViewed(isViewedRes.payload ?? false);
-  };
 
   React.useEffect(() => {
     (async () => {
@@ -133,6 +124,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
         </TouchableOpacity> */}
             <TouchableOpacity
               onPress={markAsView}
+              disabled={isViewed}
               style={[
                 styles.btn,
                 styles.btnOutlined,

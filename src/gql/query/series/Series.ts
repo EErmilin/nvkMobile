@@ -129,6 +129,25 @@ export const CURRENT_SERIAS = gql`
   }
 `;
 
+export const GET_SERIES = gql`
+  query GetSeries($id: Int!) {
+    series(id: $id) {
+      id
+      name
+      duration
+      country
+      age
+      date
+      genre
+      language
+      kinoPoisk
+      kinoPoisk_url
+      ratingKinopoisk
+      ratingNvk
+    }
+  }
+`;
+
 // export const SERIES = gql`
 //   query Season($showId: Int!) {
 //     show(id: $showId) {
@@ -178,3 +197,15 @@ export const CURRENT_SERIAS = gql`
 //     }
 //   }
 // `;
+
+export const MARK_SERIES_VIEWED = gql`
+  mutation SeriesViewed($id: Int!) {
+    markSeriesAsViewed(id: $id)
+  }
+`;
+
+export const SERIES_IS_VIEWED = gql`
+  query SeriesIsViewed($id: Int!) {
+    seriesIsViewed(id: $id)
+  }
+`;

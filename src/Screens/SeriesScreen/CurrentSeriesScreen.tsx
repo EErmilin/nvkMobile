@@ -22,6 +22,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import BottomSheet from '../../components/BottomSheet';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
+import {useMovieViewed} from '../../helpers/useMovieViewed';
 
 //mock data
 const data = [1];
@@ -74,8 +75,15 @@ export const CurrentSeriesScreen: FC<
   const {serialData, url, content} = routes.params;
   const dispatch = useAppDispatch();
   const reviews = useAppSelector(state => state.screens.reviews);
+
+  const {isViewed, fetchViewed, markAsView} = useMovieViewed(
+    serialData.series?.id,
+    'SERIES',
+  );
+
   React.useEffect(() => {
     dispatch(getReviews({where: {seriesId: serialData.series?.id}}));
+    fetchViewed();
   }, []);
 
   const openModal = () => {
@@ -130,25 +138,31 @@ export const CurrentSeriesScreen: FC<
               </RegularText>
             </Animated.View>
           </Animated.View>
-          {/* <Animated.View style={{flexDirection: 'row', gap: 15}}>
-            <TouchableOpacity style={styles.btn}>
+          <Animated.View style={{flexDirection: 'row', gap: 15}}>
+            {/* <TouchableOpacity style={styles.btn}>
               <MediumText style={styles.textColor}>Смотреть</MediumText>
               <MediumText style={styles.textColor} fontSize={12}>
                 За {item.price} p
               </MediumText>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
+              onPress={markAsView}
+              disabled={isViewed}
               style={[
                 styles.btn,
                 styles.btnOutlined,
+                isViewed && styles.btnDisabled,
                 {flexDirection: 'row', gap: 8},
               ]}>
-              <MediumText style={styles.textColorOutlined}>
+              <MediumText
+                style={
+                  isViewed ? styles.textColorDisabled : styles.textColorOutlined
+                }>
                 Просмотрен
               </MediumText>
-              <ViewedIcon color={colors.colorMain} />
+              <ViewedIcon color={isViewed ? colors.gray : colors.colorMain} />
             </TouchableOpacity>
-          </Animated.View> */}
+          </Animated.View>
           <Animated.View
             style={{
               borderBottomColor: colors.borderPrimary,
@@ -325,6 +339,10 @@ const styles = StyleSheet.create({
     borderColor: colors.orange,
     borderWidth: 1,
   },
+  btnDisabled: {
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+  },
   smallBtn: {
     borderRadius: 10,
     paddingVertical: 5,
@@ -338,6 +356,9 @@ const styles = StyleSheet.create({
   },
   textColorOutlined: {
     color: colors.orange,
+  },
+  textColorDisabled: {
+    color: colors.gray,
   },
   box: {
     backgroundColor: colors.white,
