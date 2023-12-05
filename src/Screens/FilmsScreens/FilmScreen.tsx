@@ -30,6 +30,7 @@ import Toast from 'react-native-toast-message';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 import {setLogged} from '../../redux/slices/authSlice';
 import {useMovieViewed} from '../../helpers/useMovieViewed';
+import { createReview } from '../../redux/thunks/review/CreateReview';
 
 //mock data
 
@@ -43,7 +44,8 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
     route.params.id,
     'MOVIE',
   );
-
+  const id = route.params?.id!;
+  const idField = route.params?.idField;
   const reviews = useAppSelector(state => state.screens.reviews ?? []);
   React.useEffect(() => {
     dispatch(getReviews({where: {movieId: filmRedux?.id}}));
@@ -73,11 +75,32 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
     })();
   }, [update]);
 
+  const userId = useAppSelector(state => state.user.data?.id);
+  const onReview = async (comment: string, vote: number) => {
+    console.log('CREATE REVIEW');
+    if (!userId) return;
+    const data = await dispatch(
+      createReview({
+        comment,
+        vote,
+        userId: userId,
+      }),
+    );
+    await dispatch(
+      getReviews({
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    );
+    console.log(data);
+  };
+
   if (!filmRedux) return;
 
   return (
     <SafeAreaView style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
-      <BottomSheet name={'film'} ref={bottomSheetRef} />
+      <BottomSheet name={'film'} ref={bottomSheetRef}  onReview={(comment, vote) => onReview(comment, vote)} />
       <ScrollView>
         {filmRedux ? (
           <VideoPlayer urls={{url: filmRedux?.media?.indexM3u8Url, hls: []}} />

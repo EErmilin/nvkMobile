@@ -24,12 +24,15 @@ import {useSelector} from 'react-redux';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 import {useMovieViewed} from '../../helpers/useMovieViewed';
+import { createReview } from '../../redux/thunks/review/CreateReview';
 
 export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
   const {colors} = useTheme();
   const navigation = useNavigation();
   const routes = useRoute();
   const bottomSheetRef = React.useRef();
+  const idField = routes.params?.idField;
+  const id = routes.params?.id!;
   //   const {reviewSheet} = useSelector(state => state.bottomSheet);
   const {cartoon, season, episode} = routes.params;
 
@@ -56,10 +59,34 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
   const openModal = () => {
     bottomSheetRef?.current?.open();
   };
+  const userId = useAppSelector(state => state.user.data?.id);
+  const onReview = async (comment: string, vote: number) => {
+    console.log('CREATE REVIEW');
+    if (!userId) return;
+    const data = await dispatch(
+      createReview({
+        comment,
+        vote,
+        userId: userId,
+        [idField]: id,
+      }),
+    );
+    await dispatch(
+      getReviews({
+        where: {[idField]: id},
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    );
+    console.log(data);
+  };
 
   return (
     <SafeAreaView style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
-      <BottomSheet name={'cartoon'} ref={bottomSheetRef} />
+      <BottomSheet name={'cartoon'} 
+        ref={bottomSheetRef}
+        onReview={(comment, vote) => onReview(comment, vote)} />
       <ScrollView>
         {!!episode?.media ? (
           <VideoPlayer urls={{url: episode?.media?.indexM3u8Url, hls: []}} />

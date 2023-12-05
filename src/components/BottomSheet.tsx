@@ -71,6 +71,8 @@ const BottomSheet = forwardRef(
     }));
     //leave Comment and close bottomSheet
     const publishReviewHandler = (rank: number, comment: string) => {
+      console.log(rank)
+      console.log(comment)
       console.log(rank, comment);
       onReview(comment, rank);
       if (ref) {

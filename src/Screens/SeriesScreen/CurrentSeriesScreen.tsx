@@ -23,6 +23,7 @@ import BottomSheet from '../../components/BottomSheet';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 import {useMovieViewed} from '../../helpers/useMovieViewed';
+import { createReview } from '../../redux/thunks/review/CreateReview';
 
 //mock data
 const data = [1];
@@ -90,10 +91,32 @@ export const CurrentSeriesScreen: FC<
     bottomSheetRef?.current?.open();
   };
 
+  
+  const userId = useAppSelector(state => state.user.data?.id);
+  const onReview = async (comment: string, vote: number) => {
+    console.log('CREATE REVIEW');
+    if (!userId) return;
+    const data = await dispatch(
+      createReview({
+        comment,
+        vote,
+        userId: userId,
+      }),
+    );
+    await dispatch(
+      getReviews({
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    );
+    console.log(data);
+  };
+
   console.log(serialData?.series);
   return (
     <SafeAreaView style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
-      <BottomSheet name={'serial'} ref={bottomSheetRef} />
+      <BottomSheet name={'serial'} ref={bottomSheetRef}     onReview={(comment, vote) => onReview(comment, vote)}/>
       <ScrollView>
         {data.length ? (
           <VideoPlayer
