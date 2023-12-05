@@ -113,7 +113,7 @@ const RankComponent = ({
   }, [translateButton]);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: colors.bgSecondary}}>
       {/* Rank items */}
       <View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -152,6 +152,7 @@ const RankComponent = ({
               multiline
               onChangeText={e => setComment(e)}
               style={[
+                
                 styles.inputText,
                 // {
                 //   backgroundColor: colors.input,
@@ -162,6 +163,7 @@ const RankComponent = ({
                 //     : colors.borderPrimary,
                 //   color: colors.textPrimary,
                 // },
+                {color: colors.bl}
               ]}
               placeholder="Отзыв. (минимум 50 символов)"
             />

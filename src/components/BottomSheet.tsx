@@ -19,18 +19,18 @@ import Animated, {
   withTiming,
   runOnJS,
 } from 'react-native-reanimated';
-import {Gesture, GestureDetector} from 'react-native-gesture-handler';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {colors, useTheme} from '../Styles/Styles';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { colors, useTheme } from '../Styles/Styles';
 import BoldText from './BoldText';
-import {Rating} from './Rating';
+import { Rating } from './Rating';
 import RankComponent from './RankComponent';
 
-import {useDispatch} from 'react-redux';
-import {setOpen} from '../redux/slices/bottomSheetSlice';
+import { useDispatch } from 'react-redux';
+import { setOpen } from '../redux/slices/bottomSheetSlice';
 import MediumText from './MediumText';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export type BottomSheetHandle = {
   open: () => void;
@@ -46,12 +46,12 @@ interface IProps {
 }
 
 const BottomSheet = forwardRef(
-  ({name, activeReview, imageUrl, year, onReview}: IProps, ref) => {
+  ({ name, activeReview, imageUrl, year, onReview }: IProps, ref) => {
     const modalRef = useRef(null);
     const insets = useSafeAreaInsets();
     //state
     const [keyboardVisible, setKeyboardVisible] = useState(false);
-const {colors} = useTheme()
+    const { colors } = useTheme()
     //shared Value
     const translateYR = useSharedValue(0);
     const scrollContentY = useSharedValue(0);
@@ -99,7 +99,7 @@ const {colors} = useTheme()
       })
       .onFinalize(event => {
         if (event.velocityY > 600) {
-          translateYR.value = withTiming(0, {duration: 300}, () => {
+          translateYR.value = withTiming(0, { duration: 300 }, () => {
             runOnJS(resetHeaderState)(true);
           });
         } else {
@@ -166,30 +166,29 @@ const {colors} = useTheme()
         keyboardDidHideListener.remove();
       };
     }, [handleKeyboardVisibility, scrollContentY]);
-
     return (
       <GestureDetector gesture={pan}>
         <Animated.View
           style={[
             styles.container,
             {
-
+              backgroundColor: colors.bgSecondary,
               paddingTop: Platform.OS === 'ios' ? insets.top : 12,
               paddingBottom: Platform.OS === 'ios' ? insets.bottom : 12,
             },
             {
-              transform: [{translateY: translateYR}],
+              transform: [{ translateY: translateYR }],
             },
           ]}
           ref={modalRef}>
           <Animated.View
             style={[
               styles.contentContainer,
-              Platform.OS === 'ios' ? {marginTop: scrollContentY} : null,
+              Platform.OS === 'ios' ? { marginTop: scrollContentY } : null,
             ]}>
             <Pressable onPress={() => Keyboard.dismiss()}>
               <View style={styles.drag} />
-              <BoldText fontSize={18} style={{textAlign: 'center'}}>
+              <BoldText fontSize={18} style={{ textAlign: 'center' }}>
                 Оценить
               </BoldText>
               <View style={styles.movieInfo}>
@@ -200,11 +199,11 @@ const {colors} = useTheme()
                   style={styles.poster}
                 />
                 <View>
-                  <View style={{alignSelf: 'flex-start'}}>
+                  <View style={{ alignSelf: 'flex-start' }}>
                     <Rating isStar />
                   </View>
 
-                  <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+                  <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
                     <BoldText fontSize={18}>{name}</BoldText>
                     <MediumText
                       style={{
