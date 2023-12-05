@@ -11,7 +11,6 @@
 		07CB753DB03141E5A76FE529 /* NotoSans-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B640DF6AF2534B339462849E /* NotoSans-ExtraLightItalic.ttf */; };
 		0DE7965229E6859D0022B2FF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0DE7965129E6859D0022B2FF /* GoogleService-Info.plist */; };
 		10D1A6D9B10D4223A7B5569D /* NotoSans-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5663F4AF45EE403987C3E6B6 /* NotoSans-Black.ttf */; };
-		1229AAAE0E3AD7274E9C3FD0 /* libPods-NVKSakha-NVKSakhaTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 160BF868D5D2BFE1088D1294 /* libPods-NVKSakha-NVKSakhaTests.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -22,7 +21,9 @@
 		6E0D0839859F4BE69AAA8B36 /* NotoSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69D6685557F64BF69388F1C9 /* NotoSans-Light.ttf */; };
 		7C07442529D672C000A5737A /* dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C07442429D672C000A5737A /* dummy.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		87568E610A44CD25E9B82EB3 /* Pods_NVKSakha_NVKSakhaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF9324EC4B9939FD11FA1C31 /* Pods_NVKSakha_NVKSakhaTests.framework */; };
 		95A5D992C88B4B01B4344113 /* NotoSans-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A4A85E3E4354BA2A9F6554C /* NotoSans-BlackItalic.ttf */; };
+		A2967983F8A2C27FE39DAF3E /* Pods_NVKSakha.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5EFA48206F47516924DF1A5 /* Pods_NVKSakha.framework */; };
 		B08D8E81D0134DCF9C077D85 /* NotoSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 302FFA88B8B04EF7B2CD28C4 /* NotoSans-Medium.ttf */; };
 		B865DA41531243009E13CC59 /* NotoSans-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DFE6E0B8B6E54CA3A661E960 /* NotoSans-Thin.ttf */; };
 		BE459CF49E054A779EAE4248 /* NotoSans-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8C5F4A1EA0A34CB99C3D396A /* NotoSans-SemiBoldItalic.ttf */; };
@@ -33,7 +34,6 @@
 		E49A47F597A3464982C2B9D4 /* NotoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 86391FFDF03E46CC9F20E49D /* NotoSans-SemiBold.ttf */; };
 		EB4B2587BBCB4F6FB34A8C47 /* NotoSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F6353CF5FBB4C0895418AD4 /* NotoSans-BoldItalic.ttf */; };
 		F2B4CDBF48214E3ABF1177C6 /* NotoSans-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A4373E6AD7894F35A8997B14 /* NotoSans-ExtraBoldItalic.ttf */; };
-		F5723F7D09861C7FD300A947 /* libPods-NVKSakha.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA6A1304842D4B53EB3152F3 /* libPods-NVKSakha.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,7 +59,6 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = NVKSakha/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = NVKSakha/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = NVKSakha/main.m; sourceTree = "<group>"; };
-		160BF868D5D2BFE1088D1294 /* libPods-NVKSakha-NVKSakhaTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NVKSakha-NVKSakhaTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		302FFA88B8B04EF7B2CD28C4 /* NotoSans-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-Medium.ttf"; path = "../src/assets/fonts/NotoSans-Medium.ttf"; sourceTree = "<group>"; };
 		46F86492E2ED43C1A6092FBC /* NotoSans-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-ExtraLight.ttf"; path = "../src/assets/fonts/NotoSans-ExtraLight.ttf"; sourceTree = "<group>"; };
 		5332505C591E60E962B2DF96 /* Pods-NVKSakha-NVKSakhaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NVKSakha-NVKSakhaTests.release.xcconfig"; path = "Target Support Files/Pods-NVKSakha-NVKSakhaTests/Pods-NVKSakha-NVKSakhaTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -78,13 +77,14 @@
 		9C49DE076EFD4883A9571558 /* NotoSans-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-Italic.ttf"; path = "../src/assets/fonts/NotoSans-Italic.ttf"; sourceTree = "<group>"; };
 		A4373E6AD7894F35A8997B14 /* NotoSans-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-ExtraBoldItalic.ttf"; path = "../src/assets/fonts/NotoSans-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		AA31BE3F442A4A04AD782E03 /* NotoSans-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-ThinItalic.ttf"; path = "../src/assets/fonts/NotoSans-ThinItalic.ttf"; sourceTree = "<group>"; };
+		AF9324EC4B9939FD11FA1C31 /* Pods_NVKSakha_NVKSakhaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NVKSakha_NVKSakhaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B640DF6AF2534B339462849E /* NotoSans-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-ExtraLightItalic.ttf"; path = "../src/assets/fonts/NotoSans-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
 		C4638520860E9E0CFBE1C953 /* Pods-NVKSakha-NVKSakhaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NVKSakha-NVKSakhaTests.debug.xcconfig"; path = "Target Support Files/Pods-NVKSakha-NVKSakhaTests/Pods-NVKSakha-NVKSakhaTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D6DAA28196EB47059DBEE32F /* NotoSans-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-MediumItalic.ttf"; path = "../src/assets/fonts/NotoSans-MediumItalic.ttf"; sourceTree = "<group>"; };
 		DFE6E0B8B6E54CA3A661E960 /* NotoSans-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-Thin.ttf"; path = "../src/assets/fonts/NotoSans-Thin.ttf"; sourceTree = "<group>"; };
 		E29B8AF8C2754E16BCD597A5 /* NotoSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-Regular.ttf"; path = "../src/assets/fonts/NotoSans-Regular.ttf"; sourceTree = "<group>"; };
-		EA6A1304842D4B53EB3152F3 /* libPods-NVKSakha.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NVKSakha.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F5EFA48206F47516924DF1A5 /* Pods_NVKSakha.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NVKSakha.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB71F1C7BDE04AF198CF7E71 /* NotoSans-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSans-ExtraBold.ttf"; path = "../src/assets/fonts/NotoSans-ExtraBold.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -93,7 +93,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1229AAAE0E3AD7274E9C3FD0 /* libPods-NVKSakha-NVKSakhaTests.a in Frameworks */,
+				87568E610A44CD25E9B82EB3 /* Pods_NVKSakha_NVKSakhaTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,7 +101,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5723F7D09861C7FD300A947 /* libPods-NVKSakha.a in Frameworks */,
+				A2967983F8A2C27FE39DAF3E /* Pods_NVKSakha.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,8 +144,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				EA6A1304842D4B53EB3152F3 /* libPods-NVKSakha.a */,
-				160BF868D5D2BFE1088D1294 /* libPods-NVKSakha-NVKSakhaTests.a */,
+				F5EFA48206F47516924DF1A5 /* Pods_NVKSakha.framework */,
+				AF9324EC4B9939FD11FA1C31 /* Pods_NVKSakha_NVKSakhaTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -597,19 +597,21 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = NVKSakha/NVKSakha.entitlements;
-				CURRENT_PROJECT_VERSION = 66;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 71;
 				DEVELOPMENT_TEAM = 92D336K3CT;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64";
 				INFOPLIST_FILE = NVKSakha/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "НВК";
 				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.9;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -617,6 +619,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.nvksakha;
 				PRODUCT_NAME = NVKSakha;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "NVKSakha-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -632,19 +635,21 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = NVKSakha/NVKSakha.entitlements;
-				CURRENT_PROJECT_VERSION = 66;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 71;
 				DEVELOPMENT_TEAM = 92D336K3CT;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64";
 				INFOPLIST_FILE = NVKSakha/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "НВК";
 				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.9;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -652,6 +657,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.nvksakha;
 				PRODUCT_NAME = NVKSakha;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "NVKSakha-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -699,6 +705,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -724,6 +731,11 @@
 					"-DFOLLY_NO_CONFIG",
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl",
+					"-ld_classic",
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
@@ -766,6 +778,10 @@
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -788,6 +804,11 @@
 					"-DFOLLY_NO_CONFIG",
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl",
+					"-ld_classic",
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;

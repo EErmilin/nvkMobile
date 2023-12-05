@@ -1,8 +1,8 @@
 #import "AppDelegate.h"
+#import <Firebase.h>
 
 #import <React/RCTBundleURLProvider.h>
 #import "RNSplashScreen.h"
-#import <Firebase.h>
 #import <GoogleCast/GoogleCast.h>
 #import "RNFBMessagingModule.h"
 #import "Orientation.h"

@@ -20,7 +20,6 @@ import {Divider} from '../../../components/Divider';
 import {Button} from '../../../components/Button';
 // import {BookMark} from '../../../components/SVGcomponents/Bookmark';
 import {FlatList} from 'react-native-gesture-handler';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {
   IBroadcast,
   IHlsBroadcast,

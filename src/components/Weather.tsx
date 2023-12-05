@@ -106,7 +106,7 @@ const Weather: React.FC<WeatherProps> = props => {
           platform: Platform.OS,
           device_id: !user ? DeviceInfo.getDeviceId() : undefined,
           app_version: DeviceInfo.getVersion(),
-        });
+        }).then(response => console.log(response));
         await Linking.openURL('https://yandex.ru/pogoda/');
       }}
       style={[

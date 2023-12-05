@@ -153,7 +153,11 @@ export const VideoPost = (props: VideoPlayerProps) => {
             }}
             posterResizeMode="cover"
             playWhenInactive
-            playInBackground={false}
+            playInBackground={true}
+            onPictureInPictureStatusChanged={({isActive}) => {
+              console.log('isPipActive', isActive);
+            }}
+            pictureInPicture
           />
         )}
         <Animated.View

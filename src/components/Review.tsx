@@ -4,9 +4,9 @@ import {colors, useTheme} from '../Styles/Styles';
 import {Avatar} from './Avatar';
 import {BoldText, MediumText, RegularText} from './index';
 import {Rating} from './Rating';
-
-export const Review = ({item, cardWidth}: any) => {
-  const{colors} = useTheme()
+  
+export const Review = ({item, cardWidth, numberOfLines}: any) => {
+const{colors} = useTheme()
   return (
     <View style={[styles.container, cardWidth && {width: null}, {backgroundColor: colors.bgPrimary}]}>
       <View
@@ -22,7 +22,7 @@ export const Review = ({item, cardWidth}: any) => {
         <Rating rating={item.vote} isStar />
       </View>
       <View>
-        <MediumText>{item.comment}</MediumText>
+        <MediumText numberOfLines={numberOfLines}>{item.comment}</MediumText>
       </View>
       <View style={{justifyContent: 'flex-end'}}>
         <MediumText style={{color: colors.gray}}>{item.date}</MediumText>

@@ -193,7 +193,10 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
       backAction,
     );
 
-    return () => backHandler.remove();
+    return () => {
+      backHandler.remove();
+      console.log('exit');
+    };
   }, [contextNavBar, fullscreen, handleDisFullScreen, navigationOption]);
 
   // ==============Tap Controll Funtion
@@ -427,7 +430,6 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
                 await TrackPlayer.pause();
               }
             }}
-            automaticallyWaitsToMinimizeStalling
             preferredForwardBufferDuration={500}
             fullscreen={Platform.OS === 'android' ? fullscreen : false}
             paused={
@@ -449,13 +451,18 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
               setDuration(data.duration);
             }}
             onEnd={() => {
+              console.log('onEnd');
               setPaused(true);
               handleDisFullScreen();
             }}
-            posterResizeMode="cover"
-            playWhenInactive
-            pictureInPicture
-            playInBackground={false}
+            pictureInPicture={true}
+            onPictureInPictureStatusChanged={props => {
+              console.log('isPipActive', props);
+              //setIsPictureInPicture(true);
+            }}
+            playInBackground={true}
+            // playWhenInactive
+            //controls
           />
           <Animated.View
             pointerEvents={!touch ? 'none' : undefined}

@@ -16,7 +16,6 @@ import {
   useNavigation,
   useNavigationState,
 } from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 
 import {BoldText, Button, VideoFullPlayer} from '../../components';
@@ -104,6 +103,7 @@ import {SubscriptionsScreen} from '../../Screens/ProfilesScreen/SubscriptionsScr
 import {Main} from '../../Screens/TabsScreens/Main';
 import CreatePost from '../../Screens/CreatePost';
 import {publishPost} from '../../redux/thunks/post/PublishPost';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 LogBox.ignoreAllLogs();
 

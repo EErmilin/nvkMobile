@@ -257,7 +257,9 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
           <ScrollView horizontal>
             <Animated.View style={{flexDirection: 'row', gap: 16}}>
               {!!reviews?.length ? (
-                reviews.map(item => <Review key={item.id} item={item} />)
+                reviews.map(item => (
+                  <Review key={item.id} item={item} numberOfLines={5} />
+                ))
               ) : (
                 <ActivityIndicator color={colors.colorMain} size={'large'} />
               )}

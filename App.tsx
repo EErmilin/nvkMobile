@@ -19,6 +19,8 @@ import {YANDEX_APPMETRICA_API_KEY} from './src/api/config';
 import {TrackPlayerReset} from './src/services/service';
 import {MenuProvider} from 'react-native-popup-menu';
 
+console.log('appMetrica', AppMetrica);
+
 export default function App() {
   const tempRef = React.useRef(false);
 
