@@ -136,7 +136,7 @@ const BlogerProfile: FC<RootNavigationProps<'BlogerProfile'>> = ({
   }, []);
 
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
       <CollapsibleHeaderTabView
         renderScrollHeader={() => <BlogerProfileHead openSocial={openSocial} />}
         navigationState={{ index, routes }}

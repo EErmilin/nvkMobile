@@ -96,7 +96,7 @@ export const themeColors = {
     buffer: '#F8F8F8',
     skeletonBg: '#FFFFFF',
     skeletonFg: '#e6e6e6',
-
+bl: '#000',
     textPrimary: '#0F0A07',
     textSecondary: '#BBBBBB',
     colorMain: '#F6A80B',
@@ -111,6 +111,7 @@ export const themeColors = {
     success: '#55B88B',
   },
   dark: {
+    bl: '#FFF',
     white: '#FFFFFF',
     orange: '#F6A80B',
     black: '#0F0A07',

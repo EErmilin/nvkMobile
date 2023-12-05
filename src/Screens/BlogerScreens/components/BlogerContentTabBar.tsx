@@ -4,6 +4,7 @@ import BlogerProfile_Photo_icon from '../../../assets/icons/BlogerProfile_Photo_
 import BlogerProfile_Video_icon from '../../../assets/icons/BlogerProfile_Video_icon';
 import BlogerProfile_Audio_icon from '../../../assets/icons/BlogerProfile_Audio_icon';
 import BlogerProfile_Bottom_icon from '../../../assets/icons/BlogerProfile_Bottom_icon';
+import { useTheme } from '../../../Styles/Styles';
 
 interface BlogerContentTabBarProps {
   tabs: string[];
@@ -16,8 +17,9 @@ const BlogerContentTabBar: React.FC<BlogerContentTabBarProps> = ({
   activeTab,
   goToPage,
 }) => {
+  const {colors} = useTheme()
   return (
-    <View style={{flexDirection: 'row', backgroundColor: '#fff'}}>
+    <View style={{flexDirection: 'row', backgroundColor: colors.bgSecondary}}>
       {tabs.map((tab, index) => (
         <TouchableOpacity
           key={index}
