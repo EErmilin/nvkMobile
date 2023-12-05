@@ -21,6 +21,16 @@ import {EmptyImage} from './EmptyImage';
 import {getDate} from '../helpers/getDate';
 import {setLogged} from '../redux/slices/authSlice';
 import {VideoPost} from './VideoPost';
+import {DotsVertical} from './SVGcomponents';
+import {
+  Menu,
+  MenuTrigger,
+  MenuOptions,
+  MenuOption,
+} from 'react-native-popup-menu';
+import {useMutation} from '@apollo/client';
+import {DELETE_POST} from '../gql/mutation/post/DeletePost';
+import {removePost} from '../redux/slices/postSlice';
 
 interface PostItemProps {
   post: IPost;
@@ -47,6 +57,10 @@ export const PostItem = ({
   React.useEffect(() => {
     setLike(favorites.map(favorite => favorite.post?.id).includes(post.id));
   }, [favorites, post.id]);
+
+  const authorId = useAppSelector(state => state.user.author?.author?.id);
+
+  const [deletePost] = useMutation(DELETE_POST);
 
   return (
     <View
@@ -81,6 +95,31 @@ export const PostItem = ({
             <BoldText fontSize={12}>{post.author.nickname}</BoldText>
           </View>
         </TouchableOpacity>
+
+        {authorId && post.authorId === authorId && (
+          <Menu>
+            <MenuTrigger>
+              <DotsVertical />
+            </MenuTrigger>
+            <MenuOptions
+              optionsContainerStyle={{
+                backgroundColor: colors.bgSecondary,
+                marginTop: 32,
+              }}>
+              <MenuOption
+                onSelect={async () => {
+                  await deletePost({
+                    variables: {id: post.id},
+                  });
+                  dispatch(removePost(post.id));
+                }}>
+                <BoldText style={{color: colors.textPrimary, paddingLeft: 8}}>
+                  Удалить
+                </BoldText>
+              </MenuOption>
+            </MenuOptions>
+          </Menu>
+        )}
       </View>
       <RenderContent inSight={inSight} post={post} navigation={navigation} />
       <TouchableOpacity

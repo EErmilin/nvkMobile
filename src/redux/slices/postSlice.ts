@@ -10,6 +10,7 @@ import {updateHashtag, updateUser} from '../thunks/user/UpdateUser';
 
 const initialState: IPostState = {
   data: [],
+  removedPosts: [],
 };
 
 const postSlice = createSlice({
@@ -17,10 +18,15 @@ const postSlice = createSlice({
   initialState,
   reducers: {
     setPosts: (state, action) => {
+      state.removedPosts = [];
       state.data = action.payload;
     },
     clearPosts: state => {
+      state.removedPosts = [];
       state.data = [];
+    },
+    removePost: (state, action: {payload: number}) => {
+      state.removedPosts = [...state.removedPosts, action.payload];
     },
   },
   extraReducers: builder => {
@@ -80,5 +86,5 @@ const postSlice = createSlice({
   },
 });
 
-export const {setPosts, clearPosts} = postSlice.actions;
+export const {setPosts, clearPosts, removePost} = postSlice.actions;
 export default postSlice.reducer;

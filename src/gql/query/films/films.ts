@@ -14,15 +14,8 @@ export const GET_MOVIES = gql`
         url
         url_512
       }
-      rating {
-        id
-        createdAt
-        updatedAt
-        showId
-        animationId
-        movieId
-        seriesId
-      }
+      ratingKinopoisk
+      ratingNvk
     }
   }
 `;
@@ -41,6 +34,8 @@ export const GET_MOVIE = gql`
       }
       kinoPoisk_url
       kinoPoisk
+      ratingKinopoisk
+      ratingNvk
       age
       language
       country
@@ -64,5 +59,17 @@ export const GET_MOVIE = gql`
         }
       }
     }
+  }
+`;
+
+export const MARK_MOVIE_VIEWED = gql`
+  mutation MovieViewed($id: Int!) {
+    markMoviesAsViewed(id: $id)
+  }
+`;
+
+export const MOVIE_IS_VIEWED = gql`
+  query MovieIsViewed($id: Int!) {
+    movieIsViewed(id: $id)
   }
 `;

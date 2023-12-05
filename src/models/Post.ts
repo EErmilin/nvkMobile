@@ -94,4 +94,5 @@ export interface ICreatePostArg {
   content?: string;
   imageIds?: number[];
   published: boolean;
+  mediaId?: number;
 }

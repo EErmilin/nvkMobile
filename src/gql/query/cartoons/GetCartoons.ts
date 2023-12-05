@@ -7,6 +7,7 @@ export const GET_CARTOONS = gql`
     $where: AnimationWhereInput
   ) {
     animations(take: $take, orderBy: $orderBy, where: $where) {
+      id
       age
       content
       country
@@ -18,6 +19,7 @@ export const GET_CARTOONS = gql`
       views
       content
       ratingKinopoisk
+      ratingNvk
       animationSeasons {
         id
         name
@@ -36,5 +38,18 @@ export const GET_CARTOONS = gql`
         url
       }
     }
+  }
+`;
+
+
+export const MARK_ANIMATION_VIEWED = gql`
+  mutation AnimationViewed($id: Int!) {
+    markAnimationAsViewed(id: $id)
+  }
+`;
+
+export const ANIMATION_IS_VIEWED = gql`
+  query AnimationIsViewed($id: Int!) {
+    animationIsViewed(id: $id)
   }
 `;

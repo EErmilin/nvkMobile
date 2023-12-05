@@ -23,6 +23,7 @@ import BottomSheet from '../../components/BottomSheet';
 import {useSelector} from 'react-redux';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
+import {useMovieViewed} from '../../helpers/useMovieViewed';
 
 export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
   const {colors} = useTheme();
@@ -43,7 +44,13 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
         },
       }),
     );
+    fetchViewed();
   }, []);
+
+  const {isViewed, fetchViewed, markAsView} = useMovieViewed(
+    cartoon?.id,
+    'ANIMATION',
+  );
 
   // console.log(url);
   const openModal = () => {
@@ -91,25 +98,32 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
               </RegularText>
             </Animated.View>
           </Animated.View>
-          {/* <Animated.View style={{flexDirection: 'row', gap: 15}}>
-            <TouchableOpacity style={styles.btn}>
+          <Animated.View style={{flexDirection: 'row', gap: 15}}>
+            {/* <TouchableOpacity style={styles.btn}>
               <MediumText style={styles.textColor}>Смотреть</MediumText>
               <MediumText style={styles.textColor} fontSize={12}>
                 За {item.price} p
               </MediumText>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
+              onPress={markAsView}
+              disabled={isViewed}
               style={[
                 styles.btn,
                 styles.btnOutlined,
+                isViewed && styles.btnDisabled,
                 {flexDirection: 'row', gap: 8},
               ]}>
-              <MediumText style={styles.textColorOutlined}>
+              <MediumText
+                style={
+                  isViewed ? styles.textColorDisabled : styles.textColorOutlined
+                }>
                 Просмотрен
               </MediumText>
-              <ViewedIcon color={colors.colorMain} />
+              <ViewedIcon color={isViewed ? colors.gray : colors.colorMain} />
             </TouchableOpacity>
-          </Animated.View> */}
+          </Animated.View>
+
           <Animated.View
             style={{
               borderBottomColor: colors.borderPrimary,
@@ -156,26 +170,46 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
               <MediumText style={styles.textColor}>Русские</MediumText>
             </TouchableOpacity>
           </Animated.View> */}
-          <Animated.View style={styles.box}>
-            <Animated.View style={styles.flexBetween}>
-              <Animated.View style={{flexDirection: 'row', gap: 15}}>
-                <Animated.View style={styles.rating}>
-                  <BoldText style={{color: colors.white}} fontSize={16}>
-                    {cartoon.ratingKinopoisk.toString()}
-                  </BoldText>
+          <Animated.View style={{gap: 10}}>
+            <Animated.View style={styles.box}>
+              <Animated.View style={styles.flexBetween}>
+                <Animated.View style={{flexDirection: 'row', gap: 15}}>
+                  <Animated.View style={styles.rating}>
+                    <BoldText style={{color: colors.white}} fontSize={16}>
+                      {cartoon?.ratingKinopoisk?.toFixed(1) ?? '-'}
+                    </BoldText>
+                  </Animated.View>
+                  <Animated.View>
+                    <BoldText>Рейтинг Кинопоиск</BoldText>
+                    {/* <RegularText fontSize={12}>
+                      {filmRedux.reviews_kinopoisk} отзывов
+                    </RegularText> */}
+                  </Animated.View>
                 </Animated.View>
-                <Animated.View>
-                  <BoldText>Рейтинг НБК</BoldText>
-                  <RegularText fontSize={12}>
-                    {reviews.length} отзывов
-                  </RegularText>
-                </Animated.View>
+                <ArrowRight color={colors.colorMain} />
               </Animated.View>
-              <TouchableOpacity
-                style={[styles.smallBtn, styles.btnOutlined]}
-                onPress={openModal}>
-                <RegularText>Оценить</RegularText>
-              </TouchableOpacity>
+            </Animated.View>
+            <Animated.View style={styles.box}>
+              <Animated.View style={styles.flexBetween}>
+                <Animated.View style={{flexDirection: 'row', gap: 15}}>
+                  <Animated.View style={styles.rating}>
+                    <BoldText style={{color: colors.white}} fontSize={16}>
+                      {cartoon?.ratingNvk?.toFixed(1) ?? '-'}
+                    </BoldText>
+                  </Animated.View>
+                  <Animated.View>
+                    <BoldText>Рейтинг НВК</BoldText>
+                    {/* <RegularText fontSize={12}>
+                      {item.reviews_kinopoisk} отзывов
+                    </RegularText> */}
+                  </Animated.View>
+                </Animated.View>
+                <TouchableOpacity
+                  style={[styles.smallBtn, styles.btnOutlined]}
+                  onPress={openModal}>
+                  <RegularText>Оценить</RegularText>
+                </TouchableOpacity>
+              </Animated.View>
             </Animated.View>
           </Animated.View>
           <Animated.View style={styles.flexBetween}>
@@ -265,6 +299,10 @@ const styles = StyleSheet.create({
     borderColor: colors.orange,
     borderWidth: 1,
   },
+  btnDisabled: {
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+  },
   smallBtn: {
     borderRadius: 10,
     paddingVertical: 5,
@@ -278,6 +316,9 @@ const styles = StyleSheet.create({
   },
   textColorOutlined: {
     color: colors.orange,
+  },
+  textColorDisabled: {
+    color: colors.gray,
   },
   box: {
     backgroundColor: colors.white,

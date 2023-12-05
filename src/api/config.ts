@@ -9,6 +9,7 @@ export const TETIM_URL = 'https://icecast-saha.cdnvideo.ru/saha';
 export const API_URL = 'https://nvk-dev-backend.mobility.tw1.ru'; //'https://server.nvk-online.ru'; //'http://localhost:5000'; //'https://ddk-prod.ru';
 export const GRAPHQL_URL = API_URL + '/graphql';
 export const IMAGE_UPLOAD_URL = API_URL + '/upload-images';
+export const VIDEO_UPLOAD_URL = API_URL + '/hls';
 export const PASSWORD_LENGTH = 6;
 export const YANDEX_APPMETRICA_API_KEY = '5da17acf-7510-4fa0-b24e-b4563733aefc';
 

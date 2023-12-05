@@ -21,9 +21,9 @@ export const LayoutVideoItem = ({item, height, heightImage}: Props) => {
             uri: (item?.cover?.url ?? item?.image?.url) || '',
           }}
           resizeMode={'cover'}
-          style={[styles.image, {height: "100%"}]}>
+          style={[styles.image, {height: '100%'}]}>
           <View style={styles.rating}>
-            <Rating rating={5.2} isStar={false} />
+            <Rating rating={item.ratingNvk?.toFixed(1) ?? '-'} isStar={false} />
           </View>
         </ImageBackground>
       </View>

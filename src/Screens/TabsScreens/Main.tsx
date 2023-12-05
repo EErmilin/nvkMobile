@@ -41,6 +41,7 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
   const musicContext = React.useContext(MusicPlayerContext);
   const [posts, setPosts] = React.useState<IPost[]>([]);
   const lastId = useAppSelector(state => state.createPost.lastId);
+  const removedPosts = useAppSelector(state => state.post.removedPosts);
   // const responsePost = React.useCallback(async () => {
   //   console.log({
   //     take: TAKE,
@@ -115,10 +116,14 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
 
   const sortedPosts = React.useMemo(() => {
     let temp = [...posts];
-    return temp.sort(function (a, b) {
-      return new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf();
-    });
-  }, [posts]);
+    return temp
+      .filter(p => !removedPosts.includes(p.id))
+      .sort(function (a, b) {
+        return (
+          new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
+        );
+      });
+  }, [posts, removedPosts]);
 
   React.useEffect(() => {
     getPosts();
@@ -201,12 +206,16 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
         })();
     }
   };
+
   if (!sortedPosts.length && loading) {
     return (
       <View style={{flex: 1, backgroundColor: colors.fillPrimary}}>
         <SafeAreaView />
         <SafeAreaView style={Style.container}>
-          <ScrollView>
+          <ScrollView
+            style={{
+              padding: props.route.params?.authorId ? 10 : 0,
+            }}>
             <View
               style={{
                 marginBottom: 10,
@@ -237,8 +246,14 @@ export const Main: React.FC<TabNavigationProps<'Main'>> = props => {
   return (
     <View style={{flex: 1, backgroundColor: colors.fillPrimary}}>
       <SafeAreaView />
-      <SafeAreaView style={Style.container}>
+      <SafeAreaView
+        style={{
+          ...Style.container,
+        }}>
         <ScrollView
+          style={{
+            padding: props.route.params?.authorId ? 10 : 0,
+          }}
           onScroll={handleScroll}
           keyboardShouldPersistTaps={'always'}
           onMomentumScrollEnd={handleMomentumScroll}

@@ -21,9 +21,15 @@ import MediumText from '../../components/MediumText';
 import {useNavigation} from '@react-navigation/native';
 import BottomSheet from '../../components/BottomSheet';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
-import {getFilm} from '../../redux/thunks/screens/getFilms/GetFilms';
+import {
+  getFilm,
+  markMovieViewed,
+  movieIsViewed,
+} from '../../redux/thunks/screens/getFilms/GetFilms';
 import Toast from 'react-native-toast-message';
-import { getReviews } from '../../redux/thunks/screens/getReviews/GetReviews';
+import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
+import {setLogged} from '../../redux/slices/authSlice';
+import {useMovieViewed} from '../../helpers/useMovieViewed';
 
 //mock data
 
@@ -33,8 +39,10 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
   const dispatch = useAppDispatch();
   const filmRedux = useAppSelector(state => state.screens.movie);
   const [isLoading, setIsLoading] = React.useState(false);
-  console.log('props');
-  console.log(filmRedux);
+  const {isViewed, fetchViewed, markAsView} = useMovieViewed(
+    route.params.id,
+    'MOVIE',
+  );
 
   const reviews = useAppSelector(state => state.screens.reviews ?? []);
   React.useEffect(() => {
@@ -51,6 +59,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
     try {
       setIsLoading(true);
       const response = await dispatch(getFilm({movieId: route.params.id}));
+      await fetchViewed();
     } catch (e) {
       Toast.show({type: 'error', text1: 'Что-то пошло не так'});
     } finally {
@@ -113,17 +122,23 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 За {filmRedux.price} p
               </MediumText>
         </TouchableOpacity> */}
-            {/*            <TouchableOpacity
+            <TouchableOpacity
+              onPress={markAsView}
+              disabled={isViewed}
               style={[
                 styles.btn,
                 styles.btnOutlined,
+                isViewed && styles.btnDisabled,
                 {flexDirection: 'row', gap: 8},
               ]}>
-              <MediumText style={styles.textColorOutlined}>
+              <MediumText
+                style={
+                  isViewed ? styles.textColorDisabled : styles.textColorOutlined
+                }>
                 Просмотрен
               </MediumText>
-              <ViewedIcon color={colors.colorMain} />
-            </TouchableOpacity> */}
+              <ViewedIcon color={isViewed ? colors.gray : colors.colorMain} />
+            </TouchableOpacity>
           </Animated.View>
           <Animated.View
             style={{
@@ -177,16 +192,14 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
                     <BoldText style={{color: colors.white}} fontSize={16}>
-                      {
-                        //filmRedux.rating_kinopoisk.toString()
-                      }
+                      {filmRedux.ratingKinopoisk ?? '-'}
                     </BoldText>
                   </Animated.View>
                   <Animated.View>
                     <BoldText>Рейтинг Кинопоиск</BoldText>
-                    <RegularText fontSize={12}>
+                    {/* <RegularText fontSize={12}>
                       {filmRedux.reviews_kinopoisk} отзывов
-                    </RegularText>
+                    </RegularText> */}
                   </Animated.View>
                 </Animated.View>
                 <ArrowRight color={colors.colorMain} />
@@ -197,13 +210,11 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
                 <Animated.View style={{flexDirection: 'row', gap: 15}}>
                   <Animated.View style={styles.rating}>
                     <BoldText style={{color: colors.white}} fontSize={16}>
-                      {
-                        //item.rating_nbk.toString()
-                      }
+                      {filmRedux.ratingNvk ?? '-'}
                     </BoldText>
                   </Animated.View>
                   <Animated.View>
-                    <BoldText>Рейтинг НБК</BoldText>
+                    <BoldText>Рейтинг НВК</BoldText>
                     <RegularText fontSize={12}>
                       {
                         //item.reviews_kinopoisk
@@ -307,6 +318,10 @@ const styles = StyleSheet.create({
     borderColor: colors.orange,
     borderWidth: 1,
   },
+  btnDisabled: {
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+  },
   smallBtn: {
     borderRadius: 10,
     paddingVertical: 5,
@@ -319,6 +334,9 @@ const styles = StyleSheet.create({
   },
   textColorOutlined: {
     color: colors.orange,
+  },
+  textColorDisabled: {
+    color: colors.gray,
   },
   box: {
     backgroundColor: colors.white,

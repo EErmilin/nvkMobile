@@ -17,6 +17,7 @@ import remoteConfig from '@react-native-firebase/remote-config';
 import AppMetrica from 'react-native-appmetrica-next';
 import {YANDEX_APPMETRICA_API_KEY} from './src/api/config';
 import {TrackPlayerReset} from './src/services/service';
+import {MenuProvider} from 'react-native-popup-menu';
 
 console.log('appMetrica', AppMetrica);
 
@@ -61,7 +62,9 @@ export default function App() {
             <BottomSheetModalProvider>
               <GestureHandlerRootView style={{flex: 1}}>
                 <SafeAreaProvider>
-                  <AppNavigation />
+                  <MenuProvider>
+                    <AppNavigation />
+                  </MenuProvider>
                 </SafeAreaProvider>
               </GestureHandlerRootView>
             </BottomSheetModalProvider>
