@@ -13,6 +13,7 @@ import {
 import {useAppSelector} from '../redux/hooks';
 import {setFilter} from '../redux/slices/filterSlice';
 import {getUpdateClient} from '../requests/updateHeaders';
+import { useTheme } from '../Styles/Styles';
 import BoldText from './BoldText';
 import FilterFooterButtons from './FilterFooterButtons';
 import FilterRenderItem from './FilterRenderItem';
@@ -46,6 +47,7 @@ const filterValues: Record<string, number[]> = {
 const FilterOption = ({page, type, onClose}: GenresFilterOptionsProps) => {
   const [checkArr, setCheckArr] = useState<string[] | number[] | null>(null);
   const {filters} = useAppSelector(state => state.filter.filters[type]);
+  const {colors} = useTheme()
 
   useEffect(() => {
     const doc = documents[page];
@@ -80,7 +82,7 @@ const FilterOption = ({page, type, onClose}: GenresFilterOptionsProps) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
       <View style={styles.title}>
         <BoldText>{page}</BoldText>
       </View>

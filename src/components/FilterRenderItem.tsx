@@ -69,12 +69,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   inActiveCheckBox: {
-    backgroundColor: colors.bluishGray,
+    backgroundColor: colors.secondaryGray,
   },
   ratio: {
     width: 28,
     height: 28,
-    backgroundColor: colors.bluishGray,
+    backgroundColor: colors.secondaryGray,
     borderRadius: 14,
   },
   ratioActive: {

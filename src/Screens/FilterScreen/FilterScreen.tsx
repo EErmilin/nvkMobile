@@ -155,8 +155,8 @@ const FilterScreen: FC<RootNavigationProps<'Filter'>> = ({
         </View>
       </Containter>
       {/* Modalize */}
-      <Modalize ref={modalizeRef} modalHeight={height} onClose={onClose}>
-        <Containter style={{flex: 1}}>
+      <Modalize ref={modalizeRef} modalHeight={height} onClose={onClose} modalStyle={{backgroundColor: colors.bgSecondary}}>
+        <Containter style={{flex: 1, backgroundColor: colors.bgSecondary}}>
           <SafeAreaView>
             <FilterOption
               page={page}
