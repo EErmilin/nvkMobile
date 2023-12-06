@@ -12,7 +12,7 @@ import {useRoute} from '@react-navigation/native';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {createReview} from '../../redux/thunks/review/CreateReview';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
-import { setLogged } from '../../redux/slices/authSlice';
+import {setLogged} from '../../redux/slices/authSlice';
 
 //dummy data
 
@@ -105,28 +105,6 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
     };
   }, []);
 
-  const onReview = async (comment: string, vote: number) => {
-    console.log('CREATE REVIEW');
-    if (!userId) return;
-    const data = await dispatch(
-      createReview({
-        comment,
-        vote,
-        userId: userId,
-        [idField]: id,
-      }),
-    );
-    await dispatch(
-      getReviews({
-        where: {[idField]: id},
-        orderBy: {
-          createdAt: 'desc',
-        },
-      }),
-    );
-    console.log(data);
-  };
-
   return (
     <SafeAreaView style={[styles.container, {              backgroundColor:colors.bgSecondary,}]}>
       <BottomSheet
@@ -135,7 +113,7 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
         year={year}
         ref={bottomSheetRef}
         activeReview={activeReview}
-        onReview={(comment, vote) => onReview(comment, vote)}
+        id={id}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Containter style={{gap: 25}}>

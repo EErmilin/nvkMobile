@@ -29,6 +29,9 @@ import RankComponent from './RankComponent';
 import { useDispatch } from 'react-redux';
 import { setOpen } from '../redux/slices/bottomSheetSlice';
 import MediumText from './MediumText';
+import {createReview} from '../redux/thunks/review/CreateReview';
+import {useAppSelector} from '../redux/hooks';
+import {getReviews} from '../redux/thunks/screens/getReviews/GetReviews';
 
 const { width, height } = Dimensions.get('window');
 
@@ -42,11 +45,12 @@ interface IProps {
   year?: string;
   isReview?: boolean;
   activeReview?: number | null | undefined;
-  onReview: (comment: string, vote: number) => void;
+  idField: string;
+  id: string;
 }
 
 const BottomSheet = forwardRef(
-  ({ name, activeReview, imageUrl, year, onReview }: IProps, ref) => {
+  ({name, activeReview, imageUrl, year, idField, id}: IProps, ref) => {
     const modalRef = useRef(null);
     const insets = useSafeAreaInsets();
     //state
@@ -56,6 +60,7 @@ const BottomSheet = forwardRef(
     const translateYR = useSharedValue(0);
     const scrollContentY = useSharedValue(0);
     const pressed = useSharedValue(false);
+    const userId = useAppSelector(state => state.user.data?.id);
 
     const dispatch = useDispatch();
     //open BottomSheet
@@ -69,14 +74,32 @@ const BottomSheet = forwardRef(
         }
       },
     }));
+
     //leave Comment and close bottomSheet
-    const publishReviewHandler = (rank: number, comment: string) => {
-      console.log(rank)
-      console.log(comment)
-      console.log(rank, comment);
-      onReview(comment, rank);
+    const publishReviewHandler = async (vote: number, comment: string) => {
+      if (!userId) {
+        return;
+      }
+
+      await dispatch(
+        createReview({
+          comment,
+          vote,
+          userId: userId,
+          [idField]: id,
+        }) as any,
+      );
+      await dispatch(
+        getReviews({
+          where: {[idField]: id},
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }) as any,
+      );
+
       if (ref) {
-        dispatch(setOpen(true));
+        dispatch(setOpen(false));
         translateYR.value = withTiming(translateYR.value + height, {
           duration: 600,
         });

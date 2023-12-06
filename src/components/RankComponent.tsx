@@ -29,7 +29,7 @@ interface Props {
   publishReviewHandler: (
     rank: number | null,
     comment: string | null,
-  ) => void | undefined;
+  ) => Promise<void>;
 }
 
 const rankNumber = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
@@ -57,10 +57,21 @@ const RankComponent = ({
     setActive(indexChecked);
     setRankActive(rankNumber[indexChecked]);
   };
+
+  const [loading, setLoading] = useState(false);
+
   //submit review
-  const onSubmit = () => {
-    console.log('review-select', rankActive, comment);
-    publishReviewHandler(rankActive, comment);
+  const onSubmit = async () => {
+    if (loading) {
+      return;
+    }
+    setLoading(true);
+
+    try {
+      await publishReviewHandler(rankActive, comment);
+    } finally {
+      setLoading(false);
+    }
     Keyboard.dismiss();
   };
 
@@ -176,7 +187,11 @@ const RankComponent = ({
               width: '100%',
               transform: [{translateY: translateButton}],
             }}>
-            <Button title="Опубликовать" onPress={onSubmit} />
+            <Button
+              title="Опубликовать"
+              onPress={onSubmit}
+              disabled={loading}
+            />
           </Animated.View>
         </>
       ) : null}

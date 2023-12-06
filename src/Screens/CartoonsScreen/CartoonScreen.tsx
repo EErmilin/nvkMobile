@@ -93,7 +93,8 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
         imageUrl={cartoon?.cover?.url}
         year={cartoon?.date}
         ref={bottomSheetRef}
-        onReview={(comment, vote) => onReview(comment, vote)}
+        id={cartoon?.id ?? -1}
+        idField="animationId"
       />
       <ScrollView>
         {episode?.media ? (

@@ -105,7 +105,8 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
         imageUrl={filmRedux?.cover?.url}
         year={filmRedux?.date}
         ref={bottomSheetRef}
-        onReview={(comment, vote) => onReview(comment, vote)}
+        idField="movieId"
+        id={filmRedux.id}
       />
       <ScrollView>
         {filmRedux ? (

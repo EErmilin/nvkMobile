@@ -116,7 +116,8 @@ export const CurrentSeriesScreen: FC<
         imageUrl={serialData?.series?.image?.url}
         year={serialData?.series?.date}
         ref={bottomSheetRef}
-        onReview={(comment, vote) => onReview(comment, vote)}
+        idField="seriesId"
+        id={serialData.series?.id}
       />
       <ScrollView>
         {data.length ? (
