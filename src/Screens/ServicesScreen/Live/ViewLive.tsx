@@ -31,6 +31,7 @@ import {ButtonQuestion} from './components/ButtonQuestion';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {NextProgram} from './components/NextProgram';
 import {CurrentProgram} from './components/CurrentProgram';
+import PipHandler from 'react-native-pip-android';
 
 export const ViewLive: React.FC<RootNavigationProps<'ViewLive'>> = props => {
   const {route, navigation} = props;
@@ -102,28 +103,28 @@ export const ViewLive: React.FC<RootNavigationProps<'ViewLive'>> = props => {
     return () => console.log('live unmount');
   }, [update]);
 
-  // React.useEffect(() => {
-  //   const subscription = AppState.addEventListener('change', nextAppState => {
-  //     if (nextAppState == 'background') {
-  //       if (Platform.OS === 'android') {
-  //         PipHandler.enterPipMode();
-  //       }
-  //       navigation.setOptions({
-  //         headerShown: false,
-  //       });
-  //     } else {
-  //       navigation.setOptions({
-  //         headerShown: true,
-  //       });
-  //     }
+  React.useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (nextAppState == 'background') {
+        if (Platform.OS === 'android') {
+          PipHandler.enterPipMode();
+        }
+        navigation.setOptions({
+          headerShown: false,
+        });
+      } else {
+        navigation.setOptions({
+          headerShown: true,
+        });
+      }
 
-  //     appState.current = nextAppState;
-  //   });
+      appState.current = nextAppState;
+    });
 
-  //   return () => {
-  //     subscription.remove();
-  //   };
-  // }, []);
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   if (!data) {
     return;

@@ -184,7 +184,7 @@ export const AppNavigation = () => {
       />
       <OrientationLocker orientation={PORTRAIT} />
       {logged ? <StackNavigation /> : <LoginNavigation />}
-      <Toast config={toastConfig} />
+      {/* <Toast config={toastConfig} /> */}
       {videoContext.videoPlayerOption?.video && (
         <View
           style={{
