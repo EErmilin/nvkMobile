@@ -25,6 +25,7 @@ import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 import {useMovieViewed} from '../../helpers/useMovieViewed';
 import {createReview} from '../../redux/thunks/review/CreateReview';
+import {useFavorite} from '../../helpers/useFavorite';
 
 export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
   const {colors} = useTheme();
@@ -82,6 +83,8 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
     console.log(data);
   };
 
+  const {isFavorite, toggle} = useFavorite({animationId: cartoon?.id});
+
   return (
     <SafeAreaView
       style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
@@ -93,7 +96,7 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
         onReview={(comment, vote) => onReview(comment, vote)}
       />
       <ScrollView>
-        {!!episode?.media ? (
+        {episode?.media ? (
           <VideoPlayer urls={{url: episode?.media?.indexM3u8Url, hls: []}} />
         ) : (
           <ActivityIndicator color={colors.colorMain} size={'large'} />
@@ -109,9 +112,12 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
                   {`${cartoon.age}+`}
                 </RegularText>
               </Animated.View>
-              <TouchableOpacity>
-                <Animated.View style={styles.circle}>
-                  <HeartIcon color={colors.white} />
+              <TouchableOpacity onPress={toggle}>
+                <Animated.View
+                  style={isFavorite ? styles.circle : styles.circleNotActive}>
+                  <HeartIcon
+                    color={isFavorite ? colors.white : colors.orange}
+                  />
                 </Animated.View>
               </TouchableOpacity>
             </Animated.View>
@@ -321,6 +327,16 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: colors.orange,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  circleNotActive: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderColor: colors.orange,
+    borderWidth: 1,
+    backgroundColor: colors.white,
     justifyContent: 'center',
     alignItems: 'center',
   },

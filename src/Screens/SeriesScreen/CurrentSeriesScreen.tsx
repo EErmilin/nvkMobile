@@ -24,6 +24,7 @@ import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 import {useMovieViewed} from '../../helpers/useMovieViewed';
 import {createReview} from '../../redux/thunks/review/CreateReview';
+import {useFavorite} from '../../helpers/useFavorite';
 
 //mock data
 const data = [1];
@@ -105,6 +106,7 @@ export const CurrentSeriesScreen: FC<
     );
     await dispatch(getReviews({where: {seriesId: serialData.series?.id}}));
   };
+  const {isFavorite, toggle} = useFavorite({seriesId: serialData.series?.id});
 
   return (
     <SafeAreaView
@@ -138,9 +140,12 @@ export const CurrentSeriesScreen: FC<
                   {serialData?.series.age} +
                 </RegularText>
               </Animated.View>
-              <TouchableOpacity>
-                <Animated.View style={styles.circle}>
-                  <HeartIcon color={colors.white} />
+              <TouchableOpacity onPress={toggle}>
+                <Animated.View
+                  style={isFavorite ? styles.circle : styles.circleNotActive}>
+                  <HeartIcon
+                    color={isFavorite ? colors.white : colors.orange}
+                  />
                 </Animated.View>
               </TouchableOpacity>
             </Animated.View>
@@ -351,6 +356,16 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: colors.orange,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  circleNotActive: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderColor: colors.orange,
+    borderWidth: 1,
+    backgroundColor: colors.white,
     justifyContent: 'center',
     alignItems: 'center',
   },

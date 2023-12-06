@@ -1,5 +1,21 @@
 import {gql} from '@apollo/client';
 
+export const CREATE_FAVORITE_SIMPLE = gql`
+  mutation CreateFavoriteSimple($data: CreateFavoriteInput!) {
+    createFavorite(createFavoriteInput: $data) {
+      id
+    }
+  }
+`;
+
+export const GET_FAVORITE = gql`
+  query GetFavorite($where: FavoriteWhereInput) {
+    favorites(where: $where) {
+      id
+    }
+  }
+`;
+
 export const FAVORITES = gql`
   query GetFavorites {
     favorites {
