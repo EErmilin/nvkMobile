@@ -28,7 +28,7 @@ const CustomToast = (props: {
   const inPipMode = usePipModeListener();
 
   if (inPipMode) {
-    return <></>;
+    return null;
   }
 
   return (

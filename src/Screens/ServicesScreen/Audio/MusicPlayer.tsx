@@ -156,7 +156,7 @@ export const MusicPlayer: React.FC<RootNavigationProps<'MusicPlayer'>> = ({
             <Image
               source={{
                 uri:
-                  typeof activeTrack.artwork === 'string'
+                  typeof activeTrack?.artwork === 'string'
                     ? activeTrack.artwork
                     : undefined,
               }}
@@ -165,7 +165,7 @@ export const MusicPlayer: React.FC<RootNavigationProps<'MusicPlayer'>> = ({
             <Image
               source={{
                 uri:
-                  typeof activeTrack.artwork === 'string'
+                  typeof activeTrack?.artwork === 'string'
                     ? activeTrack.artwork
                     : undefined,
               }}
