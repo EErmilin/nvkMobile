@@ -99,7 +99,7 @@ const BottomSheet = forwardRef(
       );
 
       if (ref) {
-        dispatch(setOpen(false));
+        dispatch(setOpen(true));
         translateYR.value = withTiming(translateYR.value + height, {
           duration: 600,
         });
