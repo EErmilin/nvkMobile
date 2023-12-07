@@ -26,6 +26,7 @@ import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 import {useMovieViewed} from '../../helpers/useMovieViewed';
 import {createReview} from '../../redux/thunks/review/CreateReview';
 import {useFavorite} from '../../helpers/useFavorite';
+import {ReviewBottomSheet} from '../../components/ReviewBottomSheet';
 
 export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
   const {colors} = useTheme();
@@ -63,7 +64,9 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
   const userId = useAppSelector(state => state.user.data?.id);
   const onReview = async (comment: string, vote: number) => {
     console.log('CREATE REVIEW');
-    if (!userId) return;
+    if (!userId) {
+      return;
+    }
     const data = await dispatch(
       createReview({
         comment,
@@ -88,13 +91,14 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
   return (
     <SafeAreaView
       style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
-      <BottomSheet
+      <ReviewBottomSheet
         name={cartoon?.name}
         imageUrl={cartoon?.cover?.url}
         year={cartoon?.date}
         ref={bottomSheetRef}
         id={cartoon?.id ?? -1}
         idField="animationId"
+        rating={cartoon?.ratingNvk}
       />
       <ScrollView>
         {episode?.media ? (
@@ -115,7 +119,14 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
               </Animated.View>
               <TouchableOpacity onPress={toggle}>
                 <Animated.View
-                  style={isFavorite ? styles.circle : styles.circleNotActive}>
+                  style={[
+                    isFavorite ? styles.circle : styles.circleNotActive,
+                    {
+                      backgroundColor: isFavorite
+                        ? styles.circle.backgroundColor
+                        : colors.fillPrimary,
+                    },
+                  ]}>
                   <HeartIcon
                     color={isFavorite ? colors.white : colors.orange}
                   />
@@ -282,7 +293,7 @@ export const CartoonScreen: FC<RootNavigationProps<'Cartoon'>> = () => {
           </Animated.View>
           <ScrollView horizontal>
             <Animated.View style={{flexDirection: 'row', gap: 16}}>
-              {!!reviews?.length ? (
+              {reviews?.length ? (
                 reviews?.map(item => (
                   <Review key={item.id} item={item} numberOfLines={5} />
                 ))

@@ -32,6 +32,7 @@ import {setLogged} from '../../redux/slices/authSlice';
 import {useMovieViewed} from '../../helpers/useMovieViewed';
 import {createReview} from '../../redux/thunks/review/CreateReview';
 import {useFavorite} from '../../helpers/useFavorite';
+import {ReviewBottomSheet} from '../../components/ReviewBottomSheet';
 
 //mock data
 
@@ -78,7 +79,9 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
   const userId = useAppSelector(state => state.user.data?.id);
   const onReview = async (comment: string, vote: number) => {
     console.log('CREATE REVIEW');
-    if (!userId) return;
+    if (!userId) {
+      return;
+    }
     const data = await dispatch(
       createReview({
         comment,
@@ -100,13 +103,14 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
   return (
     <SafeAreaView
       style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
-      <BottomSheet
+      <ReviewBottomSheet
+        ref={bottomSheetRef}
         name={filmRedux?.name}
         imageUrl={filmRedux?.cover?.url}
         year={filmRedux?.date}
-        ref={bottomSheetRef}
         idField="movieId"
         id={filmRedux.id}
+        rating={filmRedux.ratingNvk}
       />
       <ScrollView>
         {filmRedux ? (
@@ -128,7 +132,14 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
               </Animated.View>
               <TouchableOpacity onPress={toggle}>
                 <Animated.View
-                  style={isFavorite ? styles.circle : styles.circleNotActive}>
+                  style={[
+                    isFavorite ? styles.circle : styles.circleNotActive,
+                    {
+                      backgroundColor: isFavorite
+                        ? styles.circle.backgroundColor
+                        : colors.fillPrimary,
+                    },
+                  ]}>
                   <HeartIcon
                     color={isFavorite ? colors.white : colors.orange}
                   />
@@ -296,7 +307,7 @@ export const FilmScreen: FC<RootNavigationProps<'Film'>> = ({route}) => {
           </Animated.View>
           <ScrollView horizontal>
             <Animated.View style={{flexDirection: 'row', gap: 16}}>
-              {!!reviews?.length ? (
+              {reviews?.length ? (
                 reviews.map(item => (
                   <Review key={item.id} item={item} numberOfLines={5} />
                 ))

@@ -6,6 +6,7 @@ import {
   TextStyle,
   ViewStyle,
   Platform,
+  GestureResponderEvent,
 } from 'react-native';
 import {useTheme} from '../Styles/Styles';
 import BoldText from './BoldText';
@@ -16,7 +17,7 @@ interface ButtonProps {
   item?: React.JSX.Element;
   mt?: number | string;
   value?: any;
-  onPress?: any;
+  onPress?: (event: GestureResponderEvent) => void;
   disabled?: boolean;
   icon?: any;
   textStyle?: TextStyle;

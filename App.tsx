@@ -59,15 +59,15 @@ export default function App() {
       <ApolloProvider client={apolloClient}>
         <VideoPlayerProvider>
           <MusicPlayerProvider>
-            <BottomSheetModalProvider>
-              <GestureHandlerRootView style={{flex: 1}}>
-                <SafeAreaProvider>
+            <GestureHandlerRootView style={{flex: 1}}>
+              <SafeAreaProvider>
+                <BottomSheetModalProvider>
                   <MenuProvider>
                     <AppNavigation />
                   </MenuProvider>
-                </SafeAreaProvider>
-              </GestureHandlerRootView>
-            </BottomSheetModalProvider>
+                </BottomSheetModalProvider>
+              </SafeAreaProvider>
+            </GestureHandlerRootView>
           </MusicPlayerProvider>
         </VideoPlayerProvider>
       </ApolloProvider>
