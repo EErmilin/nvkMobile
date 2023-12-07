@@ -13,6 +13,7 @@ import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {createReview} from '../../redux/thunks/review/CreateReview';
 import {getReviews} from '../../redux/thunks/screens/getReviews/GetReviews';
 import {setLogged} from '../../redux/slices/authSlice';
+import {ReviewBottomSheet} from '../../components/ReviewBottomSheet';
 
 //dummy data
 
@@ -65,7 +66,7 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
   const year = route.params?.year;
   const imageUrl = route.params?.imageUrl;
   const idField = route.params?.idField;
-  const {colors} = useTheme()
+  const {colors} = useTheme();
 
   const userId = useAppSelector(state => state.user.data?.id);
   const reviews = useAppSelector(state => state.screens.reviews ?? []);
@@ -106,14 +107,16 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
   }, []);
 
   return (
-    <SafeAreaView style={[styles.container, {              backgroundColor:colors.bgSecondary,}]}>
-      <BottomSheet
+    <SafeAreaView
+      style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
+      <ReviewBottomSheet
         name={name}
         imageUrl={imageUrl}
         year={year}
         ref={bottomSheetRef}
         activeReview={activeReview}
         id={id}
+        idField={idField}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Containter style={{gap: 25}}>
@@ -129,15 +132,19 @@ const ReviewsScreen: React.FC<RootNavigationProps<'ViewLive'>> = () => {
               <BoldText fontSize={16}>Как Вам фильм?</BoldText>
               {/* Оценка */}
 
-              <RankComponent style setActiveReview={setActiveReview} />
+              {/* <RankComponent style setActiveReview={setActiveReview} /> */}
 
               {/* Оставить отзыв */}
               <TouchableOpacity
                 style={[
-                  
                   styles.btn,
                   styles.btnOutlined,
-                  {flexDirection: 'row', gap: 8, paddingVertical: 16, backgroundColor: colors.bgPrimary}
+                  {
+                    flexDirection: 'row',
+                    gap: 8,
+                    paddingVertical: 16,
+                    backgroundColor: colors.bgPrimary,
+                  },
                 ]}
                 onPress={openModal}>
                 <StarIcon color={colors.orange} size={20} />
