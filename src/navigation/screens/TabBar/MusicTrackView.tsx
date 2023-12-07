@@ -23,6 +23,7 @@ import {removeFavorite} from '../../../redux/thunks/favorite/RemoveFavorite';
 import {useNavigation} from '@react-navigation/native';
 import {setLogged} from '../../../redux/slices/authSlice';
 import {TrackPlayerReset} from '../../../services/service';
+import {useFavorite} from '../../../helpers/useFavorite';
 
 interface IProps {
   insets?: number;
@@ -31,35 +32,14 @@ interface IProps {
 export const MusicTrackView = (props: IProps) => {
   const {insets} = props;
   const {colors} = useTheme();
-  const token = useAppSelector(state1 => state1.auth.token);
-  const favorites = useAppSelector(state1 => state1.favorite.favorites).filter(
-    favorite => favorite.song !== null,
-  );
   const musicContext = React.useContext(MusicPlayerContext);
-  const [like, setLike] = React.useState(
-    musicContext.musicPlayerOption.type === 'fairytale' ||
-      musicContext.musicPlayerOption.type === 'olonho' ||
-      musicContext.musicPlayerOption.type === 'podcast'
-      ? favorites
-          .map(favorite => favorite.podcastEpisode?.id)
-          .includes(musicContext.musicPlayerOption.music?.id ?? 0)
-      : favorites
-          .map(favorite => favorite.song?.id)
-          .includes(musicContext.musicPlayerOption.music?.id ?? 0),
-  );
-  const trackState = usePlaybackState();
-  const dispatch = useAppDispatch();
-  const navigation = useNavigation<any>();
-  const [likeIsDisabled, setLikeIsDisabled] = React.useState(false);
-  const [end, setEnd] = React.useState(false);
 
-  React.useEffect(() => {
-    setLike(
-      favorites
-        .map(favorite => favorite.song?.id)
-        .includes(musicContext.musicPlayerOption.music?.id),
-    );
-  }, [favorites, musicContext.musicPlayerOption.music?.id]);
+  const trackState = usePlaybackState();
+  const {isFavorite, toggle} = useFavorite({
+    songId: musicContext.musicPlayerOption.music?.id || -1,
+  });
+  const navigation = useNavigation<any>();
+  const [end, setEnd] = React.useState(false);
 
   const checkEnded = React.useCallback(() => {
     if (trackState.state === State.Ended) {
@@ -94,61 +74,10 @@ export const MusicTrackView = (props: IProps) => {
         }
       }}>
       {musicContext.musicPlayerOption.type !== 'radio' ? (
-        <TouchableOpacity
-          style={styles.touchFavorite}
-          disabled={likeIsDisabled}
-          onPress={async () => {
-            if (token) {
-              setLikeIsDisabled(true);
-              if (like) {
-                setLike(false);
-                const response = await dispatch(
-                  removeFavorite(
-                    favorites.filter(favorite =>
-                      musicContext.musicPlayerOption.type === 'fairytale' ||
-                      musicContext.musicPlayerOption.type === 'olonho' ||
-                      musicContext.musicPlayerOption.type === 'podcast'
-                        ? favorite.podcastEpisode?.id ===
-                          musicContext.musicPlayerOption.music?.id
-                        : favorite.song?.id ===
-                          musicContext.musicPlayerOption.music?.id,
-                    )[0].id,
-                  ),
-                );
-                if (response.meta.requestStatus === 'rejected') {
-                  setLike(true);
-                }
-                setLikeIsDisabled(false);
-              } else {
-                setLike(true);
-                const response = await dispatch(
-                  createFavorite({
-                    songId:
-                      musicContext.musicPlayerOption.type !== 'fairytale' &&
-                      musicContext.musicPlayerOption.type !== 'olonho' &&
-                      musicContext.musicPlayerOption.type !== 'podcast'
-                        ? musicContext.musicPlayerOption.music?.id
-                        : undefined,
-                    podcastEpisodeId:
-                      musicContext.musicPlayerOption.type === 'fairytale' ||
-                      musicContext.musicPlayerOption.type === 'olonho' ||
-                      musicContext.musicPlayerOption.type === 'podcast'
-                        ? musicContext.musicPlayerOption.music?.id
-                        : undefined,
-                  }),
-                );
-                if (response.meta.requestStatus === 'rejected') {
-                  setLike(false);
-                }
-                setLikeIsDisabled(false);
-              }
-            } else {
-              dispatch(setLogged(false));
-            }
-          }}>
+        <TouchableOpacity style={styles.touchFavorite} onPress={toggle}>
           <Heart
             color={colors.colorMain}
-            inColor={like ? colors.colorMain : colors.fillPrimary}
+            inColor={isFavorite ? colors.colorMain : colors.fillPrimary}
           />
         </TouchableOpacity>
       ) : (

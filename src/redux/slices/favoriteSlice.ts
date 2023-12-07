@@ -6,9 +6,11 @@ import {logout} from '../thunks/auth/Logout';
 import {removeFavorite} from '../thunks/favorite/RemoveFavorite';
 import {deleteProfile} from '../thunks/user/DeleteProfile';
 import {updateHashtag, updateUser} from '../thunks/user/UpdateUser';
+import {fetchFavoriteIds} from '../thunks/favorite/GetFavoriteIds';
 
 const initialState: IFavoriteState = {
   favorites: [],
+  favoriteIds: [],
 };
 
 const favoriteSlice = createSlice({
@@ -16,6 +18,9 @@ const favoriteSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
+    builder.addCase(fetchFavoriteIds.fulfilled, (state, action) => {
+      state.favoriteIds = action.payload;
+    });
     builder.addCase(fetchFavorite.fulfilled, (state, action) => {
       state.favorites = action.payload.sort(function (a, b) {
         return (

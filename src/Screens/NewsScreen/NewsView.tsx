@@ -39,6 +39,7 @@ import DeviceInfo from 'react-native-device-info';
 import NewsCommentCard from '../../components/NewsCommentCard';
 import SendMessage_icon from '../../assets/icons/SendMessage_icon';
 import {CREATE_POST_COMMENT} from '../../gql/mutation/post/CreatePostComment';
+import {useFavorite} from '../../helpers/useFavorite';
 
 const REGULAR_HASTAG = /#[0-9A-Za-zА-Яа-яё]+/g;
 
@@ -49,9 +50,6 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
   const {colors} = useTheme();
   const screenWidth = useWindowDimensions().width;
   const insets = useSafeAreaInsets();
-  const dispatch = useAppDispatch();
-  const favorites = useAppSelector(state => state.favorite.favorites);
-  const token = useAppSelector(state => state.auth.token);
   const user = useAppSelector(state => state.user.data);
   const [loading, setLoading] = React.useState(false);
   const [postView, setPostView] = React.useState<IPost | null>(null);
@@ -201,6 +199,8 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
     }
   }, [commentText, user, post.id]);
 
+  const {isFavorite, toggle} = useFavorite({postId: post.id});
+
   return (
     <ScrollView
       ref={scrollRef}
@@ -233,58 +233,10 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
             <MediumText fontSize={12}>{postView?.views} просмотров</MediumText>
           </View>
 
-          <TouchableOpacity
-            disabled={likeIsDisabled}
-            onPress={async () => {
-              if (token) {
-                setLikeIsDisabled(true);
-                if (
-                  favorites.map(favorite => favorite.post?.id).includes(post.id)
-                ) {
-                  let idFavorite = favorites.find(
-                    favorite => favorite.post?.id === post.id,
-                  )?.id;
-                  if (idFavorite) {
-                    let response = await dispatch(removeFavorite(idFavorite));
-                    if (response.meta.requestStatus === 'fulfilled') {
-                      AppMetrica.reportEvent('POST_FAVORITE_REMOVE', {
-                        user: user,
-                        post_name: post.title,
-                        date: new Date(),
-                        date_string: new Date().toString(),
-                        platform: Platform.OS,
-                        app_version: DeviceInfo.getVersion(),
-                      });
-                    }
-                  }
-                  setLikeIsDisabled(false);
-                } else {
-                  let response = await dispatch(
-                    createFavorite({
-                      postId: post.id,
-                    }),
-                  );
-                  if (response.meta.requestStatus === 'fulfilled') {
-                    AppMetrica.reportEvent('POST_FAVORITE_ADD', {
-                      user: user,
-                      post_name: post.title,
-                      date: new Date(),
-                      date_string: new Date().toString(),
-                      platform: Platform.OS,
-                      app_version: DeviceInfo.getVersion(),
-                    });
-                  }
-                  setLikeIsDisabled(false);
-                }
-              } else {
-                dispatch(setLogged(false));
-              }
-            }}>
+          <TouchableOpacity disabled={likeIsDisabled} onPress={toggle}>
             <View
               style={{
-                backgroundColor: favorites
-                  .map(favorite => favorite.post?.id)
-                  .includes(post.id)
+                backgroundColor: isFavorite
                   ? colors.colorMainInActive
                   : colors.bgSecondary,
                 width: 40,
@@ -294,16 +246,8 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
                 borderRadius: 30,
               }}>
               <BookMark
-                color={
-                  favorites.map(favorite => favorite.post?.id).includes(post.id)
-                    ? colors.colorMain
-                    : colors.textPrimary
-                }
-                fill={
-                  favorites.map(favorite => favorite.post?.id).includes(post.id)
-                    ? colors.colorMain
-                    : 'none'
-                }
+                color={isFavorite ? colors.colorMain : colors.textPrimary}
+                fill={isFavorite ? colors.colorMain : 'none'}
               />
             </View>
           </TouchableOpacity>
@@ -369,7 +313,11 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
         </View>
 
         {/* COMMENTS */}
-        <View style={[styles.commentContainer, {backgroundColor: colors.background}]}>
+        <View
+          style={[
+            styles.commentContainer,
+            {backgroundColor: colors.background},
+          ]}>
           <View style={styles.commentsHeader}>
             <BoldText style={{color: colors.textPrimary}}>
               Комметарии ({(postView?.totalComments ?? 0).toString()})

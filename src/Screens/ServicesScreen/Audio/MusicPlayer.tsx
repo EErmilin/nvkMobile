@@ -39,6 +39,7 @@ import {setLogged} from '../../../redux/slices/authSlice';
 import AppMetrica from 'react-native-appmetrica-next';
 import DeviceInfo from 'react-native-device-info';
 import {ISongType} from '../../../models/Music';
+import {useFavorite} from '../../../helpers/useFavorite';
 
 export const MusicPlayer: React.FC<RootNavigationProps<'MusicPlayer'>> = ({
   route,
@@ -278,28 +279,8 @@ const ProgressBar = () => {
 const ControlBar = ({id, type}: {id?: number; type: ISongType}) => {
   const playbackState = usePlaybackState();
   const {position, duration} = useProgress();
-  const favorites = useAppSelector(state => state.favorite.favorites).filter(
-    favorite => favorite.song !== null,
-  );
-  const favoritePodcasts = useAppSelector(
-    state => state.favorite.favorites,
-  ).filter(favorite => favorite.podcastEpisode !== null);
-  const dispatch = useAppDispatch();
   const [repMode, setRepMode] = React.useState<RepeatMode>();
-  const token = useAppSelector(state => state.auth.token);
-  const [like, setLike] = React.useState(false);
-  const [disabledLike, setDisabledLike] = React.useState(false);
-
-  React.useEffect(() => {
-    setLike(
-      type === 'fairytale' || type === 'olonho' || type === 'podcast'
-        ? favoritePodcasts
-            .map(favorite => favorite.podcastEpisode?.id)
-            .includes(id)
-        : favorites.map(favorite => favorite.song?.id).includes(id),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, id]);
+  const {isFavorite, toggle} = useFavorite({songId: id});
 
   React.useEffect(() => {
     (async () => {
@@ -402,107 +383,11 @@ const ControlBar = ({id, type}: {id?: number; type: ISongType}) => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity
-        disabled={disabledLike}
-        onPress={async () => {
-          if (token) {
-            setDisabledLike(true);
-            if (
-              type === 'fairytale' ||
-              type === 'olonho' ||
-              type === 'podcast'
-            ) {
-              if (
-                favoritePodcasts
-                  .map(favorite => favorite.podcastEpisode?.id)
-                  .includes(id)
-              ) {
-                let idFavorite = favoritePodcasts.find(
-                  favorite => favorite.podcastEpisode?.id === id,
-                )?.id;
-                if (idFavorite) {
-                  dispatch(removeFavorite(idFavorite))
-                    .then(response => {
-                      if (response.meta.requestStatus === 'fulfilled') {
-                        setLike(false);
-                      } else {
-                        setLike(true);
-                      }
-                      setDisabledLike(false);
-                    })
-                    .catch(() => {
-                      setLike(true);
-                      setDisabledLike(false);
-                    });
-                }
-              } else {
-                dispatch(
-                  createFavorite({
-                    podcastEpisodeId: id,
-                  }),
-                )
-                  .then(response => {
-                    if (response.meta.requestStatus === 'fulfilled') {
-                      setLike(true);
-                    } else {
-                      setLike(false);
-                    }
-                    setDisabledLike(false);
-                  })
-                  .catch(() => {
-                    setLike(false);
-                    setDisabledLike(false);
-                  });
-              }
-            } else {
-              if (favorites.map(favorite => favorite.song?.id).includes(id)) {
-                let idFavorite = favorites.find(
-                  favorite => favorite.song?.id === id,
-                )?.id;
-                if (idFavorite) {
-                  dispatch(removeFavorite(idFavorite))
-                    .then(response => {
-                      if (response.meta.requestStatus === 'fulfilled') {
-                        setLike(false);
-                      } else {
-                        setLike(true);
-                      }
-                      setDisabledLike(false);
-                    })
-                    .catch(() => {
-                      setLike(true);
-                      setDisabledLike(false);
-                    });
-                }
-              } else {
-                dispatch(
-                  createFavorite({
-                    songId: id,
-                  }),
-                )
-                  .then(response => {
-                    if (response.meta.requestStatus === 'fulfilled') {
-                      setLike(true);
-                    } else {
-                      setLike(false);
-                    }
-                    setDisabledLike(false);
-                  })
-                  .catch(() => {
-                    setLike(false);
-                    setDisabledLike(false);
-                  });
-              }
-            }
-          } else {
-            TrackPlayer.pause();
-            dispatch(setLogged(false));
-          }
-        }}>
+      <TouchableOpacity onPress={toggle}>
         <Heart
           size={24}
           color={colors.white}
-          inColor={like ? colors.white : 'none'}
+          inColor={isFavorite ? colors.white : 'none'}
         />
       </TouchableOpacity>
     </View>

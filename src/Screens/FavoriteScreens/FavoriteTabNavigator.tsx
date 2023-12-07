@@ -7,6 +7,10 @@ import {FavoritePodcast} from './FavoritePodcast';
 import {useTheme} from '../../Styles/Styles';
 import {Animated, I18nManager, useWindowDimensions} from 'react-native';
 import remoteConfig from '@react-native-firebase/remote-config';
+import {FavoriteMult} from './FavoriteMult';
+import {useAppSelector} from '../../redux/hooks';
+import {FavoriteMovie} from './FavoriteMovie';
+import {FavoriteSeries} from './FavoriteSeries';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -52,9 +56,32 @@ export const FavoriteTabNavigator = () => {
       <Tab.Screen
         name="FavoritePost"
         component={FavoritePost}
-        options={{title: 'Посты'}}
+        options={{
+          title: 'Посты',
+        }}
       />
-      {remoteConfig().getValue('broadcast_visible').asBoolean() ? (
+      <Tab.Screen
+        name="FavoriteMovie"
+        component={FavoriteMovie}
+        options={{
+          title: 'Фильмы',
+        }}
+      />
+      <Tab.Screen
+        name="FavoriteMult"
+        component={FavoriteMult}
+        options={{
+          title: 'Мультфильмы',
+        }}
+      />
+      <Tab.Screen
+        name="FavoriteSeries"
+        component={FavoriteSeries}
+        options={{
+          title: 'Сериалы',
+        }}
+      />
+      {/* {remoteConfig().getValue('broadcast_visible').asBoolean() ? (
         <Tab.Screen
           name="FavoriteBroadcast"
           component={FavoriteBroadcast}
@@ -77,7 +104,7 @@ export const FavoriteTabNavigator = () => {
         name="FavoritePodcast"
         component={FavoritePodcast}
         options={{title: 'Подкасты'}}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };

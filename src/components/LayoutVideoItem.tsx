@@ -22,9 +22,14 @@ export const LayoutVideoItem = ({item, height, heightImage}: Props) => {
           }}
           resizeMode={'cover'}
           style={[styles.image, {height: '100%'}]}>
-          <View style={styles.rating}>
-            <Rating rating={item.ratingNvk?.toFixed(1) ?? '-'} isStar={false} />
-          </View>
+          {item.ratingNvk > 0 && (
+            <View style={styles.rating}>
+              <Rating
+                rating={item.ratingNvk?.toFixed(1) ?? '-'}
+                isStar={false}
+              />
+            </View>
+          )}
         </ImageBackground>
       </View>
       <BoldText fontSize={16}>{item.name}</BoldText>
@@ -44,6 +49,7 @@ const styles = StyleSheet.create({
     minWidth: 162,
     backgroundColor: colors.borderGray,
     borderRadius: 12,
+    overflow: 'hidden',
   },
   image: {
     position: 'relative',

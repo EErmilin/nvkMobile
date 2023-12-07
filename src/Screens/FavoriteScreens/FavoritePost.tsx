@@ -10,13 +10,14 @@ import {useTheme} from '../../Styles/Styles';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {IPost} from '../../models/Post';
 import {TabNavigationProps} from '../../navigation/types/TabTypes';
-import {fetchFavorite} from '../../redux/thunks/favorite/GetFavorites';
 import {removeFavorite} from '../../redux/thunks/favorite/RemoveFavorite';
 
 import ContentLoader, {Rect} from 'react-content-loader/native';
 import {MusicPlayerContext} from '../../contexts/musicContext';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {PostCell} from '../../components/PostCell';
+import {useQuery} from '@apollo/client';
+import {POSTS} from '../../gql/query/posts/Post';
 
 interface IProps {
   navigation: TabNavigationProps<'Favorite'>['navigation'];
@@ -26,26 +27,34 @@ export const FavoritePost = (props: IProps) => {
   const {navigation} = props;
   const screenWidth = useWindowDimensions().width;
   const screenHeight = useWindowDimensions().height;
-  const favoritePost = useAppSelector(state => state.favorite.favorites).filter(
-    favorite => favorite.post !== null,
-  );
-  const token = useAppSelector(state => state.auth.token);
-  const [loading, setLoading] = React.useState(false);
+  const userId = useAppSelector(state => state.user.data?.id);
+
   const {colors} = useTheme();
-
-  const dispatch = useAppDispatch();
-
-  const update = React.useCallback(async () => {
-    if (token) {
-      setLoading(true);
-      await dispatch(fetchFavorite(token));
-      setLoading(false);
-    }
-  }, [dispatch, token]);
+  const {data, loading, refetch} = useQuery(POSTS, {
+    skip: !userId,
+    variables: {
+      orderBy: {createdAt: 'desc'},
+      skip: 0,
+      take: 100000,
+      where: {
+        favorites: {
+          some: {
+            userId,
+          },
+        },
+      },
+    },
+  });
 
   React.useEffect(() => {
-    update();
-  }, [update]);
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetch();
+    });
+
+    return unsubscribe;
+  }, [navigation, refetch]);
+
+  const favoritePost = data?.posts || [];
 
   return (
     <View
@@ -65,7 +74,7 @@ export const FavoritePost = (props: IProps) => {
         renderItem={({item, index}) => (
           <RenderItem
             key={item.id.toString()}
-            item={item.post}
+            item={item}
             id={item.id}
             index={index}
             navigation={navigation}

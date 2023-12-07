@@ -16,6 +16,21 @@ export const GET_FAVORITE = gql`
   }
 `;
 
+export const GET_FAVORITE_IDS = gql`
+  query GetFavoriteIds {
+    favoriteIds {
+      id
+      movieId
+      animationId
+      seriesId
+      showId
+      songId
+      podcastEpisodeId
+      postId
+    }
+  }
+`;
+
 export const FAVORITES = gql`
   query GetFavorites {
     favorites {

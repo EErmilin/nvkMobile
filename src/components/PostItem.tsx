@@ -13,13 +13,10 @@ import RegularText from './RegularText';
 import {BookMark} from './SVGcomponents/Bookmark';
 import {IPost} from '../models/Post';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {createFavorite} from '../redux/thunks/favorite/CreateFavorite';
-import {removeFavorite} from '../redux/thunks/favorite/RemoveFavorite';
 import {Avatar} from './Avatar';
 import {TabNavigationProps} from '../navigation/types/TabTypes';
 import {EmptyImage} from './EmptyImage';
 import {getDate} from '../helpers/getDate';
-import {setLogged} from '../redux/slices/authSlice';
 import {VideoPost} from './VideoPost';
 import {DotsVertical} from './SVGcomponents';
 import {
@@ -31,6 +28,7 @@ import {
 import {useMutation} from '@apollo/client';
 import {DELETE_POST} from '../gql/mutation/post/DeletePost';
 import {removePost} from '../redux/slices/postSlice';
+import {useFavorite} from '../helpers/useFavorite';
 
 interface PostItemProps {
   post: IPost;
@@ -47,16 +45,7 @@ export const PostItem = ({
 }: PostItemProps) => {
   const {colors} = useTheme();
   const dispatch = useAppDispatch();
-  const favorites = useAppSelector(state => state.favorite.favorites);
-  const token = useAppSelector(state => state.auth.token);
-  const [like, setLike] = React.useState(
-    favorites.map(favorite => favorite.post?.id).includes(post.id),
-  );
-  const [likeIsDisabled, setLikeIsDisabled] = React.useState(false);
-
-  React.useEffect(() => {
-    setLike(favorites.map(favorite => favorite.post?.id).includes(post.id));
-  }, [favorites, post.id]);
+  const {isFavorite, toggle} = useFavorite({postId: post.id});
 
   const authorId = useAppSelector(state => state.user.author?.author?.id);
 
@@ -141,43 +130,10 @@ export const PostItem = ({
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-          <TouchableOpacity
-            disabled={likeIsDisabled}
-            onPress={async () => {
-              if (token) {
-                setLikeIsDisabled(true);
-                if (like) {
-                  let idFavorite = favorites.find(
-                    favorite => favorite.post?.id === post.id,
-                  )?.id;
-                  if (idFavorite) {
-                    setLike(false);
-                    await dispatch(removeFavorite(idFavorite));
-                    setLikeIsDisabled(false);
-                  }
-                } else {
-                  let idFavorite = favorites.find(
-                    favorite => favorite.post?.id === post.id,
-                  )?.id;
-                  setLike(true);
-                  if (idFavorite) {
-                  } else {
-                    await dispatch(
-                      createFavorite({
-                        postId: post.id,
-                      }),
-                    );
-                  }
-
-                  setLikeIsDisabled(false);
-                }
-              } else {
-                dispatch(setLogged(false));
-              }
-            }}>
+          <TouchableOpacity onPress={toggle}>
             <View
               style={{
-                backgroundColor: like
+                backgroundColor: isFavorite
                   ? colors.colorMainInActive
                   : colors.bgSecondary,
                 width: 40,
@@ -187,8 +143,8 @@ export const PostItem = ({
                 borderRadius: 30,
               }}>
               <BookMark
-                color={like ? colors.colorMain : colors.textPrimary}
-                fill={like ? colors.colorMain : 'none'}
+                color={isFavorite ? colors.colorMain : colors.textPrimary}
+                fill={isFavorite ? colors.colorMain : 'none'}
               />
             </View>
           </TouchableOpacity>

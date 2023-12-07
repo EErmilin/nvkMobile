@@ -1,5 +1,6 @@
-import {IFavorite} from '../../models/Favorite';
+import {IFavorite, IFavoriteId} from '../../models/Favorite';
 
 export interface IFavoriteState {
   favorites: IFavorite[];
+  favoriteIds: IFavoriteId[];
 }

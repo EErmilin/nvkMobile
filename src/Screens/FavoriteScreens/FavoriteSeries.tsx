@@ -13,15 +13,15 @@ import {LayoutVideoItem} from '../../components/LayoutVideoItem';
 import ContentLoader from 'react-content-loader';
 import {Rect} from 'react-content-loader/native';
 import {useQuery} from '@apollo/client';
-import {GET_CARTOONS} from '../../gql/query/cartoons/GetCartoons';
+import {SERIALS} from '../../gql/query/series/Series';
 
-export const FavoriteMult = props => {
+export const FavoriteSeries = props => {
   const {navigation} = props;
   const {colors} = useTheme();
   const userId = useAppSelector(state => state.user.data?.id);
   const screenWidth = useWindowDimensions().width;
 
-  const {data, loading, refetch} = useQuery(GET_CARTOONS, {
+  const {data, loading, refetch} = useQuery(SERIALS, {
     variables: {
       skip: 0,
       take: 10000,
@@ -43,7 +43,7 @@ export const FavoriteMult = props => {
     return unsubscribe;
   }, [navigation, refetch]);
 
-  const cartoons = data?.animations || [];
+  const cartoons = data?.serials || [];
 
   return (
     <ScrollView

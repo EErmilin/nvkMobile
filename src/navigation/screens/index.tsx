@@ -104,6 +104,7 @@ import {Main} from '../../Screens/TabsScreens/Main';
 import CreatePost from '../../Screens/CreatePost';
 import {publishPost} from '../../redux/thunks/post/PublishPost';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {fetchFavoriteIds} from '../../redux/thunks/favorite/GetFavoriteIds';
 
 LogBox.ignoreAllLogs();
 
@@ -121,6 +122,11 @@ export const AppNavigation = () => {
   const videoContext = React.useContext(VideoPlayerContext);
   const {theme, text, colors} = useTheme();
   const dispatch = useAppDispatch();
+  const token = useAppSelector(state => state.auth.token);
+
+  React.useEffect(() => {
+    dispatch(fetchFavoriteIds(token));
+  }, [dispatch, token]);
 
   const setListenerTheme = React.useCallback(
     (listener: Appearance.AppearancePreferences) => {

@@ -1,10 +1,9 @@
-import {useMutation, useQuery} from '@apollo/client';
+import {useMutation} from '@apollo/client';
 import {useCallback, useEffect, useState} from 'react';
-import {
-  CREATE_FAVORITE_SIMPLE,
-  GET_FAVORITE,
-} from '../gql/query/favorites/Favorites';
 import {REMOVE_FAVORITE} from '../gql/mutation/favorite/RemoveFavorite';
+import {CREATE_FAVORITE_SIMPLE} from '../gql/query/favorites/Favorites';
+import {useAppDispatch, useAppSelector} from '../redux/hooks';
+import {fetchFavoriteIds} from '../redux/thunks/favorite/GetFavoriteIds';
 
 export function useFavorite(where: {
   postId?: number;
@@ -16,16 +15,18 @@ export function useFavorite(where: {
   seriesId?: number;
 }) {
   const [updating, setUpdating] = useState(false);
-  const {data, refetch} = useQuery<{favorites: {id: number}[]}>(GET_FAVORITE, {
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'network-only',
-    variables: {where},
-  });
-
+  const dispatch = useAppDispatch();
   const [create] = useMutation(CREATE_FAVORITE_SIMPLE);
   const [remove] = useMutation(REMOVE_FAVORITE);
+  const token = useAppSelector(state => state.auth.token);
 
-  const id = data?.favorites?.[0]?.id;
+  const key = Object.keys(where)[0];
+  const favorite = useAppSelector(
+    state =>
+      state.favorite.favoriteIds?.find(f => f[key] === where[key]) || null,
+  );
+
+  const id = favorite?.id;
   const [isFavorite, setIsFavorite] = useState(!!id);
 
   const toggle = useCallback(async () => {
@@ -49,11 +50,11 @@ export function useFavorite(where: {
           },
         });
       }
-      refetch();
     } finally {
+      dispatch(fetchFavoriteIds(token));
       setUpdating(false);
     }
-  }, [where, updating, id, refetch, create, remove]);
+  }, [where, updating, id, token, dispatch, create, remove]);
 
   useEffect(() => {
     setIsFavorite(!!id);

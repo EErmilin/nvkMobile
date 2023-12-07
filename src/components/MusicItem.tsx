@@ -21,6 +21,7 @@ import {ISongType} from '../models/Music';
 import {MusicNote} from './SVGcomponents/media/MusicNote';
 import MediumText from './MediumText';
 import {setLogged} from '../redux/slices/authSlice';
+import {useFavorite} from '../helpers/useFavorite';
 
 interface MusicItemProps {
   item: Track;
@@ -157,83 +158,15 @@ export const MusicItem: React.FC<MusicItemProps> = ({
 const LikeButton = (props: {id: number; type: ISongType}) => {
   const {id, type} = props;
   const {colors} = useTheme();
-  const favorites = useFavoriteAudio(type);
-  const dispatch = useAppDispatch();
-  const [like, setLike] = React.useState(
-    favorites
-      .map(favorite =>
-        type === 'podcast' || type === 'fairytale' || type === 'olonho'
-          ? favorite.podcastEpisode?.id
-          : favorite.song?.id,
-      )
-      .includes(id),
-  );
-  const [likeIsDisabled, setLikeIsDisabled] = React.useState(false);
-  const token = useAppSelector(state => state.auth.token);
-  React.useEffect(() => {
-    setLike(
-      favorites
-        .map(favorite =>
-          type === 'podcast' || type === 'fairytale' || type === 'olonho'
-            ? favorite.podcastEpisode?.id
-            : favorite.song?.id,
-        )
-        .includes(id),
-    );
-  }, [favorites, id, type]);
+  const {isFavorite, toggle} = useFavorite({
+    songId: id,
+  });
 
   return (
-    <TouchableOpacity
-      disabled={likeIsDisabled}
-      style={styles.likeButtonContainer}
-      onPress={async () => {
-        if (token) {
-          setLikeIsDisabled(true);
-          if (like) {
-            let idFavorite =
-              type !== 'fairytale' && type !== 'olonho' && type !== 'podcast'
-                ? favorites.find(favorite => favorite.song?.id === id)?.id
-                : favorites.find(favorite => favorite.podcastEpisode?.id === id)
-                    ?.id;
-            if (idFavorite) {
-              setLike(false);
-              let response = await dispatch(removeFavorite(idFavorite));
-              if (response.meta.requestStatus === 'rejected') {
-                setLike(true);
-              }
-            }
-            setLikeIsDisabled(false);
-          } else {
-            setLike(true);
-            let response = await dispatch(
-              createFavorite({
-                songId:
-                  type !== 'podcast' &&
-                  type !== 'radio' &&
-                  type !== 'fairytale' &&
-                  type !== 'olonho'
-                    ? id
-                    : undefined,
-                podcastEpisodeId:
-                  type === 'fairytale' ||
-                  type === 'olonho' ||
-                  type === 'podcast'
-                    ? id
-                    : undefined,
-              }),
-            );
-            if (response.meta.requestStatus === 'rejected') {
-              setLike(false);
-            }
-            setLikeIsDisabled(false);
-          }
-        } else {
-          dispatch(setLogged(false));
-        }
-      }}>
+    <TouchableOpacity style={styles.likeButtonContainer} onPress={toggle}>
       <Heart
         color={colors.colorMain}
-        inColor={like ? colors.colorMain : 'none'}
+        inColor={isFavorite ? colors.colorMain : 'none'}
       />
     </TouchableOpacity>
   );

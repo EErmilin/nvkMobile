@@ -28,3 +28,14 @@ export interface ICreateFavoriteInput {
   postId?: number;
   podcastEpisodeId?: number;
 }
+
+export interface IFavoriteId {
+  id: number;
+  postId: number;
+  showId: number;
+  songId: number;
+  podcastEpisodeId: number;
+  animationId: number;
+  seriesId: number;
+  movieId: number;
+}
