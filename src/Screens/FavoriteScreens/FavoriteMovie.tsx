@@ -65,8 +65,10 @@ export const FavoriteMovie = props => {
           renderItem={({item}) => (
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate('CartoonSeasons', {
-                  cartoon: item,
+                navigation.navigate('Film', {
+                  id: item.id,
+                  title: item.name,
+                  rating: item.ratingNvk,
                 })
               }>
               <LayoutVideoItem item={item} height={144} heightImage={110} />
