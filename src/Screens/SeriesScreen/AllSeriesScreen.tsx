@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import * as React from 'react';
 import {FC} from 'react';
@@ -59,82 +60,92 @@ export const AllSeriesScreen: FC<RootNavigationProps<'AllSeries'>> = ({
   }, [id, dispatch]);
 
   React.useEffect(() => {
-    (async () => {
-      await update();
-    })();
+    update();
   }, [update]);
 
-  if (seasons.length === 0) {
-    return <ActivityIndicator />;
-  }
-
+  // if (seasons.length === 0) {
+  //   return <ActivityIndicator />;
+  // }
 
   return (
-    <SafeAreaView style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
+    <SafeAreaView
+      style={[styles.container, {backgroundColor: colors.bgSecondary}]}>
       <Containter>
-        {seasons.length > 0 &&
-          seasons.map(s => {
-            return (
-              <MediumText
-                fontSize={16}
-                style={{color: colors.orange, fontWeight: '600'}}>
-                {s.name}
-              </MediumText>
-            );
-          })}
-        <Divider style={{marginVertical: 10}} />
-        <Animated.View />
-        <ScrollView>
-          <Animated.View style={{gap: 20}}>
-            {seasons.length > 0 ? (
-              seasons[0]?.seriesEpisodes.map((item, index) => (
-                <Animated.View
-                  style={{flexDirection: 'row', gap: 15}}
-                  key={item.id}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate('CurrentSeries', {
-                        id: item.series?.id,
-                        title: seasons[0]?.series.name,
-                        serialData: seasons[0],
-                        url: item.media.indexM3u8Url,
-                        content,
-                      })
-                    }>
-                    <ImageBackground
-                      source={{uri: item.image}}
-                      resizeMode={'cover'}
-                      style={styles.image}>
-                      <PlayIcon />
-                    </ImageBackground>
-                  </TouchableOpacity>
+        {seasons.length === 0 &&
+          (isLoading ? (
+            <ActivityIndicator size={'large'} color={colors.orange} />
+          ) : (
+            <MediumText style={{textAlign: 'center'}}>Не найдено</MediumText>
+          ))}
+
+        {seasons.map((s, index) => (
+          <>
+            <MediumText
+              fontSize={16}
+              style={{
+                color: colors.orange,
+                fontWeight: '600',
+                marginTop: index > 0 ? 24 : 0,
+              }}>
+              {s.name}
+            </MediumText>
+
+            <Divider style={{marginVertical: 10}} />
+            <Animated.View />
+            <ScrollView>
+              {s.seriesEpisodes.map(item => {
+                console.log(item.media);
+                return (
                   <Animated.View
                     style={{
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                    }}>
-                    <MediumText>{`${index + 1}. ${
-                      seasons[0].series.name
-                    }`}</MediumText>
-                    <Animated.View style={{flexDirection: 'row', gap: 5}}>
-                      <MediumText fontSize={12}>
-                        {seasons[0].series.date}
-                      </MediumText>
-                      <MediumText fontSize={12} style={{color: colors.orange}}>
-                        /
-                      </MediumText>
-                      <MediumText fontSize={12}>
-                        {seasons[0].series.duration}
-                      </MediumText>
+                      flexDirection: 'row',
+                      gap: 15,
+                    }}
+                    key={item.id}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate('CurrentSeries', {
+                          id: item.series?.id,
+                          title: s.series.name,
+                          serialData: s,
+                          url: item.media?.indexM3u8Url,
+                          content,
+                        })
+                      }>
+                      <View
+                        style={{
+                          borderRadius: 16,
+                          overflow: 'hidden',
+                        }}>
+                        <ImageBackground
+                          source={{uri: item.media?.covers?.[0]?.url_512}}
+                          resizeMode={'cover'}
+                          style={styles.image}>
+                          <PlayIcon />
+                        </ImageBackground>
+                      </View>
+                    </TouchableOpacity>
+                    <Animated.View
+                      style={{
+                        flexDirection: 'column',
+                      }}>
+                      <MediumText>{item.name}</MediumText>
+                      <Animated.View style={{flexDirection: 'row', gap: 5}}>
+                        <MediumText fontSize={12}>{s.series.date}</MediumText>
+                        <MediumText
+                          fontSize={12}
+                          style={{color: colors.orange}}>
+                          /
+                        </MediumText>
+                        <MediumText fontSize={12}>{item.duration}</MediumText>
+                      </Animated.View>
                     </Animated.View>
                   </Animated.View>
-                </Animated.View>
-              ))
-            ) : (
-              <ActivityIndicator size={'large'} color={colors.orange} />
-            )}
-          </Animated.View>
-        </ScrollView>
+                );
+              })}
+            </ScrollView>
+          </>
+        ))}
       </Containter>
     </SafeAreaView>
   );
@@ -148,7 +159,7 @@ const styles = StyleSheet.create({
   image: {
     width: 150,
     height: 90,
-    borderRadius: 15,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,

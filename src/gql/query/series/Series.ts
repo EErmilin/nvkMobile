@@ -68,9 +68,17 @@ export const SEASONS = gql`
       }
       seriesId
       seriesEpisodes {
+        id
+        name
+        duration
+
         media {
           indexM3u8Url
           id
+          covers {
+            id
+            url_512
+          }
         }
       }
     }
@@ -106,6 +114,9 @@ export const CURRENT_SERIAS = gql`
       }
       seriesId
       seriesEpisodes {
+        id
+        name
+        duration
         media {
           indexM3u8Url
           id

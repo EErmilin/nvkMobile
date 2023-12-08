@@ -1,6 +1,11 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 
-import {MARK_SERIES_VIEWED, SEASONS, SERIALS, SERIES_IS_VIEWED} from '../../../../gql/query/series/Series';
+import {
+  MARK_SERIES_VIEWED,
+  SEASONS,
+  SERIALS,
+  SERIES_IS_VIEWED,
+} from '../../../../gql/query/series/Series';
 import {IPodcastData} from '../../../../models/Music';
 import {getUpdateClient} from '../../../../requests/updateHeaders';
 import {IPodcastArg} from '../../../types/PodcastType';
@@ -52,4 +57,3 @@ export const markSeriesViewed = createAsyncThunk<boolean, any>(
     return response.data.markSeriesAsViewed as boolean;
   },
 );
-
