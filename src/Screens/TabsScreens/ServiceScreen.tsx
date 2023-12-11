@@ -107,11 +107,9 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
           <Currentcies />
         </ScrollView>
         <ScrollView
+          horizontal
           keyboardShouldPersistTaps={'always'}
-          contentContainerStyle={{
-            paddingLeft: 15,
-            marginBottom: 15,
-          }}
+          contentContainerStyle={{paddingLeft: 15, marginBottom: 15}}
           showsHorizontalScrollIndicator={false}
           style={{flexGrow: 0}}>
           {Platform.OS === 'ios' ? (
@@ -162,73 +160,7 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
           ) : (
             <></>
           )}
-
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            {/* Column 1 */}
-            <View>
-              <ServiceItem
-                size="small"
-                navName="Podcast"
-                source={require('../../assets/images/podcast_logo.png')}
-                mr={2}
-                navigation={navigation}
-              />
-              <ServiceItem
-                size="small"
-                navName="ServicesScreen"
-                source={require('../../assets/images/services_logo.png')}
-                mr={2}
-                navigation={navigation}
-                mt={10}
-              />
-              <ServiceItem
-                size="small"
-                navName="Broadcasts"
-                source={require('../../assets/images/tvBroadcast.png')}
-                mr={2}
-                navigation={navigation}
-                mt={10}
-              />
-            </View>
-            {/* Column 2 */}
-            <View>
-              <ServiceItem
-                size="small"
-                navName="Music"
-                source={require('../../assets/images/musicIcon.png')}
-                mr={2}
-                navigation={navigation}
-              />
-              <ServiceItem
-                size="small"
-                navName="Series"
-                source={require('../../assets/images/series_logo.png')}
-                mr={2}
-                navigation={navigation}
-                mt={10}
-              />
-            </View>
-            {/* Column 3 */}
-            <View>
-              <ServiceItem
-                size="small"
-                navName="Cartoons"
-                source={require('../../assets/images/cartoons_logo.png')}
-                mr={2}
-                navigation={navigation}
-              />
-              <ServiceItem
-                size="small"
-                navName="Films"
-                source={require('../../assets/images/films_logo.png')}
-                mr={2}
-                navigation={navigation}
-                mt={10}
-              />
-            </View>
-          </View>
-
-          {/* <ServiceItem
+          <ServiceItem
             size="small"
             navName="Podcast"
             source={require('../../assets/images/podcast_logo.png')}
@@ -256,6 +188,7 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
             mr={2}
             navigation={navigation}
           />
+          
 
           <ServiceItem
             size="small"
@@ -270,7 +203,8 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
             source={require('../../assets/images/films_logo.png')}
             mr={2}
             navigation={navigation}
-          /> */}
+          />
+
         </ScrollView>
         <View
           style={{
@@ -322,6 +256,7 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
             }}
           />
         </View>
+
         {/* <View
           style={{
             flexDirection: 'row',
