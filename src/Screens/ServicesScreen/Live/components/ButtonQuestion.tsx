@@ -15,10 +15,11 @@ import {RootNavigationProps} from '../../../../navigation/types/RootStackTypes';
 
 export const ButtonQuestion = (props: {
   id: number;
+  name: string;
   initialIsOpen: boolean;
   setIsOpen: (value: boolean) => void;
 }) => {
-  const {id, initialIsOpen, setIsOpen} = props;
+  const {id, initialIsOpen, setIsOpen, name} = props;
   const navigation =
     useNavigation<RootNavigationProps<'ViewLive'>['navigation']>();
 
@@ -103,7 +104,7 @@ export const ButtonQuestion = (props: {
         }}
         onPress={() => {
           if (token) {
-            navigation.navigate('LiveQuestion', {id: id});
+            navigation.navigate('LiveQuestion', {id: id, name: name});
           } else {
             dispatch(logout());
           }
