@@ -102,8 +102,8 @@ android {
         applicationId "com.nvksakha"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 65
-        versionName "1.0.4"
+        versionCode 66
+        versionName "1.0.5"
     }
 
     splits {
@@ -154,6 +154,12 @@ android {
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
                         defaultConfig.versionCode * 1000 + versionCodes.get(abi)
+            }
+
+            if (variant.buildType.name.equals("release")) {
+                def appName = "NVK"
+                def versionName = variant.versionName
+                output.outputFileName = "${appName}-${versionName}.apk"
             }
 
         }
