@@ -51,7 +51,6 @@ export type RootStackParamList = {
   };
   LiveQuestion: {
     id: number;
-    name: string
   };
   RadioListScreen: undefined;
   RadioScreen: {

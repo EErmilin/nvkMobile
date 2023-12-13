@@ -172,7 +172,7 @@ export const ViewLive: React.FC<RootNavigationProps<'ViewLive'>> = props => {
         }}>
         <ProgramLive id={id} setPrograms={setPrograms} />
       </View>
-      <ButtonQuestion id={id} name={data?.name} initialIsOpen={isOpen} setIsOpen={setIsOpen} />
+      <ButtonQuestion id={id} initialIsOpen={isOpen} setIsOpen={setIsOpen} />
     </View>
   );
 };
