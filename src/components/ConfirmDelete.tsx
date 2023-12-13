@@ -31,8 +31,6 @@ export const ConfirmDelete = (props: IProps) => {
   const navigation = useNavigation();
   const user = useAppSelector(state => state.user.data);
 
-  console.log('navigation', navigation);
-
   return (
     <Modal
       visible={visible}

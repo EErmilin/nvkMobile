@@ -1,7 +1,7 @@
 import React from 'react';
 import {Platform, Pressable, StyleSheet, View} from 'react-native';
 import MediumText from './MediumText';
-import {colors} from '../Styles/Styles';
+import {colors, useTheme} from '../Styles/Styles';
 import BoldText from './BoldText';
 import {IFilterOrderBy} from '../redux/types/FilterTypes';
 
@@ -37,6 +37,8 @@ const SortDropDown = ({
       setSortVisible(false);
     }
   };
+  const theme = useTheme();
+
   return (
     <View style={styles.sortContainer}>
       <MediumText style={{color: colors.gray}}>Сортировать</MediumText>
@@ -52,7 +54,12 @@ const SortDropDown = ({
           return (
             <Pressable onPress={() => onSortHandle(item.value)}>
               {sortOption === item.value ? (
-                <BoldText>{item.text}</BoldText>
+                <BoldText
+                  style={{
+                    color: theme.colors.colorMain,
+                  }}>
+                  {item.text}
+                </BoldText>
               ) : (
                 <MediumText style={{color: colors.gray}}>
                   {item.text}

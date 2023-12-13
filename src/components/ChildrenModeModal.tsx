@@ -1,7 +1,7 @@
 import {Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {BoldText, MediumText, SearchComponent} from './index';
 import * as React from 'react';
-import {colors} from '../Styles/Styles';
+import {colors, useTheme} from '../Styles/Styles';
 import {FC, useMemo, useState} from 'react';
 import {getRandomNumber} from '../helpers/childrenModeHelpers';
 
@@ -19,6 +19,7 @@ export const ChildrenModeModal: FC<Props> = ({
   let a = useMemo(() => getRandomNumber(1, 5), [isBottomSheetVisible]);
   let b = useMemo(() => getRandomNumber(1, 5), [isBottomSheetVisible]);
   const [value, setValue] = useState('');
+  const theme = useTheme();
 
   const onSubmit = () => {
     if ((a * b).toString() === value) {
@@ -32,11 +33,12 @@ export const ChildrenModeModal: FC<Props> = ({
 
   return (
     <Modal visible={isBottomSheetVisible} animationType="slide">
-      <View style={styles.modal}>
+      <View style={[styles.modal, {backgroundColor: theme.colors.bgPrimary}]}>
         <BoldText style={{marginTop: 24}} fontSize={16}>
           Решите эту задачу
         </BoldText>
-        <View style={styles.container}>
+        <View
+          style={[styles.container, {backgroundColor: theme.colors.bgPrimary}]}>
           <BoldText fontSize={24}>
             {a.toString()} * {b.toString()} =
           </BoldText>
@@ -45,9 +47,12 @@ export const ChildrenModeModal: FC<Props> = ({
           style={{width: '100%'}}
           value={value}
           isSearch={false}
-          containerStyle={{backgroundColor: colors.background, width: '100%'}}
           onChangeText={setValue}
           placeholder={'Ответ'}
+          containerStyle={{
+            backgroundColor: theme.colors.fillPrimary,
+            width: '100%',
+          }}
         />
         <TouchableOpacity onPress={onSubmit} style={styles.button}>
           <MediumText style={{color: colors.white}}>Отправить ответ</MediumText>
