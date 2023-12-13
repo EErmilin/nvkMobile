@@ -70,18 +70,19 @@ export const PostItem = ({
           marginHorizontal: 15,
         }}>
         <TouchableOpacity
-          onPress={() =>
+          onPress={() => {
+            if (!post.authorId) return;
             navigation.navigate('BlogerProfile', {
               id: post.authorId,
-            })
-          }>
+            });
+          }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Avatar
               size={45}
               url={post.author?.user?.avatar?.url_256}
               style={{marginRight: 15}}
             />
-            <BoldText fontSize={12}>{post.author.nickname}</BoldText>
+            <BoldText fontSize={12}>{post.author?.nickname}</BoldText>
           </View>
         </TouchableOpacity>
 

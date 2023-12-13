@@ -6,9 +6,12 @@ type PostAuthor = {
     id: number;
   };
   user?: {
+    firstname?: string;
+    lastname?: string;
     avatar: {
       url: string;
       url_256: string;
+      url_512: string;
     };
   };
 };
@@ -21,13 +24,13 @@ export interface IPostComment {
 
 export interface IPost {
   id: number;
-  authorId: number;
+  authorId?: number;
   content?: string;
   preview?: string;
   title: string;
   published: boolean;
   images: IPostImage[];
-  author: PostAuthor;
+  author?: PostAuthor;
   views: number;
   createdAt: string;
   hashtags?: IHashtagPost[];
