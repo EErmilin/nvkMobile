@@ -2,6 +2,7 @@ import * as React from 'react';
 import {useState} from 'react';
 import {
   Appearance,
+  Linking,
   LogBox,
   PermissionsAndroid,
   Platform,
@@ -12,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import {
+  LinkingOptions,
   NavigationContainer,
   useNavigation,
   useNavigationState,
@@ -105,8 +107,39 @@ import CreatePost from '../../Screens/CreatePost';
 import {publishPost} from '../../redux/thunks/post/PublishPost';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {fetchFavoriteIds} from '../../redux/thunks/favorite/GetFavoriteIds';
+import {setLogged} from '../../redux/slices/authSlice';
+import {store} from '../../redux/persist';
 
 LogBox.ignoreAllLogs();
+
+const linking: LinkingOptions<RootStackParamList> = {
+  prefixes: ['https://mobility-dev.ru'],
+  config: {
+    screens: {
+      ViewLive: {
+        path: '/live',
+        parse: {
+          id: id => {
+            console.log('id', id);
+            return Number(id);
+          },
+        },
+      },
+    },
+  },
+
+  subscribe(listener) {
+    const linkingSubscription = Linking.addEventListener('url', ({url}) => {
+      listener(url);
+      // для навигации в главный навигатор необходимо быть авторизованным
+      store.dispatch(setLogged(true));
+    });
+
+    return () => {
+      linkingSubscription.remove();
+    };
+  },
+};
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const events = [
@@ -183,7 +216,7 @@ export const AppNavigation = () => {
   }, [videoContext.videoPlayerOption.video]);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <StatusBar
         barStyle={theme === 'dark' ? 'light-content' : 'dark-content'}
         backgroundColor={colors.fillPrimary}
@@ -578,6 +611,7 @@ const StackNavigation = () => {
             title: 'Прямой эфир',
             gestureEnabled: !videoContext.videoPlayerOption?.fullscreen,
           }}
+          initialParams={{live: 'saha'}}
         />
         <Stack.Screen
           name="LiveQuestion"
