@@ -7,6 +7,7 @@ import {
   TextInput,
   StyleSheet,
   Platform,
+  Dimensions,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import {ApolloError} from '@apollo/client';
@@ -21,6 +22,7 @@ import {getUpdateClient} from '../../../requests/updateHeaders';
 import {useTheme} from '../../../Styles/Styles';
 import DeviceInfo from 'react-native-device-info';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+const height = Dimensions.get('window').height;
 
 const emailFormat = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
 
@@ -103,7 +105,7 @@ export const TechSupport: React.FC<
             <InputText
               autoFocus={false}
               required
-              style={{marginVertical: 15}}
+              style={{marginVertical: 5}}
               label={'Email'}
               errorState={emailError}
               value={email}
@@ -219,7 +221,7 @@ export const TechSupport: React.FC<
 
 const styles = StyleSheet.create({
   inputText: {
-    minHeight: 200,
+    minHeight: height < 680 ? 80 : 120,
     borderRadius: 20,
     textAlignVertical: 'top',
     borderWidth: 1,

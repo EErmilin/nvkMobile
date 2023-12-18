@@ -81,6 +81,11 @@ export const FavoriteTabNavigator = () => {
           title: 'Сериалы',
         }}
       />
+      <Tab.Screen
+        name="FavoriteBroadcast"
+        component={FavoriteBroadcast}
+        options={{title: 'Передачи'}}
+      />
       {/* {remoteConfig().getValue('broadcast_visible').asBoolean() ? (
         <Tab.Screen
           name="FavoriteBroadcast"

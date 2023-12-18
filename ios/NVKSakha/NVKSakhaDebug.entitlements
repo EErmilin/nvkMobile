@@ -7,6 +7,7 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>applinks:nvk-dev-web.mobility.tw1.ru</string>
+		<string>applinks:www.nvk-dev-web.mobility.tw1.ru</string>
 		<string>applinks:mobility-dev.ru</string>
 	</array>
 	<key>com.apple.developer.networking.wifi-info</key>
