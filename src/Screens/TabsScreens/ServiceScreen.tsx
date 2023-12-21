@@ -112,8 +112,23 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
           contentContainerStyle={{paddingLeft: 15, marginBottom: 15}}
           showsHorizontalScrollIndicator={false}
           style={{flexGrow: 0}}>
-          {Platform.OS === 'ios' ? (
-            remoteConfig().getValue('broadcast_visible').asBoolean() ? (
+          {
+            //TODO: раньше значение брались из переменной broadcast_visible Firebase remoteConfig
+
+            Platform.OS === 'ios' ? (
+              true ? (
+                <ServiceItem
+                  size="small"
+                  navName="Broadcasts"
+                  source={require('../../assets/images/broadcast_logo.png')}
+                  mr={2}
+                  navigation={navigation}
+                />
+              ) : (
+                <></>
+              )
+            ) : true ? (
+              //TODO: раньше значение брались из переменной broadcast_android_visible Firebase remoteConfig
               <ServiceItem
                 size="small"
                 navName="Broadcasts"
@@ -124,19 +139,7 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
             ) : (
               <></>
             )
-          ) : remoteConfig()
-              .getValue('broadcast_android_visible')
-              .asBoolean() ? (
-            <ServiceItem
-              size="small"
-              navName="Broadcasts"
-              source={require('../../assets/images/broadcast_logo.png')}
-              mr={2}
-              navigation={navigation}
-            />
-          ) : (
-            <></>
-          )}
+          }
           {Platform.OS === 'ios' ? (
             remoteConfig().getValue('music_visible').asBoolean() ? (
               <ServiceItem
@@ -188,7 +191,6 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
             mr={2}
             navigation={navigation}
           />
-          
 
           <ServiceItem
             size="small"
@@ -204,7 +206,6 @@ export const ServiceScreen: React.FC<TabNavigationProps<'Services'>> = ({
             mr={2}
             navigation={navigation}
           />
-
         </ScrollView>
         <View
           style={{

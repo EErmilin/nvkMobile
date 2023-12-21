@@ -102,8 +102,8 @@ android {
         applicationId "com.nvksakha"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode project.hasProperty('newVersionCode') ? project.newVersionCode.toInteger() : 66
-        versionName project.hasProperty('newVersionName') ? project.newVersionName : "1.0.5"
+        versionCode project.hasProperty('newVersionCode') ? project.newVersionCode.toInteger() : 71
+        versionName project.hasProperty('newVersionName') ? project.newVersionName : "1.0.14"
     }
 
     splits {
