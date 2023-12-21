@@ -316,11 +316,11 @@ export const NewsView: React.FC<RootNavigationTabProps<'NewsView'>> = props => {
         <View
           style={[
             styles.commentContainer,
-            {backgroundColor: colors.background},
+            {backgroundColor: colors.background, padding: 16},
           ]}>
           <View style={styles.commentsHeader}>
             <BoldText style={{color: colors.textPrimary}}>
-              Комметарии ({(postView?.totalComments ?? 0).toString()})
+              Комментарии ({(postView?.totalComments ?? 0).toString()})
             </BoldText>
             <Pressable
               hitSlop={10}

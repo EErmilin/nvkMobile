@@ -82,7 +82,7 @@ export const PostItem = ({
               url={post.author?.user?.avatar?.url_256}
               style={{marginRight: 15}}
             />
-            <BoldText fontSize={12}>{post.author?.nickname}</BoldText>
+            <BoldText fontSize={12}>{post.author?.nickname ?? 'НВК'}</BoldText>
           </View>
         </TouchableOpacity>
 
